@@ -1,4 +1,4 @@
-# EasyTrading App
+# CollaborativeCode
 
 [My Notes](notes.md)
 
@@ -10,7 +10,7 @@ That first edit was in VScode. This one is using the Github web app.
 > [!NOTE]
 >  This is a template for your startup application. You must modify this `README.md` file for each phase of your development. You only need to fill in the section for each deliverable when that deliverable is submitted in Canvas. Without completing the section for a deliverable, the TA will not know what to look for when grading your submission. Feel free to add additional information to each deliverable description, but make sure you at least have the list of rubric items and a description of what you did for each item.
 
-I am not going to edit that paragraph above this because there are too many valuable reminders to lose, so here is proof that I read it!
+(I am not going to edit that paragraph above this because there are too many valuable reminders to lose, so here is proof that I read it!)
 
 > [!NOTE]
 >  I reviewed the documnentation about Markdown. Here is the link for future reference (https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax) before continuing.
@@ -22,45 +22,47 @@ I am not going to edit that paragraph above this because there are too many valu
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] Proper use of Markdown
-- [ ] A concise and compelling elevator pitch
-- [ ] Description of key features
-- [ ] Description of how you will use each technology
-- [ ] One or more rough sketches of your application. Images must be embedded in this file using Markdown image references.
+- [x] Proper use of Markdown
+- [x] A concise and compelling elevator pitch
+- [x] Description of key features
+- [x] Description of how you will use each technology
+- [x] One or more rough sketches of your application. Images must be embedded in this file using Markdown image references.
 
 ### Elevator pitch
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Many people want to start trading in the stock market but face challenges that hold them back - whether it’s a lack of disposable income, fear of risk or volatility, or limited knowledge about trading. The EasyTrading App is a paper-trading platform designed to help users learn the fundamentals of stock market trading and analysis in a risk-free environment. Users can practice trades using real-time market data, collaborate, and compete to see who can grow their practice portfolio the most. The app is designed to be both educational and engaging, helping users gain confidence and skills before they start trading with real money.
 
 ### Design
 
-![Design image](placeholder.png)
+![EasyTrading Homepage](InvestingAccount.png)
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+This is an example of the EasyTrading UI homepage. It is designed to mimic other trading applications but keep it more simple. There will be a login page before the users can interact with their homepage, adn there will be four other options on the bottom of the screen they use. The diagram below shows how people would interact with the server, and how the server would save the data and communicate through the leaderboards/group tab.
 
-```mermaid
-sequenceDiagram
-    actor You
-    actor Website
-    You->>Website: Replace this with your design
-```
+## User to Server Interaction
+
+![User to Server Interaction](ServerDiagram.png)
 
 ### Key features
 
-- Describe your key feature
-- Describe your key feature
-- Describe your key feature
+- News feed displaying the transations of each user in real time
+- Leaderboard showing the users with the highest value portfolio
+- Starting balance at $100,000 paper money
+- Ability to exchange using current market prices
+- Secure login through HTTPS
+- Ability to view the portfolio of other users
+- Page educating users on stock market and trading information
+- Stock holdings persistently stored
 
 ### Technologies
 
 I am going to use the required technologies in the following ways.
 
-- **HTML** - Description here
-- **CSS** - Description here
-- **React** - Description here
-- **Service** - Description here
-- **DB/Login** - Description here
-- **WebSocket** - Description here
+- **HTML** - Uses correct HTML structure for application. Five HTML pages. One for login, one for home page, one for leaderboard, one for education, and one for account information. Hyperlinks to choice artifact.
+- **CSS** - Application styling that looks minimalistic and modern to make the application simple. Goal is to look good on multiple screen sizes with a standard color scheme of blue, black, and white (BYU colors!). Whitespace and contrast chosen with user experience considered.
+- **React** - Provides login, search bar for finding stocks, stock list for all available stocks, portfolio section for tracking the users personal stocks and other portfolios, buy and sell interface to make transations, view the leaderboard, and display real-time news feeds. Login page, main trading UI, and the users holdings made through the react router.
+- **Service** - Backend service with endpoints for user authentication, fetch available stocks, get the current and historical stock price, simulate buying and selling, update the leaderboard, and provide the users holdings and news feed.
+- **DB/Login** - Store users accounts, stocks, trade history, and the leaderboard in the database. User credentials stored in database, and cannot login unless authenticated.
+- **WebSocket** - Trades and leaderboard are broadcast to all other users on the platform.
 
 ## 🚀 AWS deliverable
 
@@ -69,7 +71,6 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 - [x] **Server deployed and accessible with custom domain name** - [Connor's CS260 Startup Server](https://lolwinning.click).
 - [x] **EC2, Route 53 were properly configured with the server**
 - [x] **HTTPS and TLS enabled with Caddy**
-
 
 ## 🚀 HTML deliverable
 
