@@ -1,4 +1,4 @@
-# CollaborativeCode
+# EasyTrading App
 
 [My Notes](notes.md)
 
