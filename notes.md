@@ -10,12 +10,12 @@
 
 ## AWS
 
-My IP address is: 54.81.96.130
-Launching my AMI I initially put it on a private subnet. Even though it had a public IP address and the security group was right, I wasn't able to connect to it.
+My IP address is: 52.4.152.64
+I had some struggle getting AWS set up and my server to connect to the internet, however after a lot of debugging and restepping through the instructions I found my problems. I initially set the public ID in the EC2 portal with the one before seting up the elastic IP. Additionally, I forgot to remove the semicolon when configuring HTTPS with the server, so that took a while to find. Eventually, everything functioned properly.
 
 ## Caddy
 
-No problems worked just like it said in the [instruction](https://github.com/webprogramming260/.github/blob/main/profile/webServers/https/https.md).
+The instructions were correct, however there were issues in how I followed them. I got the issues fixed. [instruction](https://github.com/webprogramming260/.github/blob/main/profile/webServers/https/https.md).
 
 ## HTML
 

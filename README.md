@@ -13,7 +13,7 @@ That first edit was in VScode. This one is using the Github web app.
 I am not going to edit that paragraph above this because there are too many valuable reminders to lose, so here is proof that I read it!
 
 > [!NOTE]
->  II reviewed the documnentation about Markdown. Here is the link for future reference (https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax) before continuing.
+>  I reviewed the documnentation about Markdown. Here is the link for future reference (https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax) before continuing.
 
 ## 🚀 Specification Deliverable
 
@@ -66,7 +66,10 @@ I am going to use the required technologies in the following ways.
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] **Server deployed and accessible with custom domain name** - [My server link](https://yourdomainnamehere.click).
+- [x] **Server deployed and accessible with custom domain name** - [Connor's CS260 Startup Server](https://lolwinning.click).
+- [x] **EC2, Route 53 were properly configured with the server**
+- [x] **HTTPS and TLS enabled with Caddy**
+
 
 ## 🚀 HTML deliverable
 
