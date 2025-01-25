@@ -34,11 +34,11 @@ Many people want to start trading in the stock market but face challenges that h
 
 ### Design
 
-![EasyTrading Homepage](C:/Users/alright%20alright/Downloads/InvestingAccount.png)
+![EasyTrading Homepage](InvestingAccount.png)
 
 This is an example of the EasyTrading UI homepage. It is designed to mimic other trading applications but keep it more simple. There will be a login page before the users can interact with their homepage, adn there will be four other options on the bottom of the screen they use. The diagram below shows how people would interact with the server, and how the server would save the data and communicate through the leaderboards/group tab.
 
-![User to Server Interaction](C:/Users/alright%20alright/Downloads/ServerDiagram.png)
+![User to Server Interaction](ServerDiagram.png)
 
 ### Key features
 
