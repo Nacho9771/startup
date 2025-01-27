@@ -19,6 +19,92 @@ The instructions were correct, however there were issues in how I followed them.
 
 ## HTML
 
+### HTML Intro
+ - HTML elements represented by tags, tags defined by "< >" and cloase with a "/"
+
+ -`<html>` is the top level container, `<head>` contains metadata like `<title>`, `<body>` contains page content, `<main>` is the main content area, and `<footer>` is the end of the page. 
+
+-id and class provide additioonal information about an element (Ex. `<p id="hello" class="greeting">Hello world</p>`)
+
+-Hyperlinks created with the `<a>` tag, and `href` specifies the destination (Ex. `<a href="https://byu.edu">Go to the Y</a>`)
+
+`<!DOCTYPE html>`: Defines document type and version. Common elements include:
+  `<h1>` to `<h9>`: Headings (h1 = largest).
+  `<p>`: Paragraph.
+  `<b>`: Bold text.
+  `<table>`: Creates a table.
+  `<ul>` / `<ol>`: Unordered/ordered list.
+  `<li>`: List item.
+  `<img>`: Displays images (src attribute specifies image path).
+  `<form>`: Collects user input.
+  `<input>`: User input field.
+  `<video>` and `<audio>`: Embeds media.
+  `<iframe>`: Embeds another webpage.
+
+-Special Characters include:
+```
+  &	&amp;
+  <	&lt;
+  >	&gt;
+  "	&quot;
+  '	&apos;
+  ```
+
+-Default file served when accessing a website should be index.html
+
+### HTML Structure
+
+Example Structure of HTML Document:
+```
+<body>
+  <p>Body</p>
+  <header>
+    <h1>Your Name</h1>
+    <p>Header - <span>Span</span></p>
+    <nav>
+      <a href="https://www.byu.edu">BYU</a>
+      <a href="https://www.familysearch.org">FamilySearch</a>
+    </nav>
+  </header>
+
+  <main>
+    <section>
+      <p>Section</p>
+      <ul>
+        <li>Apples</li>
+        <li>Bananas</li>
+        <li>Oranges</li>
+      </ul>
+    </section>
+    <section>
+      <p>Section</p>
+      <table>
+        <tr>
+          <th>Table</th><th>Table</th><th>Table</th>
+        </tr>
+        <tr>
+          <td>table</td><td>table</td><td>table</td>
+        </tr>
+        <tr>
+          <td>HTML</td><td>CSS</td><td>JavaScript</td>
+        </tr>
+      </table>
+    </section>
+    <aside>
+      <p>Aside</p>
+      <img src="https://example.com/image.jpg" width="200">
+    </aside>
+  </main>
+
+  <footer>
+    <div>Footer - <span>Span</span></div>
+    <a href="https://github.com/yourusername">GitHub Repository</a>
+  </footer>
+</body>
+```
+
+### HTML Input
+
 This was easy. I was careful to use the correct structural elements such as header, footer, main, nav, and form. The links between the three views work great using the `a` element.
 
 The part I didn't like was the duplication of the header and footer code. This is messy, but it will get cleaned up when I get to React.
