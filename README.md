@@ -71,17 +71,17 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 ## 🚀 HTML deliverable
 
-For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
+For this deliverable I did all of the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] **HTML pages** - I did not complete this part of the deliverable.
-- [ ] **Proper HTML element usage** - I did not complete this part of the deliverable.
-- [ ] **Links** - I did not complete this part of the deliverable.
-- [ ] **Text** - I did not complete this part of the deliverable.
-- [ ] **3rd party API placeholder** - I did not complete this part of the deliverable.
-- [ ] **Images** - I did not complete this part of the deliverable.
-- [ ] **Login placeholder** - I did not complete this part of the deliverable.
-- [ ] **DB data placeholder** - I did not complete this part of the deliverable.
-- [ ] **WebSocket placeholder** - I did not complete this part of the deliverable.
+- [x] **HTML pages** - All of the HTML pages that I need are made for each component of my application
+- [x] **Proper HTML element usage** - I used proper HTML tags and formatted it correctly
+- [x] **Links** - The pages are linked to eachother and I have a link to an external website in the "Learn" HTML section
+- [x] **Text** - I have a ton of text all over every HTML document
+- [x] **3rd party API placeholder** - I will need a 3rd party API to fetch live market data and stock information, so I put placeholders for these features.
+- [x] **Images** - I included two different images within my project.
+- [x] **Login placeholder** - The login page is included as a placeholder, and it is located in the index.html file so that it is the first page you encounter.
+- [x] **DB data placeholder** - I will need to store data in a database for this project, with all the personal user data, the multi-user data, and the comments and purchase feed. I put placeholders here for the future.
+- [x] **WebSocket placeholder** - I will need WebSocket for live market updates and the collaborative space as well, so there are placeholders for it in my documents.
 
 ## 🚀 CSS deliverable
 
