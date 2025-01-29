@@ -2,43 +2,40 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <!-- Tell browsers not to scale the viewport automatically -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Easy Trading</title>
-    <link rel="icon" href="favicon.ico" />
   </head>
   <body>
-    <!-- Use header, main, and footer elements to give semantic structure -->
     <header>
-      <h1>Easy Trading<sup>&reg;</sup></h1>
-
-      <!-- Navigation elements -->
+      <h1>Easy Trading</h1>
       <nav>
-        <!-- Menu is a semantic alternative to <ul> that represents an interaction -->
-        <menu>
-          <li><a href="index.html">Home</a></li>
+        <ul>
+          <li><a href="home.html">Home</a></li>
           <li><a href="forum.html">Forum</a></li>
           <li><a href="education.html">Learn</a></li>
-          <li><a href="profile.html">About</a></li>
-        </menu>
-      </nav>
+          <li><a href="profile.html">Profile</a></li>
+        </ul>
 
-      <!-- Since we don't have the ability to style we use old style HTML to give some visual formatting -->
-      <hr />
-      <hr />
+        <hr />
+        <hr />
+      </nav>
     </header>
 
     <main>
-        <div id="picture" class="picture-box"><img width="600px" src="wall_street_bull.jpg" alt="Picture Here" /></div>
+      
+        <h1>Basic Investing Information</h1>
   
         <p>
           Investing is about financial security, long-term growth, and controlling your economic future. 
           Many say that the sock market is a good place to make your money work for you!
           There are a ton of differnt ways to invest your money, but the most common are the ones listed below. 
         </p>
-        
-        <h1>Financial Investments</h1>
+
+        <div id="picture" class="picture-box"><img width="600px" src="wall_street_bull.jpg" alt="Picture Here" /></div>
     
+        <hr />
+        <h1>Financial Investments</h1>
+
         <h2>Stocks</h2>
         <p>Buying shares of a company means owning a portion of that business. Stocks generally offer higher returns over time compared to other investments but come with volatility.</p>
     
@@ -53,8 +50,28 @@
     
         <h2>Commodities</h2>
         <p>Investing in raw materials like gold, oil, or agricultural products can serve as a hedge against inflation.</p>
+
+        <h2>Options Trading</h2>
+        <p>
+        Options are financial derivatives that give investors the right, but usually not the obligation, to buy or sell an asset at a given price within a specific time frame. 
+        They are commonly used for stock and market speculation, hedging risk, and generating fast income with low capital.
+        </p>
     
-        <h2>Benefits of Investing</h2>
+        <h3>Call Option</h3>
+        <p>
+        A call option gives the holder the right to buy an asset at a specified price before the expiration date. 
+        Investors buy call options when they expect the price of the asset to go down.
+        </p>
+    
+        <h3>Put Option</h3>
+        <p>A put option is like the opposite of a call option, and it gives the holder the right to sell an asset at a specified price before the expiration date. 
+          Investors buy put options when they expect the price of the asset to go down.
+        </p>
+       <a href="https://www.merrilledge.com/investor-education/options-education">Complete Guide of Options Trading</a>
+       <br />
+
+       <hr />
+       <h2>Benefits of Investing</h2>
         <ul>
             <li><strong>Wealth Growth:</strong> Investments compound over time, increasing financial security.</li>
             <li><strong>Inflation Hedge:</strong> Stocks and real estate can protect against inflation.</li>
@@ -62,12 +79,6 @@
             <li><strong>Retirement Planning:</strong> Investments help build a nest egg for the future.</li>
         </ul>
 
-        <p>
-       Section about options, basic option definition and linking to a page with more information
-       <br />
-       <a href="https://www.merrilledge.com/investor-education/options-education">Complete Guide of Options Trading</a>
-        </p>
-  
         <div id="quote">
           <div>Random quote lol</div>
           <div>- Person</div>

@@ -20,13 +20,14 @@ The instructions were correct, however there were issues in how I followed them.
 ## HTML
 
 ### HTML Intro
- - HTML elements represented by tags, tags defined by "< >" and cloase with a "/"
 
- -`<html>` is the top level container, `<head>` contains metadata like `<title>`, `<body>` contains page content, `<main>` is the main content area, and `<footer>` is the end of the page. 
+- HTML elements represented by tags, tags defined by "< >" and cloase with a "/"
 
--id and class provide additioonal information about an element (Ex. `<p id="hello" class="greeting">Hello world</p>`)
+- `<html>` is the top level container, `<head>` contains metadata like `<title>`, `<body>` contains page content, `<main>` is the main content area, and `<footer>` is the end of the page. 
 
--Hyperlinks created with the `<a>` tag, and `href` specifies the destination (Ex. `<a href="https://byu.edu">Go to the Y</a>`)
+- id and class provide additioonal information about an element (Ex. `<p id="hello" class="greeting">Hello world</p>`)
+
+- Hyperlinks created with the `<a>` tag, and `href` specifies the destination (Ex. `<a href="https://byu.edu">Go to the Y</a>`)
 
 `<!DOCTYPE html>`: Defines document type and version. Common elements include:
   `<h1>` to `<h9>`: Headings (h1 = largest).
@@ -41,7 +42,8 @@ The instructions were correct, however there were issues in how I followed them.
   `<video>` and `<audio>`: Embeds media.
   `<iframe>`: Embeds another webpage.
 
--Special Characters include:
+- Special Characters include:
+
 ```
   &	&amp;
   <	&lt;
@@ -50,11 +52,12 @@ The instructions were correct, however there were issues in how I followed them.
   '	&apos;
   ```
 
--Default file served when accessing a website should be index.html
+- Default file served when accessing a website should be index.html
 
 ### HTML Structure
 
 Example Structure of HTML Document:
+
 ```
 <body>
   <p>Body</p>
