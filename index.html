@@ -2,53 +2,68 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <!-- Tell browsers not to scale the viewport automatically -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Easy Trading</title>
-    <link rel="icon" href="favicon.ico" />
   </head>
   <body>
-    <!-- Use header, main, and footer elements to give semantic structure -->
     <header>
-      <h1>Easy Trading<sup>&reg;</sup></h1>
-
-      <!-- Navigation elements -->
+      <h1>Easy Trading</h1>
       <nav>
-        <!-- Menu is a semantic alternative to <ul> that represents an interaction -->
-        <menu>
+        <ul>
           <li><a href="index.html">Home</a></li>
           <li><a href="forum.html">Forum</a></li>
           <li><a href="education.html">Learn</a></li>
-          <li><a href="profile.html">About</a></li>
-        </menu>
-      </nav>
+          <li><a href="profile.html">Profile</a></li>
+        </ul>
 
-      <!-- Since we don't have the ability to style we use old style HTML to give some visual formatting -->
-      <hr />
-      <hr />
+        <hr />
+        <hr />
+      </nav>
     </header>
 
     <main>
-      <h1>Login to Easy Trading<sup>&reg;</sup></h1>
-      <form method="get" action="play.html">
-        <div>
-          <span>Email or Username:</span>
-          <input type="text" placeholder="your@email.com" />
-        </div>
-        <div>
-          <span>Password:</span>
-          <input type="password" placeholder="password" />
-        </div>
+      <h2>Login</h2>
+      <form id="login-form">
+        <label for="email">Email:</label>
+        <input type="email" id="email" required />
+        <label for="password">Password:</label>
+        <input type="password" id="password" required />
         <button type="submit">Login</button>
-        <button type="submit">Create</button>
       </form>
+
+      <section id="account-section" style="display: none;">
+        <h2>Account Overview</h2>
+        <p>Balance: $<span id="balance">100000</span></p>
+
+        <h3>Portfolio</h3>
+        <ul>
+          <li><a href="#" onclick="viewStock('AAPL')">Nvidia (NVDA)</a></li>
+          <li><a href="#" onclick="viewStock('GOOGL')">AMD (AMD)</a></li>
+          <li><a href="#" onclick="viewStock('TSLA')">Tesla (TSLA)</a></li>
+          <li><a href="#" onclick="viewStock('META')">Meta Platforms (META)</a></li>
+          <li><a href="#" onclick="viewStock('BTC')">Bitcoin (BTC)</a></li>
+        </ul>
+      </section>
     </main>
+
+    <script>
+      let userBalance = 100000;
+
+      document.getElementById("login-form").addEventListener("submit", function(event) {
+        event.preventDefault();
+        document.getElementById("login-form").style.display = "none";
+        document.getElementById("account-section").style.display = "block";
+      });
+
+      function viewStock(stock) {
+        alert("Details for " + stock + "will be displayed here once I understand how to code it");
+      }
+    </script>
+
 
     <footer>
       <hr />
-      <span class="text-reset">Connor Gordon</span>
-      <br />
-      <a href="https://github.com/Nacho9771/startup.git">My GitHub</a>
+      <p>&copy; 2025 Easy Trading</p>
     </footer>
   </body>
 </html>
