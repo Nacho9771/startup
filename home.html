@@ -27,14 +27,43 @@
 
         <h3>Portfolio</h3>
         <ul>
-            <li>Nvidia (NVDA)</li>
-            <li>AMD (AMD)</li>
-            <li>Tesla (TSLA)</li>
-            <li>Meta Platforms (META)</li>
-            <li>Bitcoin (BTC)</li>
+            <li>Nvidia (NVDA): (Live Stock Information and Amount invested Diplayed Here)</li>
+            <li>AMD (AMD): (Live Stock Information and Amount invested Diplayed Here)</li>
+            <li>Tesla (TSLA): (Live Stock Information and Amount invested Diplayed Here)</li>
+            <li>Meta Platforms (META): (Live Stock Information and Amount invested Diplayed Here)</li>
+            <li>Bitcoin (BTC): (Live Stock Information and Amount invested Diplayed Here)</li>
         </ul>
 
         <a href="index.html">Logout</a>
+
+        <hr />
+
+        <section>
+            <h3>Search Stocks</h3>
+            <form>
+              <label>Search for a Stock:</label>
+              <input type="text" name="stock-search" placeholder="Enter stock name or symbol" />
+              <button type="submit">Search</button>
+            </form>
+    
+            <div>
+              <ul>
+                <li><span>TSLA</span> - <button>Select Stock for Purchase</button></li>
+                <li><span>AMD</span> - <button>Select Stock for Purchase</button></li>
+                <li><span>QQQ</span> - <button>Select Stock for Purchase</button></li>
+              </ul>
+              <p> (more stocks will come, I just dont know how to update the website live yet)</p>
+            </div>
+    
+            <div>
+              <h3>Buy Selected Stock</h3>
+              <p>Stock: <span>[Stock Name]</span></p>
+              <p>Price: $<span>[Stock Price]</span></p>
+              <label>Quantity:</label>
+              <input type="number" name="quantity" min="1" />
+              <button type="button">Confirm Purchase</button>
+            </div>
+          </section>
     </main>
 
     <footer>
