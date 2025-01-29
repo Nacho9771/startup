@@ -8,6 +8,7 @@
   <body>
     <header>
       <h1>Easy Trading</h1>
+      <div id="picture" class="picture-box"><img width="200px" src="big moneys.jpg" alt="Picture Here" /></div>
       <nav>
         <ul>
           <li><a href="home.html">Home</a></li>
@@ -22,7 +23,8 @@
     </header>
     
     <main>
-        <h2>Account Overview</h2>
+        <h2>Account Overview (Websocket to be used on this page)</h2>
+        <p>Hello, <span id="email"> [their email without the '@gmail.com' part goes here]</span></p>
         <p>Balance: $100000</p>
 
         <h3>Portfolio</h3>
@@ -39,10 +41,10 @@
         <hr />
 
         <section>
-            <h3>Search Stocks</h3>
+            <h3>Search Stocks (PLACEHOLDER FOR 3rd PARTY SERVICE)</h3>
             <form>
               <label>Search for a Stock:</label>
-              <input type="text" name="stock-search" placeholder="Enter stock name or symbol" />
+              <input type="text" placeholder="Enter stock name or symbol" />
               <button type="submit">Search</button>
             </form>
     
@@ -60,7 +62,7 @@
               <p>Stock: <span>[Stock Name]</span></p>
               <p>Price: $<span>[Stock Price]</span></p>
               <label>Quantity:</label>
-              <input type="number" name="quantity" min="1" />
+              <input type="number" placeholder = "Enter quantity" />
               <button type="button">Confirm Purchase</button>
             </div>
           </section>

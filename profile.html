@@ -8,6 +8,7 @@
   <body>
     <header>
       <h1>Easy Trading</h1>
+      <div id="picture" class="picture-box"><img width="200px" src="big moneys.jpg" alt="Picture Here" /></div>
       <nav>
         <ul>
           <li><a href="home.html">Home</a></li>
@@ -22,40 +23,38 @@
     </header>
 
     <main>
-      <section id="profile-info">
+      <section>
         <h2>Profile Information</h2>
-        <p>Email: <span id="user-email">user@example.com</span></p>
-        <p>Balance: $<span id="user-balance">9500</span></p>
+        <p>Email: <span>[user.email@gmail.com]</span></p>
+        <p>Balance: $<span>9500</span></p>
   
-        <div id="more-money">
+        <div>
           <h3>Petition for $500 Stimulus (If your balance is below $10,000)</h3>
-          <button id="more-money-button">Request Stimulus</button>
+          <button type="submit">Request Stimulus</button>
         </div>
       </section>
   
       <hr />
   
-      <!-- Account Settings Section -->
-      <section id="account-settings">
+      <section>
         <h2>Account Settings</h2>
-        <form id="settings-form">
-          <label for="email">Change Email:</label>
-          <input type="email" id="new-email" placeholder="Enter new email" />
+        <form>
+          <label>Change Email:</label>
+          <input placeholder="Enter new email" />
           <button type="submit">Update Email</button>
           <br />
           <br />
           <br />
-          <label for="dark-mode">Enable Dark Mode:</label>
-          <input type="checkbox" id="dark-mode" />
+          <label>Enable Dark Mode:</label>
+          <input type="checkbox">
         </form>
       </section>
   
       <hr />
   
-      <!-- Personal Transaction History Section -->
-      <section id="personal-transactions">
-        <h2>Personal Transaction History</h2>
-        <ul id="personal-transaction-list">
+      <section>
+        <h2>Personal Transaction History (Database to be used)</h2>
+        <ul>
           <li>[User] purchased [number] of the stock [stock abbreviation] for [stock price].</li>
           <li>[User] purchased [number] of the stock [stock abbreviation] for [stock price].</li>
           <li>[User] purchased [number] of the stock [stock abbreviation] for [stock price].</li>
