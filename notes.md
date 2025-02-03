@@ -58,7 +58,7 @@ The instructions were correct, however there were issues in how I followed them.
 
 Example Structure of HTML Document:
 
-```
+```html
 <body>
   <p>Body</p>
   <header>
@@ -111,6 +111,222 @@ Example Structure of HTML Document:
 I learned a ton while I implemented all of the things in the course notes. I spent over 10 hours constructing my code over the past few days and I know how to properly format HTML code now!
 
 ## CSS
+
+### CSS Intro
+
+Associating the css code in an HTML document:
+
+```css
+p {
+  font-family: sans-serif;
+  font-size: 2em;
+  color: navy;
+  text-shadow: 3px 3px 1px #cccccc;
+}
+```
+
+`<p style="color:green">CSS</p>`
+
+```css
+<head>
+  <style>
+    p {
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <p>CSS</p>
+</body>
+```
+
+Outside of HTML:
+`<link rel="stylesheet" href="styles.css" />`
+(In styles.css)
+
+```css
+p {
+  color: green;
+}
+```
+
+Good ways to organize code in cascading style:
+
+```html
+<body>
+  <p><span style="color:black">CSS</span></p>
+</body>
+```
+
+```css
+body {
+  color: red;
+}
+p {
+  color: green;
+}
+span {
+  color: blue;
+}
+```
+
+- Box model: CSS boxes include content, padding, border, and then margin.
+
+### Selectors
+
+- Here is some selector code to style documents. The first code block is an example of the HTML document and the following blocks are CSS addons.
+
+```html
+<body>
+  <h1>Departments</h1>
+  <p>welcome message</p>
+  <section id="physics">
+    <h2>Physics</h2>
+    <p class="introduction">Introduction</p>
+    <p>Text</p>
+    <p class="summary">Summary</p>
+  </section>
+  <section id="chemistry">
+    <h2>Chemistry</h2>
+    <p class="introduction">Introduction</p>
+    <p>Text</p>
+    <p class="summary">Summary</p>
+  </section>
+</body>
+```
+
+```css
+body {
+  font-family: sans-serif;
+}
+h1 {
+  border-bottom: thin black solid;
+}
+section {
+  background: #eeeeee;
+  padding: 0.25em;
+  margin-bottom: 0.5em;
+}
+section h2 {
+  color: #004400;
+}
+h2 ~ p {
+  padding-left: 0.5em;
+}
+.summary { /* you can also add p.summary to select all paragraphs with a class of summary */
+  font-weight: bold;
+}
+#physics {
+  border-left: solid 1em purple;
+}
+p[class='summary'] {
+  color: red;
+}
+section:hover {
+  border-left: solid 1em purple;
+}
+```
+
+### Various Declarations
+
+| Property                 | Value                        | Example                      | Discussion                                                                |
+|--------------------------|------------------------------|------------------------------|--------------------------------------------------------------------------|
+| `background-color`        | color                        | red                          | Fills the background color.                                              |
+| `border`                  | color, width, style          | #fad solid medium            | Sets the border using shorthand where any or all values can be provided. |
+| `border-radius`           | unit                         | 50%                          | Defines the size of the border radius.                                    |
+| `box-shadow`              | x-offset, y-offset, blur-radius, color | 2px 2px 2px gray            | Creates a shadow.                                                         |
+| `columns`                 | number                       | 3                            | Defines the number of textual columns.                                    |
+| `column-rule`             | color, width, style          | solid thin black             | Sets the border between columns using shorthand.                          |
+| `color`                   | color                        | rgb(128, 0, 0)               | Sets the text color.                                                      |
+| `cursor`                  | type                         | grab                         | Sets the cursor to display when hovering over the element.                |
+| `display`                 | type                         | none                         | Defines how to display the element and its children.                      |
+| `filter`                  | filter-function              | grayscale(30%)                | Applies a visual filter.                                                  |
+| `float`                   | direction                    | right                        | Places the element to the left or right in the flow.                      |
+| `flex`                    |                              |                              | Flex layout. Used for responsive design.                                  |
+| `font`                    | family, size, style          | Arial 1.2em bold              | Defines the text font using shorthand.                                    |
+| `grid`                    |                              |                              | Grid layout. Used for responsive design.                                  |
+| `height`                  | unit                         | .25em                        | Sets the height of the box.                                               |
+| `margin`                  | unit                         | 5px 5px 0 0                   | Sets the margin spacing.                                                  |
+| `max-[width/height]`      | unit                         | 20%                          | Restricts the width or height to no more than the unit.                   |
+| `min-[width/height]`      | unit                         | 10vh                         | Restricts the width or height to no less than the unit.                   |
+| `opacity`                 | number                       | .9                           | Sets how opaque the element is.                                           |
+| `overflow`                | [visible/hidden/scroll/auto] | scroll                       | Defines what happens when the content does not fit in its box.            |
+| `position`                | [static/relative/absolute/sticky] | absolute                  | Defines how the element is positioned in the document.                    |
+| `padding`                 | unit                         | 1em 2em                      | Sets the padding spacing.                                                 |
+| `left`                    | unit                         | 10rem                        | The horizontal value of a positioned element.                             |
+| `text-align`              | [start/end/center/justify]    | end                          | Defines how the text is aligned in the element.                           |
+| `top`                     | unit                         | 50px                         | The vertical value of a positioned element.                               |
+| `transform`               | transform-function           | rotate(0.5turn)               | Applies a transformation to the element.                                  |
+| `width`                   | unit                         | 25vmin                        | Sets the width of the box.                                                |
+| `z-index`                 | number                       | 100                          | Controls the positioning of the element on the z-axis.                    |
+
+| Unit  | Description                                                     |
+|-------|-----------------------------------------------------------------|
+| `px`  | The number of pixels                                            |
+| `pt`  | The number of points (1/72 of an inch)                          |
+| `in`  | The number of inches                                            |
+| `cm`  | The number of centimeters                                       |
+| `%`   | A percentage of the parent element                              |
+| `em`  | A multiplier of the width of the letter "m" in the parent's font|
+| `rem` | A multiplier of the width of the letter "m" in the root's font  |
+| `ex`  | A multiplier of the height of the element's font                |
+| `vw`  | A percentage of the viewport's width                            |
+| `vh`  | A percentage of the viewport's height                           |
+| `vmin`| A percentage of the viewport's smaller dimension                |
+| `vmax`| A percentage of the viewport's larger dimension                 |
+
+### Fonts
+
+this is how you import fonts:
+
+```css
+@font-face {
+  font-family: 'Quicksand';
+  src: url('https://cs260.click/fonts/quicksand.ttf');
+}
+
+p {
+  font-family: Quicksand;
+}
+
+/* OR */
+
+@import url('https://fonts.googleapis.com/css2?family=Rubik Microbe&display=swap');
+
+p {
+  font-family: 'Rubik Microbe';
+}
+```
+
+### Animation
+
+These are some ways to show animations:
+
+```css
+p {
+  text-align: center;
+  font-size: 20vh;
+
+  animation-name: demo;
+  animation-duration: 3s;
+}
+
+@keyframes demo {
+  from {
+    font-size: 0vh;
+  }
+
+  95% {
+    font-size: 21vh;
+  }
+
+  to {
+    font-size: 20vh;
+  }
+}
+```
+
+
 
 This took a couple hours to get it how I wanted. It was important to make it responsive and Bootstrap helped with that. It looks great on all kinds of screen sizes.
 
