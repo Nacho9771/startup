@@ -1,0 +1,112 @@
+body {
+    display: flex;
+    flex-direction: column;
+    min-width: 375px;
+    background-color: #FFFFFF; 
+    color: #003366; 
+  }
+  
+
+  header {
+    background-color: #003366; 
+    color: #FFFFFF; 
+    padding: 10px;
+    text-align: center;
+  }
+  
+  header h1 {
+    font-size: 2em;
+    margin: 0;
+  }
+  
+  nav ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    background-color: #333;
+  }
+  
+  nav ul li {
+    margin: 0 15px;
+  }
+  
+  nav ul li a {
+    text-decoration: none;
+    color: black;
+    padding: 10px 15px;
+  }
+  
+  nav ul li a:hover {
+    background-color: #555;
+    color: white;
+    border-radius: 5px;
+  }
+  
+
+  main {
+    flex: 1 calc(100vh - 110px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    background-color: #F4F6F9;
+    color: #003366;
+    padding: 20px;
+  }
+  
+  main h2, main h3 {
+    color: #003366;
+  }
+  
+  a {
+    color: #003366;
+    text-decoration: none;
+  }
+  
+  a:hover {
+    color: #0066cc; 
+  }
+
+  footer {
+    background-color: #003366; 
+    color: white; 
+    padding: 10px;
+    text-align: center;
+  }
+  
+  footer a {
+    color: white; 
+    text-decoration: none;
+  }
+  
+  footer a:hover {
+    color: #0066cc; 
+  }
+
+  button {
+    background-color: #003366; 
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #0066cc; 
+  }
+  
+  @media (max-height: 600px) {
+    header {
+      display: none;
+    }
+    footer {
+      display: none;
+    }
+    main {
+      flex: 1 100vh;
+    }
+  }
+  
+  
