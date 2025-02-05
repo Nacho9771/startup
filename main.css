@@ -26,10 +26,11 @@ label {
 
 nav ul {
   list-style: none;
-  padding: 0;
+  padding: 10px;
   display: flex;
   justify-content: center;
   background-color: #333;
+  margin: 5px 5px, white;
 }
 
 nav ul li {
@@ -39,11 +40,11 @@ nav ul li {
 nav ul li a {
   text-decoration: none;
   color: black;
-  padding: 10px 15px;
+  padding: 10px 20px;
 }
 
 nav ul li a:hover {
-  background-color: #555;
+  background-color: #777;
   color: white;
   border-radius: 5px;
 }
@@ -176,5 +177,17 @@ button:hover {
   }
   main {
     flex: 1 100vh;
+  }
+}
+
+@media (max-width: 600px) {
+
+  table thead th:nth-child(2),
+  table thead th:nth-child(4), 
+  table thead th:nth-child(5), 
+  table tbody td:nth-child(2),
+  table tbody td:nth-child(4),
+  table tbody td:nth-child(5) {
+    display: none;
   }
 }
