@@ -87,12 +87,12 @@ For this deliverable I did all of the following. I checked the box `[x]` and add
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] **Header, footer, and main content body** - I did not complete this part of the deliverable.
-- [ ] **Navigation elements** - I did not complete this part of the deliverable.
-- [ ] **Responsive to window resizing** - I did not complete this part of the deliverable.
-- [ ] **Application elements** - I did not complete this part of the deliverable.
-- [ ] **Application text content** - I did not complete this part of the deliverable.
-- [ ] **Application images** - I did not complete this part of the deliverable.
+- [x] **Header, footer, and main content body** - I created some adaptable header, footer, and a ton of main content body stuff that carries over all of the html pages. The header, footer, and all page elements match with BYU colors! White spacing was added to make the text more readable, and some sections were made to separate the content and make it way more organized.
+- [x] **Navigation elements** - I made each navigation element have its own button, I made it be separated by this gray line, and I made sure that you could not access any of the pages directly from the login page.
+- [x] **Responsive to window resizing** - I made sure that the elements within the pages could be resized according to the window size. For instance, my elements can flex and my tables have the ability to remove certain parts of them once the window gets too small.
+- [x] **Application elements** - One huge thing about my application are the tables, buttons, links, and simple elements like that which are standard for trading apps, and I modified these to look a lot nicer and feel more professional.
+- [x] **Application text content** - There is a lot of text within my application, so a lot of padding, margins, color, and text details were added to my css code.
+- [x] **Application images** - I have images and I adjusted them so that the corners were rounded and they had proper spacing around them!
 
 ## 🚀 React part 1: Routing deliverable
 
