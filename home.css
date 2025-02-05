@@ -12,13 +12,20 @@ form input {
 
 main h3 {
   text-align: center;
-  font-size: 30px;
+  font-size: 25px;
+}
+
+.account-overview {
+  display: flex;
+  justify-content: space-between;
+  font-size: 35px;
+  text-align: center;
 }
 
 .Balance {
   text-align: center;
   font-weight: bold;
-  font-size: 40px;
+  font-size: 30px;
   color: #118C4F;
 }
 
@@ -31,4 +38,32 @@ main h3 {
   max-width: 800px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.logout-section {
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+a {
+  color: #990000;
+  font-weight: bold;
+}
+
+@media (max-width: 600px) {
+  table thead th:nth-child(2),
+  table thead th:nth-child(4), 
+  table thead th:nth-child(5), 
+  table tbody td:nth-child(2),
+  table tbody td:nth-child(4),
+  table tbody td:nth-child(5) {
+    display: none;
+  }
+
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
 }
