@@ -121,6 +121,7 @@ td:nth-child(3), td:nth-child(5), td:nth-child(6) {
 
 main h2, main h3 {
   color: #003366;
+  text-decoration: underline;
 }
 
 a {
