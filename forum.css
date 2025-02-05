@@ -1,48 +1,37 @@
-#email {
-    font-weight: bold;
-    color: #007bff;
-  }
-
-form input {
-padding: 8px;
-margin-right: 10px;
-border: 1px solid #ccc;
-border-radius: 5px;
+input, #submit-comment {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
 #leaderboard-list {
-list-style: none;
-padding: 0;
+  list-style: none;
+  padding: 0;
 }
 
 #leaderboard-list li {
-padding: 10px;
-background-color: #f9f9f9;
-margin: 5px 0;
-border-radius: 5px;
-box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  background: #f9f9f9;
+  margin: 5px 0;
+  border-radius: 5px;
+  box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.1);
 }
 
 section div {
-margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 section input[type="text"] {
-padding: 10px;
-width: 60%;
-border: 1px solid #ccc;
-border-radius: 5px;
+  width: 70%;
 }
 
-section #submit-comment {
-padding: 10px 15px;
-border: none;
-background-color: #007bff;
-color: white;
-cursor: pointer;
-border-radius: 5px;
+#submit-comment {
+  border: none;
+  background: #003366;
+  color: white;
+  cursor: pointer;
 }
 
-section #submit-comment:hover {
-background-color: #0056b3;
+#submit-comment:hover {
+  background: #0056b3;
 }

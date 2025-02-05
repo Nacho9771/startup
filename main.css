@@ -115,13 +115,12 @@ td {
   color: #333;
 }
 
-td:nth-child(3), td:nth-child(5), td:nth-child(6) {
+td:nth-child(1), td:nth-child(3), td:nth-child(6) {
   font-weight: bold;
 }
 
 main h2, main h3 {
   color: #003366;
-  text-decoration: underline;
 }
 
 a {
