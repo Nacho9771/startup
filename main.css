@@ -1,156 +1,174 @@
 body {
-    display: flex;
-    flex-direction: column;
-    min-width: 375px;
-    background-color: #FFFFFF; 
-    color: #003366; 
-  }
+  display: flex;
+  flex-direction: column;
+  min-width: 375px;
+  background-color: #FFFFFF; 
+  color: #003366; 
+}
 
-  header {
-    background-color: #003366; 
-    color: #FFFFFF; 
-    padding: 10px;
-    text-align: center;
-  }
-  
-  header h1 {
-    font-size: 2em;
-    margin: 0;
-  }
-  
-  nav ul {
-    list-style: none;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    background-color: #333;
-  }
-  
-  nav ul li {
-    margin: 0 15px;
-  }
-  
-  nav ul li a {
-    text-decoration: none;
-    color: black;
-    padding: 10px 15px;
-  }
-  
-  nav ul li a:hover {
-    background-color: #555;
-    color: white;
-    border-radius: 5px;
-  }
-  
-  main {
-    flex: 1 calc(100vh - 110px);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-around;
-    background-color: #F4F6F9;
-    color: #003366;
-    padding: 20px;
-  }
+header {
+  background-color: #003366; 
+  color: #FFFFFF; 
+  padding: 10px;
+  text-align: center;
+}
 
-  ul {
-    list-style: none;
-    padding: 0;
-  }
+header h1 {
+  font-size: 2em;
+  margin: 0;
+}
+
+nav ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  background-color: #333;
+}
+
+nav ul li {
+  margin: 0 15px;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: black;
+  padding: 10px 15px;
+}
+
+nav ul li a:hover {
+  background-color: #555;
+  color: white;
+  border-radius: 5px;
+}
   
-  ul li {
-    background: white;
-    margin: 10px 0;
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    background-color: white;
+.picture-box {
+  margin: 20px 0;
+}
+
+.picture-box img {
+  border-radius: 5px;
+  max-width: 100%;
+  height: auto;
+}
+
+#picture img {
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+main {
+  flex: 1 calc(100vh - 110px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  background-color: #F4F6F9;
+  color: #003366;
+  padding: 20px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+ul li {
+  background: white;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: white;
 }
 
 th, td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: center;
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
 }
 
 th {
-    background-color: #007bff;
-    color: white;
-    font-size: 1.1em;
+  background-color: #007bff;
+  color: white;
+  font-size: 1.1em;
 }
 
 tr:nth-child(even) {
-    background-color: #f2f2f2;
+  background-color: #f2f2f2;
 }
 
 td {
-    font-size: 1em;
-    color: #333;
+  font-size: 1em;
+  color: #333;
 }
 
 td:nth-child(3), td:nth-child(5), td:nth-child(6) {
-    font-weight: bold;
+  font-weight: bold;
 }
 
+main h2, main h3 {
+  color: #003366;
+}
 
-  main h2, main h3 {
-    color: #003366;
-  }
-  
-  a {
-    color: #003366;
-    text-decoration: none;
-  }
-  
-  a:hover {
-    color: #0066cc; 
-  }
+a {
+  color: #003366;
+  text-decoration: none;
+}
 
+p {
+  font-size: 1.1em;
+  color: #333;
+  margin: 10px 0;
+}
+
+a:hover {
+  color: #0066cc; 
+}
+
+footer {
+  background-color: #003366; 
+  color: white; 
+  padding: 10px;
+  text-align: center;
+}
+
+footer a {
+  color: white; 
+  text-decoration: none;
+}
+
+footer a:hover {
+  color: #0066cc; 
+}
+
+button {
+  background-color: #003366; 
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0066cc; 
+}
+
+@media (max-height: 600px) {
+  header {
+    display: none;
+  }
   footer {
-    background-color: #003366; 
-    color: white; 
-    padding: 10px;
-    text-align: center;
+    display: none;
   }
-  
-  footer a {
-    color: white; 
-    text-decoration: none;
+  main {
+    flex: 1 100vh;
   }
-  
-  footer a:hover {
-    color: #0066cc; 
-  }
-
-  button {
-    background-color: #003366; 
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  button:hover {
-    background-color: #0066cc; 
-  }
-  
-  @media (max-height: 600px) {
-    header {
-      display: none;
-    }
-    footer {
-      display: none;
-    }
-    main {
-      flex: 1 100vh;
-    }
-  }
-  
-  
+}
