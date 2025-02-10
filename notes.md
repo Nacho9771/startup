@@ -532,6 +532,99 @@ I also used SVG to make the icon and logo for the app. This turned out to be a p
 
 ## React Part 1: Routing
 
+### Lecture Notes
+
+Three Ways to Include JavaScript:
+
+1. **Script Block**  
+   - JavaScript is written inside a `<script>` element within the HTML file.
+
+2. **External Script**  
+   - A separate JavaScript file is linked using the `src` attribute in a `<script>` tag.
+
+3. **Inline Event Attribute**  
+   - JavaScript is written directly inside an HTML attribute (e.g., `onclick`).
+
+Here is some example code:
+
+```html
+<head>
+  <!-- External JavaScript file -->
+  <script src="index.js"></script>
+</head>
+<body>
+  <button onclick="sayHello()">Say Hello</button>
+  <button onclick="sayGoodbye()">Say Goodbye</button>
+
+  <!-- Internal Script Block -->
+  <script>
+    function sayGoodbye() {
+      alert("Goodbye");
+    }
+  </script>
+
+  <!-- Inline Attribute Handler -->
+  <script>
+    let i = 1;
+  </script>
+  <button onclick="alert(`i = ${i++}`)">counter</button>
+</body>
+
+Debugging with node.js:
+1. **Create a JavaScript File**  
+   - Create `main.js` and add the following code:
+
+   ```js
+   let x = 1 + 1;
+   console.log(x);
+
+   function double(x) {
+     return x * 2;
+   }
+
+   x = double(x);
+   console.log(x);
+   ```
+
+Various steps:
+
+- Press `F5` to start debugging.
+- Select **Node.js** when prompted.
+- Debug console shows `console.log` outputs.
+
+- Click on the left of the line numbers to set a breakpoint.
+- Press `F5` to restart debugging.
+- Pause execution and inspect variables by:
+  - Looking at the **variable window**.
+  - Hovering over variables.
+
+- `F10` – Step to the next line.
+- `F11` – Step into a function.
+- `F5` – Continue execution.
+- `SHIFT-F5` – Stop debugging.
+
+Automatically restarts node.js:
+`node --watch main.js`
+
+VS code configuration for watch:
+
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Program",
+      "skipFiles": ["<node_internals>/**"],
+      "runtimeArgs": ["--watch"],
+      "program": "${workspaceFolder}/main.js"
+    }
+  ]
+}
+
+```
+
 Setting up Vite and React was pretty simple. I had a bit of trouble because of conflicting CSS. This isn't as straight forward as you would find with Svelte or Vue, but I made it work in the end. If there was a ton of CSS it would be a real problem. It sure was nice to have the code structured in a more usable way.
 
 ## React Part 2: Reactivity
