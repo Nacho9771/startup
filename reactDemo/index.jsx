@@ -1,3 +1,7 @@
+import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
+
+import './styles.css';
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
@@ -13,7 +17,7 @@ function App() {
       onClick={handleClick}
       style={{ backgroundColor: bgColor, height: '100vh', font: 'bold 20vh Arial', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
     >
-      <div> Hello React </div>
+      <div> Connor Gordon </div>
     </div>
   );
 }
