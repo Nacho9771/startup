@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, NavLink, Route, Routes } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './main.css';
+import './app.css';
 import './home/home.css';
 
 import Home from './home/home';
