@@ -648,7 +648,18 @@ const list = React.createElement('ol', { class: 'big' }, React.createElement('li
 
 Very cool
 
-Other examples include the following:
+Ok, I've completed the simon-react-p1, and now I am starting to complete the ract part 1 deliverable for my startup. Below are some notes of what I learned while finishing the simon-react-p1:
+
+- Debugging serious problems are hard. Very hard.
+- Deploying simon-react to my directory looks like this:
+./deployReact.sh -k "C:\Users\alright alright\Desktop\CS260\yellow.pem" -h lolwinning.click -s simon
+- When there are problems with the json file, its usually absence of a comma
+- when there are problems with the react page, and it shows up completely blank, its ok to continue because it will resolve itself apparently
+- always import css files
+- When there are issues within the file, make sure all of the files are saved after you have made adjustments
+- If you are stuck, it's better to reload a previous commit and restart the current assignment
+- I learned how to commit things, add things, push things, and delete directories using the console
+- I learned a lot about navigating directories and sourcing files properly (I had some issues with the src)
 
 
 Setting up Vite and React was pretty simple. I had a bit of trouble because of conflicting CSS. This isn't as straight forward as you would find with Svelte or Vue, but I made it work in the end. If there was a ton of CSS it would be a real problem. It sure was nice to have the code structured in a more usable way.
