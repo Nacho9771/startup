@@ -661,6 +661,7 @@ Ok, I've completed the simon-react-p1, and now I am starting to complete the rac
 - I learned how to commit things, add things, push things, and delete directories using the console
 - I learned a lot about navigating directories and sourcing files properly (I had some issues with the src)
 
+### startup-react-p1-deliverable
 
 Setting up Vite and React was pretty simple. I had a bit of trouble because of conflicting CSS. This isn't as straight forward as you would find with Svelte or Vue, but I made it work in the end. If there was a ton of CSS it would be a real problem. It sure was nice to have the code structured in a more usable way.
 
