@@ -1,5 +1,6 @@
 import React from 'react';
 import './education.css';
+import '../app.css';
 
 export function Learn() {
   return (
@@ -13,7 +14,7 @@ export function Learn() {
           There are a ton of differnt ways to invest your money, but the most common are the ones listed below. 
         </p>
 
-        <div id="picture" class="picture-box"><img width="600px" src="wall_street_bull.jpg" alt="Picture Here" /></div>
+        <div id="picture" ClassName="picture-box"><img width="600px" src="wall_street_bull.jpg" alt="Picture Here" /></div>
     
         <hr />
         <h1>Financial Investments</h1>

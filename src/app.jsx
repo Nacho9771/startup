@@ -18,28 +18,28 @@ export default function App() {
                     <nav className='navbar fixed-top navbar-dark bg-dark'>
                         <div className='navbar-brand'>Easy Trading</div>
                         <menu className='navbar-nav'>
-                            <li className='nav-item'>
-                                <NavLink className='nav-link' to='/'>
+                        <li className='nav-item'>
+                                <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to='/'>
                                     Login
                                 </NavLink>
                             </li>
                             <li className='nav-item'>
-                                <NavLink className='nav-link' to='/home'>
+                                <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to='/home'>
                                     Home
                                 </NavLink>
                             </li>
                             <li className='nav-item'>
-                                <NavLink className='nav-link' to='/forum'>
+                                <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to='/forum'>
                                     Forum
                                 </NavLink>
                             </li>
                             <li className='nav-item'>
-                                <NavLink className='nav-link' to='/education'>
+                                <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to='/education'>
                                     Learn
                                 </NavLink>
                             </li>
                             <li className='nav-item'>
-                                <NavLink className='nav-link' to='/profile'>
+                                <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to='/profile'>
                                     Profile
                                 </NavLink>
                             </li>
@@ -51,7 +51,7 @@ export default function App() {
                     <Route path='/' element={<Login />} exact />
                     <Route path='/home' element={<Home />} />
                     <Route path='/forum' element={<Forum />} />
-                    <Route path='/learn' element={<Learn />} />
+                    <Route path='/education' element={<Learn />} />
                     <Route path='/profile' element={<Profile />} />
                     <Route path='*' element={<NotFound />} />
                 </Routes>

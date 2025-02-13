@@ -1,14 +1,15 @@
 import React from 'react';
 import './home.css';
+import '../app.css';
 
 export function Home() {
   return (
     <main>
-        <h2 class="account-overview">Account Overview (Websocket to be used on this page)</h2>
+        <h2 ClassName="account-overview">Account Overview (Websocket to be used on this page)</h2>
         <p>Hello, <span id="email"> [their email without the '@gmail.com' part goes here]</span></p>
-        <div class="containers"><p class="Balance">Balance: $100000</p></div>
+        <div ClassName="containers"><p ClassName="Balance">Balance: $100000</p></div>
         
-        <div class="containers">
+        <div ClassName="containers">
           <h3>My Portfolio</h3>
 
           <table>
@@ -68,13 +69,13 @@ export function Home() {
         </div>
 
         <hr />
-        <div class="containers">
+        <div ClassName="containers">
         <section>
             <h3>Search Stocks (PLACEHOLDER FOR 3rd PARTY SERVICE)</h3>
             <form>
               <label>Search for a Stock:</label>
               <input type="text" placeholder="Enter stock name or symbol" />
-              <button type="submit" class="btn btn-primary">Search</button>
+              <button type="submit" ClassName="btn btn-primary">Search</button>
             </form>
             <p>(This will be a placeholder for a 3rd party service that will allow you to search for stocks)</p>
             <table>
@@ -89,17 +90,17 @@ export function Home() {
                     <tr>
                         <td>Tesla</td>
                         <td>TSLA</td>
-                        <td><button type="submit" class="btn btn-primary">Select Stock for Purchase</button></td>
+                        <td><button type="submit" ClassName="btn btn-primary">Select Stock for Purchase</button></td>
                     </tr>
                     <tr>
                         <td>AMD</td>
                         <td>AMD</td>
-                        <td><button type="submit" class="btn btn-primary">Select Stock for Purchase</button></td>
+                        <td><button type="submit" ClassName="btn btn-primary">Select Stock for Purchase</button></td>
                     </tr>
                     <tr>
                         <td>Invesco QQQ ETF</td>
                         <td>QQQ</td>
-                        <td><button type="submit" class="btn btn-primary">Select Stock for Purchase</button></td>
+                        <td><button type="submit" ClassName="btn btn-primary">Select Stock for Purchase</button></td>
                     </tr>
                 </tbody>
             </table>
@@ -112,13 +113,13 @@ export function Home() {
               <p>Price: $<span>[Stock Price]</span></p>
               <label>Quantity:</label>
               <input type="number" placeholder = "Enter quantity" />
-              <button type="submit" class="btn btn-primary">Confirm Purchase</button>
+              <button type="submit" ClassName="btn btn-primary">Confirm Purchase</button>
             </div>
           </section>
         </div>
 
         <div class="logout-section">
-          <a href="index.html" class="logout">Logout of Easy Trading</a>
+          <a href="login.html" ClassName="logout">Logout of Easy Trading</a>
           </div>
     </main>
   );

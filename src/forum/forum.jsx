@@ -1,5 +1,6 @@
 import React from 'react';
 import './forum.css';
+import '../app.css';
 
 export function Forum() {
   return (

@@ -1,10 +1,11 @@
 import React from 'react';
 import './profile.css';
+import '../app.css';
 
 export function Profile() {
   return (
-    <main class="profile-container">
-        <section id="profile-info" class="profile-section">
+    <main ClassName="profile-container">
+        <section id="profile-info" ClassName="profile-section">
         <h2>Profile Information</h2>
         <p>Email: <span>[user.email@gmail.com]</span></p>
         <p>Balance: $<span>9500</span></p>
@@ -15,7 +16,7 @@ export function Profile() {
         </div>
         </section>
     
-        <section id="account-settings" class="profile-section">
+        <section id="account-settings" ClassName="profile-section">
         <h2>Account Settings</h2>
         <form>
             <label>Change Email:</label>
