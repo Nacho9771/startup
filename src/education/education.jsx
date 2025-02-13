@@ -1,6 +1,7 @@
 import React from 'react';
-import './education.css';
 import '../app.css';
+import './education.css';
+
 
 export function Learn() {
   return (

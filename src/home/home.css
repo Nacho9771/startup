@@ -22,6 +22,10 @@ main h3 {
   text-align: center;
 }
 
+div {
+  font-style: normal !important;
+}
+
 .Balance {
   text-align: center;
   font-weight: bold;
@@ -47,6 +51,7 @@ main h3 {
   box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.2);
   background-color: rgba(255, 255, 255, 0.8);
+  text-emphasis-color: #ff0000;
 }
 
 a {

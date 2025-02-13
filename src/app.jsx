@@ -4,25 +4,24 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './app.css';
 import './home/home.css';
 
-import Home from './home/home';
-import Login from './login/login';
-import Forum from './forum/forum';
-import Learn from './education/education';
-import Profile from './profile/profile';
+import { Forum } from './forum/forum';
+import { Learn } from './education/education';
+import { Profile } from './profile/profile';
+import { Login } from './login/login';
+import { Home } from './home/home';
 
 export default function App() {
     return (
         <BrowserRouter>
             <div className='body'>
-                <header className='container-fluid'>
-                    <nav className='navbar fixed-top navbar-dark bg-dark'>
-                        <div className='navbar-brand'>Easy Trading</div>
-                        <menu className='navbar-nav'>
-                        <li className='nav-item'>
-                                <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to='/'>
-                                    Login
-                                </NavLink>
-                            </li>
+                <header className='header'>
+                    <h1>Easy Trading</h1>
+                    <div id='picture' className='picture-box'>
+                        <img width='200px' src='/big moneys.jpg' alt='Picture Here' />
+                    </div>
+
+                    <nav>
+                        <ul className='nav'>
                             <li className='nav-item'>
                                 <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to='/home'>
                                     Home
@@ -43,7 +42,9 @@ export default function App() {
                                     Profile
                                 </NavLink>
                             </li>
-                        </menu>
+                        </ul>
+                        <hr />
+                        <hr />
                     </nav>
                 </header>
 

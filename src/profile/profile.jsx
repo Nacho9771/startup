@@ -1,6 +1,6 @@
 import React from 'react';
-import './profile.css';
 import '../app.css';
+import './profile.css';
 
 export function Profile() {
   return (
@@ -12,7 +12,7 @@ export function Profile() {
 
         <div>
           <h3>Petition for $500 Stimulus (If your balance is below $10,000)</h3>
-          <button type="submit">Request Stimulus</button>
+          <button type="submit">Request $500</button>
         </div>
       </section>
 
@@ -23,16 +23,14 @@ export function Profile() {
           <input placeholder="Enter new email" />
           <button type="submit">Update Email</button>
 
-          <br />
-          <br />
-          <br />
-
-          <label htmlFor="dark-mode-toggle">
-            Enable Dark Mode
-            <input type="checkbox" id="dark-mode-toggle" />
-          </label>
+          <div className="dark-mode-toggle">
+          <label htmlFor="dark-mode-toggle" className="dark-mode-label">Enable Dark Mode:</label>
+          <button type="button" id="dark-mode-toggle" className="btn btn-secondary dark-mode-btn">Enable</button>
+        </div>
         </form>
       </section>
+
+
 
       <section id="transaction-history" className="profile-section">
         <h2>Personal Transaction History (Database to be used)</h2>
