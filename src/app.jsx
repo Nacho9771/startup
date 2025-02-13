@@ -48,7 +48,7 @@ export default function App() {
                 </header>
 
                 <Routes>
-                    <Route path='/' element={<Login />} exact />
+                    <Route path='/' element={<Login />} />
                     <Route path='/home' element={<Home />} />
                     <Route path='/forum' element={<Forum />} />
                     <Route path='/education' element={<Learn />} />
