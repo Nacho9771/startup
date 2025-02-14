@@ -98,9 +98,14 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] **Bundled using Vite** - I did not complete this part of the deliverable.
-- [ ] **Components** - I did not complete this part of the deliverable.
-- [ ] **Router** - Routing between login and voting components.
+- [x] **Bundled using Vite** - Completed! Vite was extremely useful when making adjustments to my page.
+- [x] **Components** - Login, the stock section, buying stocks section, profile section, leaderboards, and chatbox mocked for future database, javascript, and websocket implementation.
+  - [x] **Login/Logout** - When you login to the website it takes yo uto the homepage, and I even included a logout placeholder that takes you to the login page again! (I had some help with that part)
+  - [x] **Stocks** - I included the placeholder for the personal stocks spreadsheet
+  - [x] **Purchase Stocks** - I included the section to purchase stocks that is only a placeholder and will significantly change in the near future
+  - [x] **Profile** - The profile section is mapped out and ready
+  - [x] **Leaderboards and Comments** - You can successfully navigate to the forum section and see "other people's scores" (they dont actually exist yet)
+- [x] **Router** - Routing between login and Easy Trading pages successful
 
 ## 🚀 React part 2: Reactivity
 
