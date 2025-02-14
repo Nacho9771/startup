@@ -98,6 +98,8 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
+For this deliverable I focused on successfully porting everything from HTML to JSX files, and for some reason it was a nightmare on my end. I learned a lot about solving problems and debugging code while fixing all of the porting issues I had, but all 5 pages work now! I also made a tiny bit of javascript and adjustments to code, but I'm saving most of that for next time.
+
 - [x] **Bundled using Vite** - Completed! Vite was extremely useful when making adjustments to my page.
 - [x] **Components** - Login, the stock section, buying stocks section, profile section, leaderboards, and chatbox mocked for future database, javascript, and websocket implementation.
   - [x] **Login/Logout** - When you login to the website it takes yo uto the homepage, and I even included a logout placeholder that takes you to the login page again! (I had some help with that part)
