@@ -667,6 +667,174 @@ Setting up Vite and React was pretty simple. I had a bit of trouble because of c
 
 ## React Part 2: Reactivity
 
+### Functions
+
+Here are some examples of js code for functions:
+
+```js
+function hello(who) {
+  return 'hello ' + who;
+}
+
+console.log(hello('world'));
+// OUTPUT: hello world
+```
+
+```js
+function hello(who) {
+  who.count++;
+  console.log('hello ' + who.name);
+}
+
+hello({ name: 'world', count: 0 });
+// OUTPUT: hello world
+```
+
+```js
+function labeler(value, title = 'title') {
+  console.log(`${title}=${value}`);
+}
+
+labeler();
+// OUTPUT: title=undefined
+
+labeler('fish');
+// OUTPUT: title=fish
+
+labeler('fish', 'animal');
+// OUTPUT: animal=fish
+```
+
+```js
+// Function that takes a function as a parameter
+function doMath(operation, a, b) {
+  return operation(a, b);
+}
+
+// Anonymous function assigned to a variable
+const add = function (a, b) {
+  return a + b;
+};
+
+console.log(doMath(add, 5, 3));
+// OUTPUT: 8
+
+// Anonymous function assigned to a parameter
+console.log(
+  doMath(
+    function (a, b) {
+      return a - b;
+    },
+    5,
+    3
+  )
+);
+// OUTPUT: 2
+```
+
+(Very nifty function trick):
+
+```js
+console.log(doMath((a, b) => a - b, 5, 3));
+```
+
+```js
+// Anonymous declaration of the function that is later assigned to a variable
+const add = function (a, b) {
+  return a + b;
+};
+
+// Function that logs as a side effect of its execution
+function labeler(label, value) {
+  console.log(label + '=' + value);
+}
+
+// Function that takes a function as a parameter and then executes the function as a side effect
+function addAndLabel(labeler, label, adder, a, b) {
+  labeler(label, adder(a, b));
+}
+
+// Passing a function to a function
+addAndLabel(labeler, 'a+b', add, 1, 3);
+// OUTPUT: a+b=4
+
+// Function that returns a function
+function labelMaker(label) {
+  return function (value) {
+    console.log(label + '=' + value);
+  };
+}
+
+// Assign a function from the return value of the function
+const nameLabeler = labelMaker('name');
+
+// Calling the returned function
+nameLabeler('value');
+// OUTPUT: name=value
+```
+
+```js
+// Anonymous declaration of the function that is later assigned to a variable
+const add = function (a, b) {
+  return a + b;
+};
+
+// Function that logs as a side effect of its execution
+function labeler(label, value) {
+  console.log(label + '=' + value);
+}
+
+// Function that takes a function as a parameter and then executes the function as a side effect
+function addAndLabel(labeler, label, adder, a, b) {
+  labeler(label, adder(a, b));
+}
+
+// Passing a function to a function
+addAndLabel(labeler, 'a+b', add, 1, 3);
+// OUTPUT: a+b=4
+
+// Function that returns a function
+function labelMaker(label) {
+  return function (value) {
+    console.log(label + '=' + value);
+  };
+}
+
+// Assign a function from the return value of the function
+const nameLabeler = labelMaker('name');
+
+// Calling the returned function
+nameLabeler('value');
+// OUTPUT: name=value
+```
+
+```js
+function labeler(value) {
+  function stringLabeler(value) {
+    console.log('string=' + value);
+  }
+  function numberLabeler(value) {
+    console.log('number=' + value);
+  }
+
+  if (typeof value == 'string') {
+    stringLabeler(value);
+  } else if (typeof value == 'number') {
+    numberLabeler(value);
+  }
+}
+
+labeler(5);
+// OUTPUT: number=5
+
+labeler('fish');
+// OUTPUT: string=fish
+```
+
+### The arrow function
+
+
+
 This was a lot of fun to see it all come together. I had to keep remembering to use React state instead of just manipulating the DOM directly.
 
 Handling the toggling of the checkboxes was particularly interesting.
