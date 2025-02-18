@@ -669,7 +669,7 @@ Setting up Vite and React was pretty simple. I had a bit of trouble because of c
 
 ### Functions
 
-Here are some examples of js code for functions:
+- Here are some examples of js code for functions:
 
 ```js
 function hello(who) {
@@ -732,7 +732,7 @@ console.log(
 // OUTPUT: 2
 ```
 
-(Very nifty function trick):
+- (Very nifty function trick):
 
 ```js
 console.log(doMath((a, b) => a - b, 5, 3));
@@ -833,7 +833,182 @@ labeler('fish');
 
 ### The arrow function
 
+- Equivalent code:
 
+```js
+const a = [1, 2, 3, 4];
+
+// standard function syntax
+a.sort(function (v1, v2) {
+  return v1 - v2;
+});
+
+// arrow function syntax
+a.sort((v1, v2) => v1 - v2);
+```
+
+- return basically messes things up unless you have curly brackets
+
+```js
+() => 3;
+// RETURNS: 3
+
+() => {
+  3;
+};
+// RETURNS: undefined
+
+() => {
+  return 3;
+};
+// RETURNS: 3
+```
+
+```js
+function makeClosure(init) {
+  let closureValue = init;
+  return () => {
+    return `closure ${++closureValue}`;
+  };
+}
+
+const closure = makeClosure(0);
+
+console.log(closure());
+// OUTPUT: closure 1
+
+console.log(closure());
+// OUTPUT: closure 2
+```
+
+This is important code that you can use to keep track of balances and stuff
+
+```js
+function App() {
+  const [count, setCount] = React.useState(0);
+
+  function Increment() {
+    setCount(count + 1);
+  }
+
+  function Decrement() {
+    setCount(count - 1);
+  }
+
+  return (
+    <div>
+      <h1>Count: {count}</h1>
+      <button onClick={Increment}>n++</button>
+      <button onClick={Decrement}>n--</button>
+    </div>
+  );
+}
+/* Or you can just use this*/ 
+function App() {
+  const [count, setCount] = React.useState(0);
+
+  return (
+    <div>
+      <h1>Count: {count}</h1>
+      <button onClick={() => setCount(count + 1)}>n++</button>
+      <button onClick={() => setCount(count - 1)}>n--</button>
+    </div>
+  );
+}
+
+// may corrupt value
+setCount(count + 1);
+
+// safe
+setCount((prevCount) => prevCount + 1);
+
+// This is the updated code
+
+function App() {
+  const [count, setCount] = React.useState(0);
+
+  return (
+    <div>
+      <h1>Count: {count}</h1>
+      <button onClick={() => setCount((prevCount) => prevCount + 1)}>n++</button>
+      <button onClick={() => setCount((prevCount) => prevCount - 1)}>n--</button>
+    </div>
+  );
+
+  // better formated edition
+
+  function App() {
+  const [count, setCount] = React.useState(0);
+
+  function counterOpFactory(op) {
+    return () => setCount((prevCount) => op(prevCount));
+  }
+
+  const incOp = counterOpFactory((c) => c + 1);
+  const decOp = counterOpFactory((c) => c - 1);
+  const tenXOp = counterOpFactory((c) => c * 10);
+
+  return (
+    <div>
+      <h1>Count: {count}</h1>
+      <button onClick={incOp}>n++</button>
+      <button onClick={decOp}>n--</button>
+      <button onClick={tenXOp}>n*10</button>
+    </div>
+  );
+}
+}
+```
+
+- Very complex example (look at your own risk)
+
+```js
+window.addEventListener(
+  'scroll',
+  debounce(500, () => {
+    console.log('Executed an expensive calculation');
+  })
+);
+
+function debounce(windowMs, windowFunc) {
+  let timeout;
+  return function () {
+    console.log('scroll event');
+    clearTimeout(timeout);
+    timeout = setTimeout(() => windowFunc(), windowMs);
+  };
+}
+```
+
+### Objects and Classes
+
+```js
+const obj = new Object({ a: 3 });
+obj['b'] = 'fish';
+obj.c = [1, 2, 3];
+obj.hello = function () {
+  console.log('hello');
+};
+
+console.log(obj);
+// OUTPUT: {a: 3, b: 'fish', c: [1,2,3], hello: func}
+```
+
+```js
+
+```
+
+```js
+
+```
+
+```js
+
+```
+
+```js
+
+```
 
 This was a lot of fun to see it all come together. I had to keep remembering to use React state instead of just manipulating the DOM directly.
 
