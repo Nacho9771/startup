@@ -117,18 +117,6 @@ export function Home() {
         </section>
       </div>
 
-      {/* Updated Logout Section */}
-      <div className="logout-section">
-        <nav>
-          <ul className="nav">
-            <li className="nav-item">
-              <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/">
-                Logout of Easy Trading
-              </NavLink>
-            </li>
-          </ul>
-        </nav>
-      </div>
     </main>
   );
 }

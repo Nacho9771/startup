@@ -1,10 +1,12 @@
-// src/login/login.jsx
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../app.css';
 import './login.css';
-import { AuthState } from '../authState';
+
+const AuthState = {
+    Authenticated: 'Authenticated',
+    Unauthenticated: 'Unauthenticated'
+};
 
 export function Login({ userName, authState, onAuthChange }) {
     const [email, setEmail] = useState('');
@@ -19,7 +21,7 @@ export function Login({ userName, authState, onAuthChange }) {
     };
 
     return (
-        <main className='container-fluid text-center p-5'>
+        <main className='container-fluid bg-secondary text-center p-5'>
             {authState === AuthState.Authenticated ? (
                 <div>
                     <h2>Welcome, {userName}!</h2>

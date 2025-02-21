@@ -1,5 +1,3 @@
-// src/app.jsx
-
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, NavLink, Route, Routes, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -11,7 +9,12 @@ import { Learn } from './education/education';
 import { Profile } from './profile/profile';
 import { Login } from './login/login';
 import { Home } from './home/home';
-import { AuthState } from './authState';
+
+const AuthState = {
+    None: 'None',
+    Authenticated: 'Authenticated',
+    Unauthenticated: 'Unauthenticated'
+};
 
 export default function App() {
     const [authState, setAuthState] = useState(AuthState.None);
@@ -92,7 +95,7 @@ export default function App() {
                             <Route path='/home' element={<Home />} />
                             <Route path='/forum' element={<Forum />} />
                             <Route path='/education' element={<Learn />} />
-                            <Route path='/profile' element={<Profile onLogout={logout_feature} />} />
+                            <Route path='/profile' element={<Profile onLogout={handleLogout} />} />
                         </>
                     ) : (
                         <Route path='*' element={<RedirectToLogin />} />
@@ -111,7 +114,7 @@ export default function App() {
         </BrowserRouter>
     );
 
-    function logout_feature() {
+    function handleLogout() {
         localStorage.removeItem('userName');
         setAuthState(AuthState.Unauthenticated);
         setUserName('');
@@ -120,6 +123,8 @@ export default function App() {
 
 function RedirectToLogin() {
     const navigate = useNavigate();
-    useEffect(() => {navigate('/');}, [navigate]);
+    useEffect(() => {
+        navigate('/');
+    }, [navigate]);
     return null;
 }

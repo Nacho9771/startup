@@ -16,6 +16,7 @@ main {
 }
 
 main h2 {
+    text-decoration: underline;
     text-align: center;
     font-size: 40px;
     margin-bottom: 20px;
