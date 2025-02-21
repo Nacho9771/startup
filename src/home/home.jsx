@@ -1,13 +1,22 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import '../app.css';
 import './home.css';
 import { NavLink } from 'react-router-dom';
 
-export function Home() {
+export function Home({ userName }) {
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('userName');
+    if (storedUser) {
+      const usernameWithoutDomain = storedUser.split('@')[0];
+      setuserName(usernameWithoutDomain);
+    }
+  }, []);
+
   return (
     <main>
       <h2 className="account-overview">Account Overview (Websocket to be used on this page)</h2>
-      <p>Hello, <span id="email"> [their email without the '@gmail.com' part goes here]</span></p>
+      <p>Hello <span id="userName">{userName}, time to start paper trading!</span></p>
       <div className="containers"><p className="Balance">Balance: $100000</p></div>
 
       <div className="containers">
@@ -116,7 +125,6 @@ export function Home() {
           </div>
         </section>
       </div>
-
     </main>
   );
 }

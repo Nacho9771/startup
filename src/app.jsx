@@ -1,5 +1,3 @@
-// src/app.jsx
-
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, NavLink, Route, Routes, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -89,10 +87,10 @@ export default function App() {
                     />
                     {authState === AuthState.Authenticated ? (
                         <>
-                            <Route path='/home' element={<Home />} />
-                            <Route path='/forum' element={<Forum />} />
+                            <Route path='/home' element={<Home userName={userName}/>} />
+                            <Route path='/forum' element={<Forum userName={userName}/>} />
                             <Route path='/education' element={<Learn />} />
-                            <Route path='/profile' element={<Profile onLogout={logout_feature} />} />
+                            <Route path='/profile' element={<Profile userName={userName} onLogout={logout_feature} />} />
                         </>
                     ) : (
                         <Route path='*' element={<RedirectToLogin />} />

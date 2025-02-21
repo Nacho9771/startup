@@ -2,12 +2,12 @@ import React from 'react';
 import '../app.css';
 import './profile.css';
 
-export function Profile() {
+export function Profile({ userName }) {
   return (
     <main className="profile-container">
       <section id="profile-info" className="profile-section">
         <h2>Profile Information</h2>
-        <p>Email: <span>[user.email@gmail.com]</span></p>
+        <p>Email: <span id="userName">[{userName}]</span></p>
         <p>Balance: $<span>9500</span></p>
 
         <div>

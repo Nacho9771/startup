@@ -45,15 +45,6 @@ div {
   background-color: rgba(255, 255, 255, 0.8);
 }
 
-.logout-section {
-  padding: 10px;
-  background: rgba(255, 255, 255, 0.15);
-  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background-color: rgba(255, 255, 255, 0.8);
-  text-emphasis-color: #ff0000;
-}
-
 a {
   color: #990000;
 }
