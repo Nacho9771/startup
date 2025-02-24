@@ -44,7 +44,6 @@ export function Home({ userName }) {
     if (totalCost > balance) {
       return alert("Insufficient balance. Sell stock or petition for a stimulus!");
     }
-
     const newPortfolio = [...portfolio];
     const existingStock = newPortfolio.find(stock => stock.ticker === selectedStock.ticker);
     if (existingStock) {
@@ -58,12 +57,9 @@ export function Home({ userName }) {
         totalValue: (selectedStock.price * quantity).toFixed(2)
       });
     }
-
     const newBalance = balance - totalCost;
     localStorage.setItem(`${userName}_portfolio`, JSON.stringify(newPortfolio));
     localStorage.setItem(`${userName}_balance`, newBalance.toFixed(2));
-
-    // Save purchase to local storage for community
     const purchaseDetails = {
       userName,
       stockName: selectedStock.name,
@@ -71,11 +67,9 @@ export function Home({ userName }) {
       quantity,
       price: selectedStock.price,
     };
-    
     const existingPurchases = JSON.parse(localStorage.getItem('purchases')) || [];
     existingPurchases.push(purchaseDetails);
     localStorage.setItem('purchases', JSON.stringify(existingPurchases));
-
     setPortfolio(newPortfolio);
     setBalance(newBalance);
     alert(`${quantity} shares of ${selectedStock.name} purchased successfully!`);
