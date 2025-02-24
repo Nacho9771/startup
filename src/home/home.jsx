@@ -63,12 +63,24 @@ export function Home({ userName }) {
     localStorage.setItem(`${userName}_portfolio`, JSON.stringify(newPortfolio));
     localStorage.setItem(`${userName}_balance`, newBalance.toFixed(2));
 
+    // Save purchase to local storage for community
+    const purchaseDetails = {
+      userName,
+      stockName: selectedStock.name,
+      ticker: selectedStock.ticker,
+      quantity,
+      price: selectedStock.price,
+    };
+    
+    const existingPurchases = JSON.parse(localStorage.getItem('purchases')) || [];
+    existingPurchases.push(purchaseDetails);
+    localStorage.setItem('purchases', JSON.stringify(existingPurchases));
+
     setPortfolio(newPortfolio);
     setBalance(newBalance);
     alert(`${quantity} shares of ${selectedStock.name} purchased successfully!`);
     setSelectedStock(null);
   };
-
 
   const portfolioValue = portfolio.reduce((total, stock) => total + parseFloat(stock.totalValue), 0);
   const netWorth = balance + portfolioValue;
