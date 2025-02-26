@@ -44,7 +44,7 @@ export function Profile({ userName, balance, setBalance, netWorth }) {
       <ul>
         {transactions.slice(0, 50).map((transaction, index) => (
           <li key={index}>
-            {transaction.userName} purchased {transaction.quantity} of {transaction.stockName} ({transaction.ticker}) for ${transaction.price} on {new Date(transaction.date).toLocaleDateString()}.
+            {transaction.userName} purchased {transaction.quantity} of {transaction.stockName} ({transaction.ticker}) for ${transaction.price}.
           </li>
         ))}
       </ul>

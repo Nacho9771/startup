@@ -31,6 +31,13 @@ div {
   font-weight: bold;
   font-size: 30px;
   color: #118C4F;
+  max-width: 400px;
+  margin: 0 auto;      
+  padding: 15px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.8);
 }
 
 .containers {
@@ -40,9 +47,15 @@ div {
   padding: 20px;
   margin: 20px auto;
   max-width: 800px;
+  width: 100%;
   box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.2);
   background-color: rgba(255, 255, 255, 0.8);
+}
+
+.containers section {
+  width: 100%;
+  box-sizing: border-box;
 }
 
 a {

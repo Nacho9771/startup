@@ -30,6 +30,52 @@ export function Home({ userName }) {
     setQuantity(1);
   };
 
+  const handleSell = () => {
+    if (!selectedStock || quantity <= 0) {
+      return alert("Select a stock and a quantity to sell!");
+    }
+  
+    const stockInPortfolio = portfolio.find(stock => stock.ticker === selectedStock.ticker);
+    if (!stockInPortfolio) {
+      return alert("You don’t own this stock!");
+    }
+    if (quantity > stockInPortfolio.shares) {
+      return alert("You can’t sell more shares than you own!");
+    }
+  
+    const newShares = stockInPortfolio.shares - quantity;
+    const saleAmount = quantity * parseFloat(stockInPortfolio.purchasePrice);
+    const updatedBalance = balance + saleAmount;
+    let updatedPortfolio;
+    if (newShares === 0) {
+      updatedPortfolio = portfolio.filter(stock => stock.ticker !== selectedStock.ticker);
+    } else {
+      updatedPortfolio = portfolio.map(stock =>
+        stock.ticker === selectedStock.ticker
+          ? { ...stock, shares: newShares, totalValue: (newShares * stock.purchasePrice).toFixed(2) }
+          : stock
+      );
+    }
+  
+    const newTrade = {
+      type: "Sell",
+      ticker: selectedStock.ticker,
+      name: selectedStock.name,
+      quantity: quantity,
+      price: parseFloat(stockInPortfolio.purchasePrice).toFixed(2),
+      total: saleAmount.toFixed(2),
+      date: new Date().toLocaleString()
+    };
+    
+    localStorage.setItem(`${userName}_portfolio`, JSON.stringify(updatedPortfolio));
+    localStorage.setItem(`${userName}_balance`, updatedBalance.toFixed(2));
+    setPortfolio(updatedPortfolio);
+    setBalance(updatedBalance);
+  
+    alert(`${quantity} shares of ${selectedStock.name} sold for $${saleAmount.toFixed(2)}!`);
+    setSelectedStock(null);
+  };
+
   let totalCost = 0;
   let balanceAfterPurchase = balance;
   if (selectedStock) {
@@ -66,6 +112,7 @@ export function Home({ userName }) {
       ticker: selectedStock.ticker,
       quantity,
       price: selectedStock.price,
+      type: "buy"
     };
     const existingPurchases = JSON.parse(localStorage.getItem('purchases')) || [];
     existingPurchases.push(purchaseDetails);
@@ -83,7 +130,7 @@ export function Home({ userName }) {
     <main>
       <h2 className="account-overview">Account Overview</h2>
       <p>Hello <span id="userName">{userName}!</span></p>
-      <div className="containers"><p className="Balance">Balance: ${balance.toFixed(2)}</p></div>
+      <div><p className="Balance">Balance: ${balance.toFixed(2)}</p></div>
 
       <div className="containers">
         <h3>My Portfolio</h3>
@@ -123,7 +170,7 @@ export function Home({ userName }) {
       <hr />
       <div className="containers">
         <section>
-          <h3>Search Stocks</h3>
+          <h3>Trade Stocks</h3>
           <table>
             <thead>
               <tr>
@@ -138,8 +185,11 @@ export function Home({ userName }) {
                   <td>{stock.name}</td>
                   <td>{stock.ticker}</td>
                   <td>
-                    <button onClick={() => handleSelectStock(stock)} className="btn btn-primary">
-                      Select Stock for Purchase
+                    <button 
+                      onClick={() => handleSelectStock(stock)} 
+                      className="btn btn-primary"
+                    >
+                      Select Stock
                     </button>
                   </td>
                 </tr>
@@ -149,28 +199,40 @@ export function Home({ userName }) {
           <p>(Updated and real-time stock list will come)</p>
 
           <div>
-            <h3>Buy Selected Stock</h3>
             {selectedStock ? (
               <>
-                <p>Stock: <strong>{selectedStock.name}</strong></p>
-                <p>Price: <strong>${selectedStock.price}</strong></p>
-                <label>Quantity:</label>
-                <input 
-                  type="number" 
-                  value={quantity} 
-                  onChange={(e) => setQuantity(parseInt(e.target.value) || 1)} 
-                  min="1" 
-                />
+                <h2>Review Selected Stock</h2>
+                  <div>
+                    <label htmlFor="quantity-input">Quantity: </label>
+                    <input
+                      type="number"
+                      id="quantity-input"
+                      min="1"
+                      value={quantity === 0 ? '' : quantity}
+                      onChange={(e) => setQuantity(e.target.value === '' ? 0 : Number(e.target.value))}
+                    />
+                  </div>
+                <h4>Purchase Details</h4>
                 <p>Total Cost: <strong>${totalCost.toFixed(2)}</strong></p>
                 <p>Balance After Purchase: <strong>${balanceAfterPurchase.toFixed(2)}</strong></p>
-                <button onClick={handlePurchase} className="btn btn-primary">Confirm Purchase</button>
+                <button onClick={handlePurchase} className="btn btn-primary">
+                  Confirm Purchase
+                </button>
+
+                <h4>Sale Details</h4>
+                <p>Total Sale: <strong>${(quantity * selectedStock.price).toFixed(2)}</strong></p>
+                <p>Balance After Sale: <strong>${(balance + quantity * selectedStock.price).toFixed(2)}</strong></p>
+                <button onClick={handleSell} className="btn btn-danger">
+                  Confirm Sale
+                </button>
               </>
             ) : (
-              <p>Please select a stock to purchase.</p>
+              <p><strong>Please select a stock.</strong></p>
             )}
           </div>
         </section>
       </div>
+
     </main>
   );
 }

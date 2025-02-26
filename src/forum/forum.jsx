@@ -8,6 +8,17 @@ export function Forum({ userName }) {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [userPurchases, setUserPurchases] = useState([]);
+  const [userTrades, setUserTrades] = useState([]);
+
+  useEffect(() => {
+    const storedTrades = JSON.parse(localStorage.getItem('purchases')) || [];
+    setUserTrades(storedTrades.slice(-10));
+  }, []);
+
+  useEffect(() => {
+    const storedPurchases = JSON.parse(localStorage.getItem('purchases')) || [];
+    setUserPurchases(storedPurchases);
+  }, []);
 
   useEffect(() => {
     const storedLeaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
@@ -56,11 +67,6 @@ export function Forum({ userName }) {
     }
   }, [leaderboard]);
 
-  useEffect(() => {
-    const storedPurchases = JSON.parse(localStorage.getItem('purchases')) || [];
-    setUserPurchases(storedPurchases);
-  }, []);
-
   return (
     <main>
       <section>
@@ -98,14 +104,20 @@ export function Forum({ userName }) {
               </li>
             ))}
           </ul>
-          <h3>Recent Purchases</h3>
-          <ul>
-            {userPurchases.slice(-10).reverse().map((purchase, index) => (
-              <li key={index}>
-                {purchase.userName} purchased {purchase.quantity} of the stock {purchase.stockName} for ${purchase.price}.
-              </li>
-            ))}
-          </ul>
+          <section id="trade-activity">
+            <h3>Recent Trades</h3>
+            <ul>
+              {userTrades.length > 0 ? (
+                userTrades.slice(-10).reverse().map((trade, index) => (
+                  <li key={index}>
+                    {trade.userName} {trade.type === "buy" ? "bought" : "sold"} {trade.quantity} shares of {trade.stockName} ({trade.ticker}) for ${trade.price}.
+                  </li>
+                ))
+              ) : (
+                <li>No trades have been made yet.</li>
+              )}
+            </ul>
+          </section>
       </section>
     </main>
   );
