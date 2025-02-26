@@ -183,6 +183,11 @@ button:hover {
   background-color: #0066cc; 
 }
 
+.nav-item img {
+  margin-right: 8px; 
+  vertical-align: middle;
+}
+
 @media (max-height: 600px) {
   header {
     display: none;

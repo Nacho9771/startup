@@ -4,6 +4,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './app.css';
 import './home/home.css';
 
+import homeIcon from '../public/transparent_icon_home.png';
+import profileIcon from '../public/transparent_icon_profile.png';
+import forumIcon from '../public/transparent_icon_forum.png';
+import educationIcon from '../public/transparent_icon_education.png';
+
 import { Forum } from './forum/forum';
 import { Learn } from './education/education';
 import { Profile } from './profile/profile';
@@ -40,21 +45,25 @@ export default function App() {
                                 <>
                                     <li className='nav-item'>
                                         <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to='/home'>
+                                            <img src={homeIcon} alt='Home' width="32px" />
                                             Home
                                         </NavLink>
                                     </li>
                                     <li className='nav-item'>
                                         <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to='/forum'>
+                                            <img src={forumIcon} alt='Forum' width="25px" />
                                             Forum
                                         </NavLink>
                                     </li>
                                     <li className='nav-item'>
                                         <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to='/education'>
+                                            <img src={educationIcon} alt='Education' width="30px" />
                                             Learn
                                         </NavLink>
                                     </li>
                                     <li className='nav-item'>
                                         <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to='/profile'>
+                                            <img src={profileIcon} alt='Profile' width="25px" />
                                             Profile
                                         </NavLink>
                                     </li>
