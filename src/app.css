@@ -50,6 +50,14 @@ nav ul li a:hover {
   color: white;
   border-radius: 5px;
 }
+
+.nav-item img {
+  width: 30px;  
+  height: 30px;  
+  object-fit: contain; 
+  margin-right: 8px;
+  vertical-align: middle;
+}
   
 .picture-box {
   margin: 20px 0;
@@ -208,6 +216,25 @@ button:hover {
   table tbody td:nth-child(2),
   table tbody td:nth-child(4),
   table tbody td:nth-child(5) {
+    display: none;
+  }
+}
+
+@media (max-width: 800px) {
+  .nav-item a {
+    display: flex;
+    align-items: center;
+  }
+
+  .nav-item a img {
+    margin: 0;
+  }
+
+  .nav-item a::after {
+    content: none;
+  }
+
+  .nav-item a span {
     display: none;
   }
 }

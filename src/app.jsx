@@ -45,26 +45,26 @@ export default function App() {
                                 <>
                                     <li className='nav-item'>
                                         <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to='/home'>
-                                            <img src={homeIcon} alt='Home' width="32px" />
-                                            Home
+                                            <img src={homeIcon} alt='Home' width="35px" />
+                                            <span>Home</span>
                                         </NavLink>
                                     </li>
                                     <li className='nav-item'>
                                         <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to='/forum'>
                                             <img src={forumIcon} alt='Forum' width="25px" />
-                                            Forum
+                                            <span>Forum</span>
                                         </NavLink>
                                     </li>
                                     <li className='nav-item'>
                                         <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to='/education'>
                                             <img src={educationIcon} alt='Education' width="30px" />
-                                            Learn
+                                            <span>Learn</span>
                                         </NavLink>
                                     </li>
                                     <li className='nav-item'>
                                         <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to='/profile'>
                                             <img src={profileIcon} alt='Profile' width="25px" />
-                                            Profile
+                                            <span>Profile</span>
                                         </NavLink>
                                     </li>
                                     <li className='nav-item'>
