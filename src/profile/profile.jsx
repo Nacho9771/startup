@@ -19,7 +19,9 @@ export function Profile({ userName, balance, setBalance, netWorth }) {
     if (userProfile.creationTime) {
       const timeSinceCreation = new Date() - new Date(userProfile.creationTime);
       setAccountAge(Math.floor(timeSinceCreation / (1000 * 60 * 60 * 24)));
-    }
+    } else {
+      setAccountAge(0);
+    };
 
     const storedTransactions = JSON.parse(localStorage.getItem('purchases')) || [];
     setTransactions(storedTransactions);
@@ -55,7 +57,7 @@ export function Profile({ userName, balance, setBalance, netWorth }) {
     <main className="profile-container">
       <section id="profile-info" className="profile-section">
         <h2>Profile Information</h2>
-        <p>User: <span id="userName">[{userName}]</span></p>
+        <p>User: <span id="userName">{userName}</span></p>
         <p>Balance: ${balance}</p>
         <p>Age of EasyTrading Account: {accountAge} days</p>
         <div>

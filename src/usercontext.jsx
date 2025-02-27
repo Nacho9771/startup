@@ -2,8 +2,9 @@ import { createContext, useState, useEffect } from 'react';
 
 export const UserContext = createContext();
 
-export function UserProvider({ children, userName }) {
+export function UserProvider({ children }) {
     const initialBalance = 100000;
+    const [userName, setUserName] = useState('');
     const [balance, setBalance] = useState(initialBalance);
     const [netWorth, setNetWorth] = useState(initialBalance);
     const [portfolio, setPortfolio] = useState([]);
@@ -56,6 +57,7 @@ export function UserProvider({ children, userName }) {
 
     return (
         <UserContext.Provider value={{
+            userName, setUserName,
             balance, setBalance,
             netWorth, setNetWorth,
             portfolio, setPortfolio,
