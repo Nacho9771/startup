@@ -9,12 +9,14 @@ export function Home({ userName }) {
   const [selectedStock, setSelectedStock] = useState(null);
   const [quantity, setQuantity] = useState(1);
 
+  const userName_noemail = userName.split('@')[0];
+
   useEffect(() => {
-    const storedPortfolio = JSON.parse(localStorage.getItem(`${userName}_portfolio`)) || [];
+    const storedPortfolio = JSON.parse(localStorage.getItem(`${userName_noemail}_portfolio`)) || [];
     setPortfolio(storedPortfolio);
-    const storedBalance = parseFloat(localStorage.getItem(`${userName}_balance`)) || initialBalance;
+    const storedBalance = parseFloat(localStorage.getItem(`${userName_noemail}_balance`)) || initialBalance;
     setBalance(storedBalance);
-  }, [userName]);
+  }, [userName_noemail]);
 
   const stockOptions = [
     { name: 'Tesla', ticker: 'TSLA', price: (100 + Math.random() * 50).toFixed(2), dailyChange: (Math.random() * 5 - 2.5).toFixed(2) },
@@ -58,7 +60,7 @@ export function Home({ userName }) {
     }
   
     const newTrade = {
-      userName,
+      userName: userName_noemail,
       type: "sell",
       ticker: selectedStock.ticker,
       stockName: selectedStock.name,
@@ -67,9 +69,9 @@ export function Home({ userName }) {
       total: saleAmount.toFixed(2),
       date: new Date().toLocaleString()
     };
-    
-    localStorage.setItem(`${userName}_portfolio`, JSON.stringify(updatedPortfolio));
-    localStorage.setItem(`${userName}_balance`, updatedBalance.toFixed(2));
+
+    localStorage.setItem(`${userName_noemail}_portfolio`, JSON.stringify(updatedPortfolio));
+    localStorage.setItem(`${userName_noemail}_balance`, updatedBalance.toFixed(2));
     setPortfolio(updatedPortfolio);
     setBalance(updatedBalance);
   
@@ -109,10 +111,10 @@ export function Home({ userName }) {
       });
     }
     const newBalance = balance - totalCost;
-    localStorage.setItem(`${userName}_portfolio`, JSON.stringify(newPortfolio));
-    localStorage.setItem(`${userName}_balance`, newBalance.toFixed(2));
+    localStorage.setItem(`${userName_noemail}_portfolio`, JSON.stringify(newPortfolio));
+    localStorage.setItem(`${userName_noemail}_balance`, newBalance.toFixed(2));
     const purchaseDetails = {
-      userName,
+      userName: userName_noemail,
       stockName: selectedStock.name,
       ticker: selectedStock.ticker,
       quantity,
@@ -134,7 +136,7 @@ export function Home({ userName }) {
   return (
     <main>
       <h2 className="account-overview">Account Overview</h2>
-      <p>Hello <span id="userName">{userName}!</span></p>
+      <p>Hello <span id="userName">{userName_noemail}!</span></p>
       <div><p className="Balance">Balance: ${balance.toFixed(2)}</p></div>
 
       <div className="containers">

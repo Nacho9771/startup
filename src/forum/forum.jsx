@@ -12,17 +12,19 @@ export function Forum({ userName }) {
   const [storedBalance, setStoredBalance] = useState(0);
   const [storedNetWorth, setStoredNetWorth] = useState(0);
 
+  const userName_noemail = userName.split('@')[0];
+
   useEffect(() => {
-    const storedBalance = parseFloat(localStorage.getItem(`${userName}_balance`)) || 0;
+    const storedBalance = parseFloat(localStorage.getItem(`${userName_noemail}_balance`)) || 0;
     setStoredBalance(storedBalance);
-    const storedPortfolio = JSON.parse(localStorage.getItem(`${userName}_portfolio`)) || [];
+    const storedPortfolio = JSON.parse(localStorage.getItem(`${userName_noemail}_portfolio`)) || [];
     const portfolioValue = storedPortfolio.reduce((total, stock) => total + parseFloat(stock.totalValue), 0);
     const netWorth = storedBalance + portfolioValue;
     setStoredNetWorth(netWorth);
 
     const storedTrades = JSON.parse(localStorage.getItem('purchases')) || [];
     setUserTrades(storedTrades.slice(-10));
-  }, [userName]);
+  }, [userName_noemail]);
 
   useEffect(() => {
     const storedPurchases = JSON.parse(localStorage.getItem('purchases')) || [];
@@ -39,20 +41,20 @@ export function Forum({ userName }) {
   }, []);
 
   useEffect(() => {
-    if (userName) {
-      const userExists = leaderboard.some(user => user.name === userName);
+    if (userName_noemail) {
+      const userExists = leaderboard.some(user => user.name === userName_noemail);
       if (!userExists) {
-        const newUser = { name: userName, balance: storedNetWorth.toFixed(2) };
+        const newUser = { name: userName_noemail, balance: storedNetWorth.toFixed(2) };
         const updatedLeaderboard = quickSort([...leaderboard, newUser]);
         setLeaderboard(updatedLeaderboard.slice(0, 10));
         localStorage.setItem('leaderboard', JSON.stringify(updatedLeaderboard));
       }
     }
-  }, [userName, leaderboard, storedNetWorth]);
+  }, [userName_noemail, leaderboard, storedNetWorth]);
 
   const handleCommentSubmit = () => {
     if (newComment.trim()) {
-      const updatedComments = [...comments, { user: userName, text: newComment }].slice(-10);
+      const updatedComments = [...comments, { user: userName_noemail, text: newComment }].slice(-10);
       setComments(updatedComments);
       localStorage.setItem('comments', JSON.stringify(updatedComments));
       setNewComment('');
