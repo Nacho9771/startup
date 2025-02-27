@@ -12,9 +12,16 @@ export function Profile({ userName, balance, setBalance, netWorth }) {
   const [userTrades, setUserTrades] = useState([]);
   const [portfolio, setPortfolio] = useState([]);
   const [storedBalance, setStoredBalance] = useState(0);
+  const [storedNetWorth, setStoredNetWorth] = useState(0);
+  const [newPhoneNumber, setNewPhoneNumber] = useState('');
+  const [newFullName, setNewFullName] = useState('');
+  const [newYearlyIncome, setNewYearlyIncome] = useState('');
+  const [newRiskTolerance, setNewRiskTolerance] = useState('');
+
+  const userName_noemail = userName.split('@')[0];
 
   useEffect(() => {
-    const userProfile = JSON.parse(localStorage.getItem(userName)) || {};
+    const userProfile = JSON.parse(localStorage.getItem(userName_noemail)) || {};
     if (userProfile.phoneNumber) setPhoneNumber(userProfile.phoneNumber);
     if (userProfile.fullName) setFullName(userProfile.fullName);
     if (userProfile.yearlyIncome) setYearlyIncome(userProfile.yearlyIncome);
@@ -24,35 +31,62 @@ export function Profile({ userName, balance, setBalance, netWorth }) {
       setAccountAge(Math.floor(timeSinceCreation / (1000 * 60 * 60 * 24)));
     } else {
       setAccountAge(0);
-    };
+    }
 
     const storedTransactions = JSON.parse(localStorage.getItem('purchases')) || [];
     setTransactions(storedTransactions);
-    const userSpecificTrades = storedTransactions.filter(trade => trade.userName === userName);
+    const userSpecificTrades = storedTransactions.filter(trade => trade.userName === userName_noemail);
     setUserTrades(userSpecificTrades);
-    const storedPortfolio = JSON.parse(localStorage.getItem(`${userName}_portfolio`)) || [];
+    const storedPortfolio = JSON.parse(localStorage.getItem(`${userName_noemail}_portfolio`)) || [];
     setPortfolio(storedPortfolio);
-    const storedBalance = parseFloat(localStorage.getItem(`${userName}_balance`)) || 0;
+    const storedBalance = parseFloat(localStorage.getItem(`${userName_noemail}_balance`)) || 0;
     setStoredBalance(storedBalance);
-  }, [userName]);
+    const portfolioValue = storedPortfolio.reduce((total, stock) => total + parseFloat(stock.totalValue), 0);
+    const netWorth = storedBalance + portfolioValue;
+    setStoredNetWorth(netWorth);
+  }, [userName_noemail]);
 
   const handleStimulus = () => {
-    if (netWorth < 10000) {
-      setBalance(balance + 500);
-      localStorage.setItem(`${userName}_balance`, (balance + 500).toFixed(2));
-      alert("You just got a $500 bonus! Don't lost it too quickly");
+    if (storedNetWorth < 10000) {
+      const newBalance = balance + 500;
+      setBalance(newBalance);
+      localStorage.setItem(`${userName_noemail}_balance`, newBalance.toFixed(2));
+      alert("You just got a $500 bonus! Don't lose it too quickly");
     } else {
       alert('You are not eligible for a stimulus. You are too rich!');
     }
+  };
+
+  const handleUpdateProfile = (e) => {
+    e.preventDefault();
+    setPhoneNumber(newPhoneNumber);
+    setFullName(newFullName);
+    setYearlyIncome(newYearlyIncome);
+    setRiskTolerance(newRiskTolerance);
+
+    const updatedProfile = {
+      phoneNumber: newPhoneNumber,
+      fullName: newFullName,
+      yearlyIncome: newYearlyIncome,
+      riskTolerance: newRiskTolerance,
+      creationTime: new Date().toISOString()
+    };
+    localStorage.setItem(userName_noemail, JSON.stringify(updatedProfile));
+    alert('Profile updated successfully!');
   };
 
   return (
     <main className="profile-container">
       <section id="profile-info" className="profile-section">
         <h2>Profile Information</h2>
-        <p>User: <span id="userName">{userName}</span></p>
+        <p>User: <span id="userName">{userName_noemail}</span></p>
         <p>Balance: ${storedBalance.toFixed(2)}</p>
+        <p>Net Worth: ${storedNetWorth.toFixed(2)}</p>
         <p>Age of EasyTrading Account: {accountAge} days</p>
+        <p>Phone Number: {phoneNumber || "None"}</p>
+        <p>Full Name: {fullName || "None"}</p>
+        <p>Yearly Income: {yearlyIncome || "None"}</p>
+        <p>Risk Tolerance: {riskTolerance || "None"}</p>
         <div>
           <h3>Petition for $500 Stimulus (If your net worth is below $10,000)</h3>
           <button onClick={handleStimulus}>Request $500</button>
@@ -60,47 +94,40 @@ export function Profile({ userName, balance, setBalance, netWorth }) {
       </section>
 
       <section id="account-settings" className="profile-section">
-        <h2>Account Settings</h2>
-        <form>
+        <h2>Update Account</h2>
+        <form onSubmit={handleUpdateProfile}>
+          <label>Phone Number:</label>
           <div>
-            <label>Phone Number:</label>
-            <span> Current Phone Number: {phoneNumber || "None"}</span>
             <input
               type="text"
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
+              value={newPhoneNumber}
+              onChange={(e) => setNewPhoneNumber(e.target.value)}
               placeholder="Enter your phone number"
             />
           </div>
-
+          <label>Full Name:</label>
           <div>
-            <label>Full Name:</label>
-            <span> Current Full Name: {fullName || "None"}</span>
             <input
               type="text"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
+              value={newFullName}
+              onChange={(e) => setNewFullName(e.target.value)}
               placeholder="Enter your full name"
             />
           </div>
-
           <div>
             <label>Yearly Income:</label>
-            <span> Current Yearly Income: {yearlyIncome || "None"}</span>
             <input
               type="number"
-              value={yearlyIncome}
-              onChange={(e) => setYearlyIncome(e.target.value)}
+              value={newYearlyIncome}
+              onChange={(e) => setNewYearlyIncome(e.target.value)}
               placeholder="Enter your yearly income"
             />
           </div>
-
           <div>
             <label>Risk Tolerance:</label>
-            <span> (Current Risk Tolerance: {riskTolerance || "None"})</span>
             <select
-              value={riskTolerance}
-              onChange={(e) => setRiskTolerance(e.target.value)}
+              value={newRiskTolerance}
+              onChange={(e) => setNewRiskTolerance(e.target.value)}
             >
               <option value="">Select your risk tolerance</option>
               <option value="Low">Low</option>
@@ -108,7 +135,6 @@ export function Profile({ userName, balance, setBalance, netWorth }) {
               <option value="High">High</option>
             </select>
           </div>
-
           <button type="submit">Update Profile</button>
         </form>
       </section>
