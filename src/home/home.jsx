@@ -216,14 +216,14 @@ export function Home({ userName }) {
                 <p>Total Cost: <strong>${totalCost.toFixed(2)}</strong></p>
                 <p>Balance After Purchase: <strong>${balanceAfterPurchase.toFixed(2)}</strong></p>
                 <button onClick={handlePurchase} className="btn btn-primary">
-                  Confirm Purchase
+                  Buy Stock
                 </button>
 
-                <h4>Sale Details</h4>
+                <h4>Sell</h4>
                 <p>Total Sale: <strong>${(quantity * selectedStock.price).toFixed(2)}</strong></p>
                 <p>Balance After Sale: <strong>${(balance + quantity * selectedStock.price).toFixed(2)}</strong></p>
                 <button onClick={handleSell} className="btn btn-danger">
-                  Sell
+                  Sell Stock
                 </button>
               </>
             ) : (

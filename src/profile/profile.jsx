@@ -9,6 +9,8 @@ export function Profile({ userName, balance, setBalance, netWorth }) {
   const [riskTolerance, setRiskTolerance] = useState('');
   const [accountAge, setAccountAge] = useState('');
   const [transactions, setTransactions] = useState([]);
+  const [portfolio, setPortfolio] = useState([]);
+  const [storedBalance, setStoredBalance] = useState(0);
 
   useEffect(() => {
     const userProfile = JSON.parse(localStorage.getItem(userName)) || {};
@@ -25,6 +27,12 @@ export function Profile({ userName, balance, setBalance, netWorth }) {
 
     const storedTransactions = JSON.parse(localStorage.getItem('purchases')) || [];
     setTransactions(storedTransactions);
+
+    const storedPortfolio = JSON.parse(localStorage.getItem(`${userName}_portfolio`)) || [];
+    setPortfolio(storedPortfolio);
+
+    const storedBalance = parseFloat(localStorage.getItem(`${userName}_balance`)) || 0;
+    setStoredBalance(storedBalance);
   }, [userName]);
 
   const handleStimulus = () => {
@@ -46,7 +54,7 @@ export function Profile({ userName, balance, setBalance, netWorth }) {
       <ul>
         {transactions.slice(0, 50).map((transaction, index) => (
           <li key={index}>
-            {transaction.userName} purchased {transaction.quantity} of {transaction.stockName} ({transaction.ticker}) for ${transaction.price}.
+            {transaction.userName} purchased {transaction.quantity} shares of {transaction.stockName} ({transaction.ticker}) for ${transaction.price}.
           </li>
         ))}
       </ul>
@@ -58,7 +66,7 @@ export function Profile({ userName, balance, setBalance, netWorth }) {
       <section id="profile-info" className="profile-section">
         <h2>Profile Information</h2>
         <p>User: <span id="userName">{userName}</span></p>
-        <p>Balance: ${balance}</p>
+        <p>Balance: ${storedBalance.toFixed(2)}</p>
         <p>Age of EasyTrading Account: {accountAge} days</p>
         <div>
           <h3>Petition for $500 Stimulus (If your net worth is below $10,000)</h3>
