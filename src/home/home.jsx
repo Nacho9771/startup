@@ -34,19 +34,19 @@ export function Home({ userName }) {
 
   const handleSell = () => {
     if (!selectedStock || quantity <= 0) {
-      return alert("Select a stock and a quantity to sell!");
+      return alert("Select a stock to sell.");
     }
   
     const stockInPortfolio = portfolio.find(stock => stock.ticker === selectedStock.ticker);
     if (!stockInPortfolio) {
-      return alert("You don’t own this stock!");
+      return alert(`You don't own any shares of ${selectedStock.name}`);
     }
     if (quantity > stockInPortfolio.shares) {
-      return alert("You can’t sell more shares than you own!");
+      return alert("You can't sell what you don't own! (You don't own that many shares)");
     }
-  
+    
     const newShares = stockInPortfolio.shares - quantity;
-    const saleAmount = quantity * parseFloat(stockInPortfolio.purchasePrice);
+    const saleAmount = quantity * parseFloat(selectedStock.price); 
     const updatedBalance = balance + saleAmount;
     let updatedPortfolio;
     if (newShares === 0) {
@@ -65,11 +65,11 @@ export function Home({ userName }) {
       ticker: selectedStock.ticker,
       stockName: selectedStock.name,
       quantity: quantity,
-      price: parseFloat(stockInPortfolio.purchasePrice).toFixed(2),
+      price: parseFloat(selectedStock.price).toFixed(2),
       total: saleAmount.toFixed(2),
       date: new Date().toLocaleString()
     };
-
+  
     localStorage.setItem(`${userName_noemail}_portfolio`, JSON.stringify(updatedPortfolio));
     localStorage.setItem(`${userName_noemail}_balance`, updatedBalance.toFixed(2));
     setPortfolio(updatedPortfolio);
