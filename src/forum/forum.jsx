@@ -7,6 +7,7 @@ export function Forum({ userName }) {
   const [leaderboard, setLeaderboard] = useState([]);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
+  const [userPurchases, setUserPurchases] = useState([]);
   const [userTrades, setUserTrades] = useState([]);
 
   useEffect(() => {
