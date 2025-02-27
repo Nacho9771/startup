@@ -113,8 +113,11 @@ For this deliverable I focused on successfully porting everything from HTML to J
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] **All functionality implemented or mocked out** - I did not complete this part of the deliverable.
-- [ ] **Hooks** - I did not complete this part of the deliverable.
+I ran into a ton of instances where I would use "npm run dev 'o'" and my page would not load. I learned so much about react, using pulls, pushes, and general git information, and debugging when I worked on this part of the project. It was hard and I am glad I started early.
+
+- [x] **All functionality implemented or mocked out** - Yep, everything works really well! I am surporised how hard it is to get everyhting to work, nad I had a lot of run-ins trying to import variables, but I ended up just using the local storage as a database holder, and I plan on using the database for everything I have stored in local storage right now. All placeholders are in, but functional!
+- [x] **Hooks** - I used useState for the functional parts of my code, like the balance, portfolio, and selected stock. I also used useEffect for things like loading local data to update other jsx files from the local storage.
+- [x] **General Polishing** I fixed up some aspects of the frontend layout and made it look more snazzy. Nothing too crazy, but I just made it look a bit more even and professional.
 
 ## 🚀 Service deliverable
 
