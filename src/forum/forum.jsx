@@ -9,11 +9,20 @@ export function Forum({ userName }) {
   const [newComment, setNewComment] = useState('');
   const [userPurchases, setUserPurchases] = useState([]);
   const [userTrades, setUserTrades] = useState([]);
+  const [storedBalance, setStoredBalance] = useState(0);
+  const [storedNetWorth, setStoredNetWorth] = useState(0);
 
   useEffect(() => {
+    const storedBalance = parseFloat(localStorage.getItem(`${userName}_balance`)) || 0;
+    setStoredBalance(storedBalance);
+    const storedPortfolio = JSON.parse(localStorage.getItem(`${userName}_portfolio`)) || [];
+    const portfolioValue = storedPortfolio.reduce((total, stock) => total + parseFloat(stock.totalValue), 0);
+    const netWorth = storedBalance + portfolioValue;
+    setStoredNetWorth(netWorth);
+
     const storedTrades = JSON.parse(localStorage.getItem('purchases')) || [];
     setUserTrades(storedTrades.slice(-10));
-  }, []);
+  }, [userName]);
 
   useEffect(() => {
     const storedPurchases = JSON.parse(localStorage.getItem('purchases')) || [];
@@ -33,13 +42,13 @@ export function Forum({ userName }) {
     if (userName) {
       const userExists = leaderboard.some(user => user.name === userName);
       if (!userExists) {
-        const newUser = { name: userName, balance: (100000 + Math.random() * 50000).toFixed(2) };
+        const newUser = { name: userName, balance: storedNetWorth.toFixed(2) };
         const updatedLeaderboard = quickSort([...leaderboard, newUser]);
         setLeaderboard(updatedLeaderboard.slice(0, 10));
         localStorage.setItem('leaderboard', JSON.stringify(updatedLeaderboard));
       }
     }
-  }, [userName, leaderboard]);
+  }, [userName, leaderboard, storedNetWorth]);
 
   const handleCommentSubmit = () => {
     if (newComment.trim()) {
