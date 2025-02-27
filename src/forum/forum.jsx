@@ -7,7 +7,6 @@ export function Forum({ userName }) {
   const [leaderboard, setLeaderboard] = useState([]);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
-  const [userPurchases, setUserPurchases] = useState([]);
   const [userTrades, setUserTrades] = useState([]);
 
   useEffect(() => {
@@ -107,15 +106,15 @@ export function Forum({ userName }) {
           <section id="trade-activity">
             <h3>Recent Trades</h3>
             <ul>
-              {userTrades.length > 0 ? (
-                userTrades.slice(-10).reverse().map((trade, index) => (
-                  <li key={index}>
-                    {trade.userName} {trade.type === "buy" ? "bought" : "sold"} {trade.quantity} shares of {trade.stockName} ({trade.ticker}) for ${trade.price}.
-                  </li>
-                ))
-              ) : (
-                <li>No trades have been made yet.</li>
-              )}
+            {userTrades.length > 0 ? (
+              userTrades.slice(-40).reverse().map((trade, index) => (
+                <li key={index}>
+                  {trade.userName} {trade.type === "buy" ? "bought" : "sold"} {trade.quantity} shares of {trade.stockName} ({trade.ticker}) for ${trade.price}.
+                </li>
+              ))
+            ) : (
+              <li>No trades have been made yet.</li>
+            )}
             </ul>
           </section>
       </section>

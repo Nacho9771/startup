@@ -58,9 +58,10 @@ export function Home({ userName }) {
     }
   
     const newTrade = {
-      type: "Sell",
+      userName,
+      type: "sell",
       ticker: selectedStock.ticker,
-      name: selectedStock.name,
+      stockName: selectedStock.name,
       quantity: quantity,
       price: parseFloat(stockInPortfolio.purchasePrice).toFixed(2),
       total: saleAmount.toFixed(2),
@@ -71,6 +72,10 @@ export function Home({ userName }) {
     localStorage.setItem(`${userName}_balance`, updatedBalance.toFixed(2));
     setPortfolio(updatedPortfolio);
     setBalance(updatedBalance);
+  
+    const existingPurchases = JSON.parse(localStorage.getItem('purchases')) || [];
+    existingPurchases.push(newTrade);
+    localStorage.setItem('purchases', JSON.stringify(existingPurchases));
   
     alert(`${quantity} shares of ${selectedStock.name} sold for $${saleAmount.toFixed(2)}!`);
     setSelectedStock(null);
@@ -202,6 +207,7 @@ export function Home({ userName }) {
             {selectedStock ? (
               <>
                 <h2>Review Selected Stock</h2>
+                <label htmlFor="stock-name"><strong>Stock: </strong><span id="stock-name"><strong>{selectedStock.name} ({selectedStock.ticker})</strong></span></label>
                   <div>
                     <label htmlFor="quantity-input">Quantity: </label>
                     <input

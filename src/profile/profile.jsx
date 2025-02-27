@@ -9,6 +9,7 @@ export function Profile({ userName, balance, setBalance, netWorth }) {
   const [riskTolerance, setRiskTolerance] = useState('');
   const [accountAge, setAccountAge] = useState('');
   const [transactions, setTransactions] = useState([]);
+  const [userTrades, setUserTrades] = useState([]);
   const [portfolio, setPortfolio] = useState([]);
   const [storedBalance, setStoredBalance] = useState(0);
 
@@ -27,10 +28,10 @@ export function Profile({ userName, balance, setBalance, netWorth }) {
 
     const storedTransactions = JSON.parse(localStorage.getItem('purchases')) || [];
     setTransactions(storedTransactions);
-
+    const userSpecificTrades = storedTransactions.filter(trade => trade.userName === userName);
+    setUserTrades(userSpecificTrades);
     const storedPortfolio = JSON.parse(localStorage.getItem(`${userName}_portfolio`)) || [];
     setPortfolio(storedPortfolio);
-
     const storedBalance = parseFloat(localStorage.getItem(`${userName}_balance`)) || 0;
     setStoredBalance(storedBalance);
   }, [userName]);
@@ -39,26 +40,10 @@ export function Profile({ userName, balance, setBalance, netWorth }) {
     if (netWorth < 10000) {
       setBalance(balance + 500);
       localStorage.setItem(`${userName}_balance`, (balance + 500).toFixed(2));
-      alert('You have received a $500 stimulus!');
+      alert("You just got a $500 bonus! Don't lost it too quickly");
     } else {
       alert('You are not eligible for a stimulus. You are too rich!');
     }
-  };
-
-  const renderTransactions = () => {
-    if (transactions.length === 0) {
-      return <p>No trades have yet been made.</p>;
-    }
-
-    return (
-      <ul>
-        {transactions.slice(0, 50).map((transaction, index) => (
-          <li key={index}>
-            {transaction.userName} purchased {transaction.quantity} shares of {transaction.stockName} ({transaction.ticker}) for ${transaction.price}.
-          </li>
-        ))}
-      </ul>
-    );
   };
 
   return (
@@ -130,7 +115,17 @@ export function Profile({ userName, balance, setBalance, netWorth }) {
 
       <section id="transaction-history" className="profile-section">
         <h2>Personal Transaction History</h2>
-        {renderTransactions()}
+          <ul>
+            {userTrades.length > 0 ? (
+              userTrades.slice(-40).reverse().map((trade, index) => (
+                <li key={index}>
+                  {trade.userName} {trade.type === "buy" ? "bought" : "sold"} {trade.quantity} shares of {trade.stockName} ({trade.ticker}) for ${trade.price}.
+                </li>
+              ))
+            ) : (
+              <li>No trades have been made yet.</li>
+            )}
+          </ul>
       </section>
     </main>
   );
