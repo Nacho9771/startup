@@ -212,7 +212,7 @@ export function Home({ userName }) {
                       onChange={(e) => setQuantity(e.target.value === '' ? 0 : Number(e.target.value))}
                     />
                   </div>
-                <h4>Purchase Details</h4>
+                <h4>Buy</h4>
                 <p>Total Cost: <strong>${totalCost.toFixed(2)}</strong></p>
                 <p>Balance After Purchase: <strong>${balanceAfterPurchase.toFixed(2)}</strong></p>
                 <button onClick={handlePurchase} className="btn btn-primary">
@@ -223,7 +223,7 @@ export function Home({ userName }) {
                 <p>Total Sale: <strong>${(quantity * selectedStock.price).toFixed(2)}</strong></p>
                 <p>Balance After Sale: <strong>${(balance + quantity * selectedStock.price).toFixed(2)}</strong></p>
                 <button onClick={handleSell} className="btn btn-danger">
-                  Confirm Sale
+                  Sell
                 </button>
               </>
             ) : (
