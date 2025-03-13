@@ -23,6 +23,7 @@ section div {
 
 section input[type="text"] {
   width: 70%;
+  display: inline-block;
 }
 
 #submit-comment {
@@ -30,8 +31,45 @@ section input[type="text"] {
   background: #003366;
   color: white;
   cursor: pointer;
+  display: inline-block;
 }
 
 #submit-comment:hover {
   background: #0056b3;
+}
+
+#submit-comment[disabled] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+#notification {
+  color: #003366;
+  margin-top: 10px;
+  opacity: 1;
+  transition: opacity 1s ease-out;
+}
+
+#notification.pop-in {
+  animation: pop-in 0.3s ease-out;
+}
+
+#notification.fade-out {
+  opacity: 0;
+}
+
+#notification.pop-in {
+  animation: pop-in 0.3s ease-out;
+}
+
+
+@keyframes pop-in {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }

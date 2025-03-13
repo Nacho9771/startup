@@ -11,6 +11,9 @@ export function Forum({ userName }) {
   const [userTrades, setUserTrades] = useState([]);
   const [storedBalance, setStoredBalance] = useState(0);
   const [storedNetWorth, setStoredNetWorth] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [notification, setNotification] = useState('');
+  const [fadeOut, setFadeOut] = useState(false); 
 
   const userName_noemail = userName.split('@')[0];
 
@@ -58,6 +61,7 @@ export function Forum({ userName }) {
 
   const handleCommentSubmit = () => {
     if (newComment.trim()) {
+      setLoading(true);
       fetch('/api/comments', {
         method: 'POST',
         headers: {
@@ -69,7 +73,29 @@ export function Forum({ userName }) {
         .then(comment => {
           setComments(prevComments => [...prevComments, comment].slice(-10));
           setNewComment('');
+          setLoading(false);
+          setNotification('Comment sent successfully!'); 
+          setFadeOut(false); 
+          setTimeout(() => {
+            setFadeOut(true);
+            setTimeout(() => setNotification(''), 1000);
+          }, 2500); 
+        })
+        .catch(() => {
+          setLoading(false);
+          setNotification('Failed to send comment.'); 
+          setFadeOut(false); 
+          setTimeout(() => {
+            setFadeOut(true);
+            setTimeout(() => setNotification(''), 1000);
+          }, 2500); 
         });
+    }
+  };
+
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      handleCommentSubmit();
     }
   };
 
@@ -113,11 +139,14 @@ export function Forum({ userName }) {
             placeholder="Enter Comment"
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
+            onKeyPress = {handleKeyPress}
+            disabled={loading}
           />
-          <button type="button" id="submit-comment" onClick={handleCommentSubmit}>
-            Submit
-          </button>
         </div>
+        <button type="button" id="submit-comment" onClick={handleCommentSubmit} disabled={loading}>
+          {loading ? 'Sending...' : 'Send'}
+        </button>
+        {notification && <div id="notification" className={`pop-in ${fadeOut ? 'fade-out' : ''}`}>{notification}</div>}
 
         <h3>Community Comments</h3>
         <ul>
