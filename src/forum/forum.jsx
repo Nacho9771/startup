@@ -33,10 +33,8 @@ export function Forum({ userName }) {
 
   useEffect(() => {
     const storedLeaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
-    const storedComments = JSON.parse(localStorage.getItem('comments')) || [];
     const storedPurchases = JSON.parse(localStorage.getItem('purchases')) || [];
     setLeaderboard(quickSort(storedLeaderboard).slice(0, 10));
-    setComments(storedComments.slice(-10));
     setUserPurchases(storedPurchases.slice(-10));
   }, []);
 
@@ -52,12 +50,26 @@ export function Forum({ userName }) {
     }
   }, [userName_noemail, leaderboard, storedNetWorth]);
 
+  useEffect(() => {
+    fetch('/api/comments')
+      .then(response => response.json())
+      .then(data => setComments(data));
+  }, []);
+
   const handleCommentSubmit = () => {
     if (newComment.trim()) {
-      const updatedComments = [...comments, { user: userName_noemail, text: newComment }].slice(-10);
-      setComments(updatedComments);
-      localStorage.setItem('comments', JSON.stringify(updatedComments));
-      setNewComment('');
+      fetch('/api/comments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user: userName_noemail, text: newComment }),
+      })
+        .then(response => response.json())
+        .then(comment => {
+          setComments(prevComments => [...prevComments, comment].slice(-10));
+          setNewComment('');
+        });
     }
   };
 
@@ -107,17 +119,17 @@ export function Forum({ userName }) {
           </button>
         </div>
 
-          <h3>Community Comments</h3>
+        <h3>Community Comments</h3>
+        <ul>
+          {comments.slice(-10).reverse().map((comment, index) => (
+            <li key={index}>
+              <strong>{comment.user}</strong>: "{comment.text}"
+            </li>
+          ))}
+        </ul>
+        <section id="trade-activity">
+          <h3>Recent Trades</h3>
           <ul>
-            {comments.slice(-10).reverse().map((comment, index) => (
-              <li key={index}>
-                <strong>{comment.user}</strong>: "{comment.text}"
-              </li>
-            ))}
-          </ul>
-          <section id="trade-activity">
-            <h3>Recent Trades</h3>
-            <ul>
             {userTrades.length > 0 ? (
               userTrades.slice(-40).reverse().map((trade, index) => (
                 <li key={index}>
@@ -127,8 +139,8 @@ export function Forum({ userName }) {
             ) : (
               <li>No trades have been made yet.</li>
             )}
-            </ul>
-          </section>
+          </ul>
+        </section>
       </section>
     </main>
   );

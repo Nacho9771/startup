@@ -13,6 +13,7 @@ app.use(cookieParser());
 
 // Create data structures here
 let users = [];
+let comments = [];
 
 // API Router
 const apiRouter = express.Router();
@@ -49,6 +50,23 @@ apiRouter.delete('/auth/logout', (req, res) => {
 
     res.clearCookie(authCookieName);
     res.status(204).end();
+});
+
+// Fetch comments
+apiRouter.get('/comments', (req, res) => {
+    res.send(comments);
+});
+
+// Add a new comment
+apiRouter.post('/comments', (req, res) => {
+    const { user, text } = req.body;
+    if (!user || !text) {
+        return res.status(400).send({ msg: 'User and text are required' });
+    }
+    const newComment = { user, text };
+    comments.push(newComment);
+    comments = comments.slice(-10);
+    res.status(201).send(newComment);
 });
 
 // Middleware for authentication
