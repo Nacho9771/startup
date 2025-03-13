@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import '../app.css';
 import './home.css';
+import axios from 'axios';
+
+const ALPHA_VANTAGE_API_KEY_SEARCH = 'WLT5ZY6ZRCSDT7U9';
+const ALPHA_VANTAGE_API_KEY_QUOTE = 'Q9DKRPU4A073VDBG';
 
 export function Home({ userName }) {
   const initialBalance = 100000;
@@ -8,6 +12,8 @@ export function Home({ userName }) {
   const [portfolio, setPortfolio] = useState([]);
   const [selectedStock, setSelectedStock] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
 
   const userName_noemail = userName.split('@')[0];
 
@@ -18,18 +24,33 @@ export function Home({ userName }) {
     setBalance(storedBalance);
   }, [userName_noemail]);
 
-  const stockOptions = [
-    { name: 'Tesla', ticker: 'TSLA', price: (100 + Math.random() * 50).toFixed(2), dailyChange: (Math.random() * 5 - 2.5).toFixed(2) },
-    { name: 'AMD', ticker: 'AMD', price: (80 + Math.random() * 30).toFixed(2), dailyChange: (Math.random() * 5 - 2.5).toFixed(2) },
-    { name: 'Invesco QQQ ETF', ticker: 'QQQ', price: (300 + Math.random() * 50).toFixed(2), dailyChange: (Math.random() * 5 - 2.5).toFixed(2) },
-    { name: 'Nvidia', ticker: 'NVDA', price: (70 + Math.random() * 30).toFixed(2), dailyChange: (Math.random() * 5 - 2).toFixed(2) },
-    { name: 'Vanguard S&P 500 ETF', ticker: 'VOO', price: (120 + Math.random() * 20).toFixed(2), dailyChange: (Math.random() * 5 - 1).toFixed(2) },
-    { name: 'Meta Platforms', ticker: 'META', price: (300 + Math.random() * 50).toFixed(2), dailyChange: (Math.random() * 5 - 2.5).toFixed(2) },
-  ];
+  const handleSearch = async () => {
+    if (searchQuery.trim() === '') return;
+    const url = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${searchQuery}&apikey=${ALPHA_VANTAGE_API_KEY_SEARCH}`;
+    try {
+      const response = await axios.get(url);
+      setSearchResults(response.data.bestMatches || []);
+    } catch (error) {
+      console.error('Error fetching search results:', error);
+    }
+  };
 
-  const handleSelectStock = (stock) => {
-    setSelectedStock(stock);
-    setQuantity(1);
+  const handleSelectStock = async (symbol) => {
+    const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${ALPHA_VANTAGE_API_KEY_QUOTE}`;
+    try {
+      const response = await axios.get(url);
+      const stockData = response.data['Global Quote'];
+      const stock = {
+        name: stockData['01. symbol'],
+        ticker: stockData['01. symbol'],
+        price: parseFloat(stockData['05. price']).toFixed(2),
+        dailyChange: parseFloat(stockData['10. change percent']).toFixed(2),
+      };
+      setSelectedStock(stock);
+      setQuantity(1);
+    } catch (error) {
+      console.error('Error fetching stock data:', error);
+    }
   };
 
   const handleSell = () => {
@@ -178,6 +199,13 @@ export function Home({ userName }) {
       <div className="containers">
         <section>
           <h3>Trade Stocks</h3>
+          <input
+            type="text"
+            placeholder="Search for a stock ticker."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <button onClick={handleSearch} className="btn btn-primary">Search</button>
           <table>
             <thead>
               <tr>
@@ -187,13 +215,13 @@ export function Home({ userName }) {
               </tr>
             </thead>
             <tbody>
-              {stockOptions.map((stock, index) => (
+              {searchResults.map((result, index) => (
                 <tr key={index}>
-                  <td>{stock.name}</td>
-                  <td>{stock.ticker}</td>
+                  <td>{result['2. name']}</td>
+                  <td>{result['1. symbol']}</td>
                   <td>
                     <button 
-                      onClick={() => handleSelectStock(stock)} 
+                      onClick={() => handleSelectStock(result['1. symbol'])} 
                       className="btn btn-primary"
                     >
                       Select Stock

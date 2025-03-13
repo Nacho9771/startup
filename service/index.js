@@ -14,6 +14,7 @@ app.use(cookieParser());
 // Create data structures here
 let users = [];
 let comments = [];
+let userData = {};
 
 // API Router
 const apiRouter = express.Router();
@@ -67,6 +68,20 @@ apiRouter.post('/comments', (req, res) => {
     comments.push(newComment);
     comments = comments.slice(-10);
     res.status(201).send(newComment);
+});
+
+// Fetch user data
+apiRouter.get('/user/:userName', (req, res) => {
+    const userName = req.params.userName;
+    const data = userData[userName] || {};
+    res.send(data);
+});
+
+// Update user data
+apiRouter.post('/user/:userName', (req, res) => {
+    const userName = req.params.userName;
+    userData[userName] = req.body;
+    res.status(200).send(userData[userName]);
 });
 
 // Middleware for authentication
