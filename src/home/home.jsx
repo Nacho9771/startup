@@ -5,6 +5,7 @@ import axios from 'axios';
 
 const ALPHA_VANTAGE_API_KEY_SEARCH = 'WLT5ZY6ZRCSDT7U9';
 const ALPHA_VANTAGE_API_KEY_QUOTE = 'Q9DKRPU4A073VDBG';
+const ALPHA_VANTAGE_API_KEY_DAILY = 'LTE4ZHN2LOCLJ74W';
 
 export function Home({ userName }) {
   const initialBalance = 100000;
@@ -14,6 +15,7 @@ export function Home({ userName }) {
   const [quantity, setQuantity] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const [dailyChange, setDailyChange] = useState(null);
 
   const userName_noemail = userName.split('@')[0];
 
@@ -36,10 +38,11 @@ export function Home({ userName }) {
   };
 
   const handleSelectStock = async (symbol) => {
-    const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${ALPHA_VANTAGE_API_KEY_QUOTE}`;
+    const urlQuote = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${ALPHA_VANTAGE_API_KEY_QUOTE}`;
+    const urlDaily = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=${ALPHA_VANTAGE_API_KEY_DAILY}`;
     try {
-      const response = await axios.get(url);
-      const stockData = response.data['Global Quote'];
+      const responseQuote = await axios.get(urlQuote);
+      const stockData = responseQuote.data['Global Quote'];
       const stock = {
         name: stockData['01. symbol'],
         ticker: stockData['01. symbol'],
@@ -48,6 +51,16 @@ export function Home({ userName }) {
       };
       setSelectedStock(stock);
       setQuantity(1);
+
+      const responseDaily = await axios.get(urlDaily);
+      const timeSeries = responseDaily.data['Time Series (Daily)'];
+      const dates = Object.keys(timeSeries);
+      const latestDate = dates[0];
+      const previousDate = dates[1];
+      const latestClose = parseFloat(timeSeries[latestDate]['4. close']);
+      const previousClose = parseFloat(timeSeries[previousDate]['4. close']);
+      const dailyChange = ((latestClose - previousClose) / previousClose * 100).toFixed(2);
+      setDailyChange(dailyChange);
     } catch (error) {
       console.error('Error fetching stock data:', error);
     }
