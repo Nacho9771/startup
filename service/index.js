@@ -16,6 +16,17 @@ let users = [];
 let comments = [];
 let userData = {};
 
+// Middleware for authentication
+const verifyAuth = (req, res, next) => {
+    const user = users.find((u) => u.token === req.cookies[authCookieName]);
+    if (user) {
+        req.user = user;
+        next();
+    } else {
+        res.status(401).send({ msg: 'Unauthorized' });
+    }
+};
+
 // API Router
 const apiRouter = express.Router();
 app.use('/api', apiRouter);
@@ -53,52 +64,67 @@ apiRouter.delete('/auth/logout', (req, res) => {
     res.status(204).end();
 });
 
-// Fetch comments
-apiRouter.get('/comments', (req, res) => {
-    res.send(comments);
-});
-
-// Add a new comment
-apiRouter.post('/comments', (req, res) => {
-    const { user, text } = req.body;
-    if (!user || !text) {
-        return res.status(400).send({ msg: 'User and text are required' });
-    }
-    const newComment = { user, text };
-    comments.push(newComment);
-    comments = comments.slice(-10);
-    res.status(201).send(newComment);
-});
-
 // Fetch user data
-apiRouter.get('/user/:userName', (req, res) => {
+apiRouter.get('/user/:userName', verifyAuth, (req, res) => {
     const userName = req.params.userName;
     const data = userData[userName] || {};
     res.send(data);
 });
 
+// Fetch all users and their net worth
+apiRouter.get('/leaderboard', verifyAuth, (req, res) => {
+    const leaderboard = users.map(user => {
+        const data = userData[user.email] || {
+            balance: 100000,
+            netWorth: 100000,
+        };
+        return {
+            name: user.email.split('@')[0],
+            balance: data.balance,
+            netWorth: data.netWorth
+        };
+    });
+    
+    res.send(leaderboard);
+});
+
+
 // Update user data
-apiRouter.post('/user/:userName', (req, res) => {
+apiRouter.post('/user/:userName', verifyAuth, (req, res) => {
     const userName = req.params.userName;
     userData[userName] = req.body;
     res.status(200).send(userData[userName]);
 });
 
-// Middleware for authentication
-const verifyAuth = (req, res, next) => {
-    const user = users.find((u) => u.token === req.cookies[authCookieName]);
-    if (user) {
-        req.user = user;
-        next();
-    } else {
-        res.status(401).send({ msg: 'Password incorrect. Please try again.' });
-    }
-};
+// Fetch comments
+apiRouter.get('/comments', (req, res) => {
+    res.send(comments);
+});
+
+// Post a new comment
+apiRouter.post('/comments', verifyAuth, (req, res) => {
+    const comment = { user: req.user.email.split('@')[0], text: req.body.text };
+    comments.push(comment);
+    res.status(201).send(comment);
+});
 
 async function createUser(email, password) {
     const passwordHash = await bcrypt.hash(password, 10);
     const user = { email, password: passwordHash, token: uuid.v4() };
     users.push(user);
+    userData[email] = {
+        balance: 100000,
+        portfolio: [],
+        purchases: [],
+        netWorth: 100000,
+        profile: {
+            phoneNumber: '',
+            fullName: '',
+            yearlyIncome: '',
+            riskTolerance: '',
+            creationTime: new Date().toISOString(),
+        },
+    };
     return user;
 }
 

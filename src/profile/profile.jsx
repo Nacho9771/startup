@@ -21,43 +21,65 @@ export function Profile({ userName, balance, setBalance, netWorth }) {
   const userName_noemail = userName.split('@')[0];
 
   useEffect(() => {
-    const userProfile = JSON.parse(localStorage.getItem(userName_noemail)) || {};
-    if (userProfile.phoneNumber) setPhoneNumber(userProfile.phoneNumber);
-    if (userProfile.fullName) setFullName(userProfile.fullName);
-    if (userProfile.yearlyIncome) setYearlyIncome(userProfile.yearlyIncome);
-    if (userProfile.riskTolerance) setRiskTolerance(userProfile.riskTolerance);
-    if (userProfile.creationTime) {
-      const timeSinceCreation = new Date() - new Date(userProfile.creationTime);
-      setAccountAge(Math.floor(timeSinceCreation / (1000 * 60 * 60 * 24)));
-    } else {
-      setAccountAge(0);
+    async function fetchUserProfile() {
+      try {
+        const response = await fetch(`/api/user/${userName}`);
+        const data = await response.json();
+        const profile = data.profile || {};
+        setPhoneNumber(profile.phoneNumber || '');
+        setFullName(profile.fullName || '');
+        setYearlyIncome(profile.yearlyIncome || '');
+        setRiskTolerance(profile.riskTolerance || '');
+        if (profile.creationTime) {
+          const timeSinceCreation = new Date() - new Date(profile.creationTime);
+          setAccountAge(Math.floor(timeSinceCreation / (1000 * 60 * 60 * 24)));
+        } else {
+          setAccountAge(0);
+        }
+        setStoredBalance(data.balance);
+        setPortfolio(data.portfolio);
+        const portfolioValue = data.portfolio.reduce((total, stock) => total + parseFloat(stock.totalValue), 0);
+        setStoredNetWorth(data.balance + portfolioValue);
+        setTransactions(data.purchases);
+        setUserTrades(data.purchases.filter(trade => trade.userName === userName_noemail));
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+      }
     }
+    fetchUserProfile();
+  }, [userName, userName_noemail]);
 
-    const storedTransactions = JSON.parse(localStorage.getItem('purchases')) || [];
-    setTransactions(storedTransactions);
-    const userSpecificTrades = storedTransactions.filter(trade => trade.userName === userName_noemail);
-    setUserTrades(userSpecificTrades);
-    const storedPortfolio = JSON.parse(localStorage.getItem(`${userName_noemail}_portfolio`)) || [];
-    setPortfolio(storedPortfolio);
-    const storedBalance = parseFloat(localStorage.getItem(`${userName_noemail}_balance`)) || 0;
-    setStoredBalance(storedBalance);
-    const portfolioValue = storedPortfolio.reduce((total, stock) => total + parseFloat(stock.totalValue), 0);
-    const netWorth = storedBalance + portfolioValue;
-    setStoredNetWorth(netWorth);
-  }, [userName_noemail]);
-
-  const handleStimulus = () => {
+  const handleStimulus = async () => {
     if (storedNetWorth < 10000) {
       const newBalance = balance + 500;
       setBalance(newBalance);
-      localStorage.setItem(`${userName_noemail}_balance`, newBalance.toFixed(2));
-      alert("You just got a $500 bonus! Don't lose it too quickly");
+      try {
+        await fetch(`/api/user/${userName}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            balance: newBalance,
+            portfolio,
+            purchases: transactions,
+            profile: {
+              phoneNumber,
+              fullName,
+              yearlyIncome,
+              riskTolerance,
+              creationTime: new Date().toISOString(),
+            },
+          }),
+        });
+        alert("You just got a $500 bonus! Don't lose it too quickly");
+      } catch (error) {
+        console.error('Error updating user data:', error);
+      }
     } else {
       alert('You are not eligible for a stimulus. You are too rich!');
     }
   };
 
-  const handleUpdateProfile = (e) => {
+  const handleUpdateProfile = async (e) => {
     e.preventDefault();
     setPhoneNumber(newPhoneNumber);
     setFullName(newFullName);
@@ -69,10 +91,24 @@ export function Profile({ userName, balance, setBalance, netWorth }) {
       fullName: newFullName,
       yearlyIncome: newYearlyIncome,
       riskTolerance: newRiskTolerance,
-      creationTime: new Date().toISOString()
+      creationTime: new Date().toISOString(),
     };
-    localStorage.setItem(userName_noemail, JSON.stringify(updatedProfile));
-    alert('Profile updated successfully!');
+
+    try {
+      await fetch(`/api/user/${userName}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          balance: storedBalance,
+          portfolio,
+          purchases: transactions,
+          profile: updatedProfile,
+        }),
+      });
+      alert('Profile updated successfully!');
+    } catch (error) {
+      console.error('Error updating user profile:', error);
+    }
   };
 
   return (

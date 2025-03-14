@@ -18,78 +18,78 @@ export function Forum({ userName }) {
   const userName_noemail = userName.split('@')[0];
 
   useEffect(() => {
-    const storedBalance = parseFloat(localStorage.getItem(`${userName_noemail}_balance`)) || 0;
-    setStoredBalance(storedBalance);
-    const storedPortfolio = JSON.parse(localStorage.getItem(`${userName_noemail}_portfolio`)) || [];
-    const portfolioValue = storedPortfolio.reduce((total, stock) => total + parseFloat(stock.totalValue), 0);
-    const netWorth = storedBalance + portfolioValue;
-    setStoredNetWorth(netWorth);
-
-    const storedTrades = JSON.parse(localStorage.getItem('purchases')) || [];
-    setUserTrades(storedTrades.slice(-10));
-  }, [userName_noemail]);
-
-  useEffect(() => {
-    const storedPurchases = JSON.parse(localStorage.getItem('purchases')) || [];
-    setUserPurchases(storedPurchases);
-  }, []);
-
-  useEffect(() => {
-    const storedLeaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
-    const storedPurchases = JSON.parse(localStorage.getItem('purchases')) || [];
-    setLeaderboard(quickSort(storedLeaderboard).slice(0, 10));
-    setUserPurchases(storedPurchases.slice(-10));
-  }, []);
-
-  useEffect(() => {
-    if (userName_noemail) {
-      const userExists = leaderboard.some(user => user.name === userName_noemail);
-      if (!userExists) {
-        const newUser = { name: userName_noemail, balance: storedNetWorth.toFixed(2) };
-        const updatedLeaderboard = quickSort([...leaderboard, newUser]);
-        setLeaderboard(updatedLeaderboard.slice(0, 10));
-        localStorage.setItem('leaderboard', JSON.stringify(updatedLeaderboard));
+    async function fetchUserData() {
+      try {
+        const response = await fetch(`/api/user/${userName}`);
+        const data = await response.json();
+        setStoredBalance(data.balance);
+        const portfolioValue = data.portfolio.reduce((total, stock) => total + parseFloat(stock.totalValue), 0);
+        setStoredNetWorth(data.balance + portfolioValue);
+        setUserTrades(data.purchases.slice(-10));
+      } catch (error) {
+        console.error('Error fetching user data:', error);
       }
     }
-  }, [userName_noemail, leaderboard, storedNetWorth]);
+    fetchUserData();
+  }, [userName, userName_noemail]);
 
   useEffect(() => {
-    fetch('/api/comments')
-      .then(response => response.json())
-      .then(data => setComments(data));
+    async function fetchComments() {
+      try {
+        const response = await fetch('/api/comments');
+        const data = await response.json();
+        setComments(data);
+      } catch (error) {
+        console.error('Error fetching comments:', error);
+      }
+    }
+    fetchComments();
   }, []);
 
-  const handleCommentSubmit = () => {
+  useEffect(() => {
+    async function fetchLeaderboard() {
+      try {
+        const response = await fetch('/api/leaderboard');
+        const data = await response.json();
+        const sortedLeaderboard = quickSort(data).reverse();
+        setLeaderboard(sortedLeaderboard);
+      } catch (error) {
+        console.error('Error fetching leaderboard:', error);
+      }
+    }
+    fetchLeaderboard();
+  }, []);
+
+  const handleCommentSubmit = async () => {
     if (newComment.trim()) {
       setLoading(true);
-      fetch('/api/comments', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ user: userName_noemail, text: newComment }),
-      })
-        .then(response => response.json())
-        .then(comment => {
-          setComments(prevComments => [...prevComments, comment].slice(-10));
-          setNewComment('');
-          setLoading(false);
-          setNotification('Comment sent successfully!'); 
-          setFadeOut(false); 
-          setTimeout(() => {
-            setFadeOut(true);
-            setTimeout(() => setNotification(''), 1000);
-          }, 2500); 
-        })
-        .catch(() => {
-          setLoading(false);
-          setNotification('Failed to send comment.'); 
-          setFadeOut(false); 
-          setTimeout(() => {
-            setFadeOut(true);
-            setTimeout(() => setNotification(''), 1000);
-          }, 2500); 
+      try {
+        const response = await fetch('/api/comments', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ text: newComment }),
         });
+        const comment = await response.json();
+        setComments(prevComments => [...prevComments, comment].slice(-10));
+        setNewComment('');
+        setLoading(false);
+        setNotification('Comment sent successfully!'); 
+        setFadeOut(false); 
+        setTimeout(() => {
+          setFadeOut(true);
+          setTimeout(() => setNotification(''), 1000);
+        }, 2500); 
+      } catch (error) {
+        setLoading(false);
+        setNotification('Failed to send comment.'); 
+        setFadeOut(false); 
+        setTimeout(() => {
+          setFadeOut(true);
+          setTimeout(() => setNotification(''), 1000);
+        }, 2500); 
+      }
     }
   };
 
@@ -99,31 +99,20 @@ export function Forum({ userName }) {
     }
   };
 
-  useEffect(() => {
-    if (leaderboard.length === 0) {
-      const mockUsers = [];
-      mockUsers.push({ name: `Tom`, balance: (100000 + Math.random() * 50000).toFixed(2) });
-      mockUsers.push({ name: `Lee`, balance: (100000 + Math.random() * 50000).toFixed(2) });
-      mockUsers.push({ name: `Gordon`, balance: (100000 + Math.random() * 50000).toFixed(2) });
-      mockUsers.push({ name: `Mark`, balance: (100000 + Math.random() * 50000).toFixed(2) });
-      mockUsers.push({ name: `Nancy`, balance: (100000 + Math.random() * 50000).toFixed(2) });
-      mockUsers.push({ name: `Dan`, balance: (100000 + Math.random() * 50000).toFixed(2) });
-      mockUsers.push({ name: `Seth`, balance: (100000 + Math.random() * 50000).toFixed(2) });
-      mockUsers.push({ name: `Kent`, balance: (100000 + Math.random() * 50000).toFixed(2) });
-      mockUsers.push({ name: `Dennis`, balance: (100000 + Math.random() * 50000).toFixed(2) });
-      setLeaderboard(mockUsers);
-      localStorage.setItem('leaderboard', JSON.stringify(mockUsers));
-    }
-  }, [leaderboard]);
-
   return (
     <main>
       <section>
         <h2>Leaderboard</h2>
         <ol id="leaderboard-list">
-          {leaderboard.slice(-10).reverse().map((user, index) => (
-            <li key={index}>{user.name}: ${user.balance}</li>
-          ))}
+          {leaderboard
+            .filter(user => user.netWorth !== undefined) // Exclude undefined net worths
+            .slice(-10)
+            .reverse()
+            .map((user, index) => (
+              <li key={index}>
+                {user.name}: ${user.netWorth.toFixed(2)}
+              </li>
+            ))}
         </ol>
       </section>
 

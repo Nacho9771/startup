@@ -3,13 +3,12 @@ import '../app.css';
 import './home.css';
 import axios from 'axios';
 
-const ALPHA_VANTAGE_API_KEY_SEARCH = 'WLT5ZY6ZRCSDT7U9';
-const ALPHA_VANTAGE_API_KEY_QUOTE = 'Q9DKRPU4A073VDBG';
-const ALPHA_VANTAGE_API_KEY_DAILY = 'LTE4ZHN2LOCLJ74W';
+const alphavantageAPI_Search = 'WLT5ZY6ZRCSDT7U9';
+const alphavantageAPI_Quote = 'Q9DKRPU4A073VDBG';
+const alphavantageAPI_Daily = 'LTE4ZHN2LOCLJ74W';
 
 export function Home({ userName }) {
-  const initialBalance = 100000;
-  const [balance, setBalance] = useState(initialBalance);
+  const [balance, setBalance] = useState(0);
   const [portfolio, setPortfolio] = useState([]);
   const [selectedStock, setSelectedStock] = useState(null);
   const [quantity, setQuantity] = useState(1);
@@ -20,15 +19,22 @@ export function Home({ userName }) {
   const userName_noemail = userName.split('@')[0];
 
   useEffect(() => {
-    const storedPortfolio = JSON.parse(localStorage.getItem(`${userName_noemail}_portfolio`)) || [];
-    setPortfolio(storedPortfolio);
-    const storedBalance = parseFloat(localStorage.getItem(`${userName_noemail}_balance`)) || initialBalance;
-    setBalance(storedBalance);
-  }, [userName_noemail]);
+    async function fetchUserData() {
+      try {
+        const response = await fetch(`/api/user/${userName}`);
+        const data = await response.json();
+        setBalance(data.balance);
+        setPortfolio(data.portfolio);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    }
+    fetchUserData();
+  }, [userName]);
 
   const handleSearch = async () => {
     if (searchQuery.trim() === '') return;
-    const url = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${searchQuery}&apikey=${ALPHA_VANTAGE_API_KEY_SEARCH}`;
+    const url = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${searchQuery}&apikey=${alphavantageAPI_Search}`;
     try {
       const response = await axios.get(url);
       setSearchResults(response.data.bestMatches || []);
@@ -38,8 +44,8 @@ export function Home({ userName }) {
   };
 
   const handleSelectStock = async (symbol) => {
-    const urlQuote = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${ALPHA_VANTAGE_API_KEY_QUOTE}`;
-    const urlDaily = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=${ALPHA_VANTAGE_API_KEY_DAILY}`;
+    const urlQuote = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${alphavantageAPI_Quote}`;
+    const urlDaily = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=${alphavantageAPI_Daily}`;
     try {
       const responseQuote = await axios.get(urlQuote);
       const stockData = responseQuote.data['Global Quote'];
@@ -66,7 +72,7 @@ export function Home({ userName }) {
     }
   };
 
-  const handleSell = () => {
+  const handleSell = async () => {
     if (!selectedStock || quantity <= 0) {
       return alert("Select a stock to sell.");
     }
@@ -104,17 +110,23 @@ export function Home({ userName }) {
       date: new Date().toLocaleString()
     };
   
-    localStorage.setItem(`${userName_noemail}_portfolio`, JSON.stringify(updatedPortfolio));
-    localStorage.setItem(`${userName_noemail}_balance`, updatedBalance.toFixed(2));
-    setPortfolio(updatedPortfolio);
-    setBalance(updatedBalance);
-  
-    const existingPurchases = JSON.parse(localStorage.getItem('purchases')) || [];
-    existingPurchases.push(newTrade);
-    localStorage.setItem('purchases', JSON.stringify(existingPurchases));
-  
-    alert(`${quantity} shares of ${selectedStock.name} sold for $${saleAmount.toFixed(2)}!`);
-    setSelectedStock(null);
+    try {
+      await fetch(`/api/user/${userName}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          balance: updatedBalance,
+          portfolio: updatedPortfolio,
+          purchases: [...portfolio, newTrade],
+        }),
+      });
+      setPortfolio(updatedPortfolio);
+      setBalance(updatedBalance);
+      alert(`${quantity} shares of ${selectedStock.name} sold for $${saleAmount.toFixed(2)}!`);
+      setSelectedStock(null);
+    } catch (error) {
+      console.error('Error updating user data:', error);
+    }
   };
 
   let totalCost = 0;
@@ -124,7 +136,7 @@ export function Home({ userName }) {
     balanceAfterPurchase = balance - totalCost;
   }
 
-  const handlePurchase = () => {
+  const handlePurchase = async () => {
     if (!selectedStock || quantity <= 0) {
       return alert("Select a stock and a quantity for purchase!");
     }
@@ -145,8 +157,6 @@ export function Home({ userName }) {
       });
     }
     const newBalance = balance - totalCost;
-    localStorage.setItem(`${userName_noemail}_portfolio`, JSON.stringify(newPortfolio));
-    localStorage.setItem(`${userName_noemail}_balance`, newBalance.toFixed(2));
     const purchaseDetails = {
       userName: userName_noemail,
       stockName: selectedStock.name,
@@ -155,13 +165,23 @@ export function Home({ userName }) {
       price: selectedStock.price,
       type: "buy"
     };
-    const existingPurchases = JSON.parse(localStorage.getItem('purchases')) || [];
-    existingPurchases.push(purchaseDetails);
-    localStorage.setItem('purchases', JSON.stringify(existingPurchases));
-    setPortfolio(newPortfolio);
-    setBalance(newBalance);
-    alert(`${quantity} shares of ${selectedStock.name} purchased successfully!`);
-    setSelectedStock(null);
+    try {
+      await fetch(`/api/user/${userName}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          balance: newBalance,
+          portfolio: newPortfolio,
+          purchases: [...portfolio, purchaseDetails],
+        }),
+      });
+      setPortfolio(newPortfolio);
+      setBalance(newBalance);
+      alert(`${quantity} shares of ${selectedStock.name} purchased successfully!`);
+      setSelectedStock(null);
+    } catch (error) {
+      console.error('Error updating user data:', error);
+    }
   };
 
   const portfolioValue = portfolio.reduce((total, stock) => total + parseFloat(stock.totalValue), 0);
@@ -285,3 +305,4 @@ export function Home({ userName }) {
     </main>
   );
 }
+
