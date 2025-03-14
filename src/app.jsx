@@ -21,7 +21,7 @@ export default function App() {
     const [userName, setUserName] = useState('');
 
     useEffect(() => {
-        const storedUser = localStorage.getItem('userName');
+        const storedUser = sessionStorage.getItem('userName');
         if (storedUser) {
             setAuthState(AuthState.Authenticated);
             setUserName(storedUser);
@@ -119,7 +119,7 @@ export default function App() {
     );
 
     function logout_feature() {
-        localStorage.removeItem('userName');
+        sessionStorage.removeItem('userName');
         setAuthState(AuthState.Unauthenticated);
         setUserName('');
     }

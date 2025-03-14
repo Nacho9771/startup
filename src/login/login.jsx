@@ -20,7 +20,7 @@ export function Login({ userName, authState, onAuthChange }) {
 
             if (response.ok) {
                 const data = await response.json();
-                localStorage.setItem('userName', data.email);
+                sessionStorage.setItem('userName', data.email);
                 onAuthChange(data.email, AuthState.Authenticated);
                 navigate('/home');
             } else {
@@ -35,7 +35,7 @@ export function Login({ userName, authState, onAuthChange }) {
     function handleLogout() {
         fetch('/api/auth/logout', { method: 'DELETE' })
             .finally(() => {
-                localStorage.removeItem('userName');
+                sessionStorage.removeItem('userName');
                 onAuthChange('', AuthState.Unauthenticated);
             });
     }
