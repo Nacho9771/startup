@@ -105,12 +105,11 @@ export function Forum({ userName }) {
         <h2>Leaderboard</h2>
         <ol id="leaderboard-list">
           {leaderboard
-            .filter(user => user.netWorth !== undefined) // Exclude undefined net worths
-            .slice(-10)
-            .reverse()
             .map((user, index) => (
               <li key={index}>
-                {user.name}: ${user.netWorth.toFixed(2)}
+                {user.name}: ${typeof user.netWorth === 'number' 
+                  ? user.netWorth.toFixed(2) 
+                  : (user.netWorth || 100000).toFixed(2)}
               </li>
             ))}
         </ol>
