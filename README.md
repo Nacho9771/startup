@@ -121,13 +121,16 @@ I ran into a ton of instances where I would use "npm run dev 'o'" and my page wo
 
 ## 🚀 Service deliverable
 
+This was an extremely difficult deliverable to wrap my head around, and I learned a lot about NodeJS and backend service in general. I really needed a lot of help in order to code and understand what was taught this time, and I once again learned a lot of dumb lessons the hard way. Nevertheless, everything I wanted to include in this update is done!
+
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] **Node.js/Express HTTP service** - I did not complete this part of the deliverable.
-- [ ] **Static middleware for frontend** - I did not complete this part of the deliverable.
-- [ ] **Calls to third party endpoints** - I did not complete this part of the deliverable.
-- [ ] **Backend service endpoints** - I did not complete this part of the deliverable.
-- [ ] **Frontend calls service endpoints** - I did not complete this part of the deliverable.
+- [x] **Node.js/Express HTTP service** - Done! All implemented
+- [x] **Static middleware for frontend** - Yep! That's in there too, making sure everything is secure
+- [x] **Calls to third party endpoints** - I ended up using three keys from a third party API called AlphaVantage in order to extract realtime stock data, daily changes, and the search engine. This is located in the home.jsx file near the top! However, it can only handle 25 requests a day - unless I wanted to pay $50 (which...I don't want to do that lol). So, if the stocks don't load I promise that they will the next day and you could try it later.
+- [x] **Backend service endpoints** - Endpoints are fully fledged and included across all pages, updating things like account information, login stuff, new user authentication/authorization, portfolios, balances, the leaderboard, the comments, and other things that make the website functional outside of local storage. Lots of stuff.
+- [x] **Frontend calls service endpoints** - All of the frontend is linked with the backend service, so it all runs as intended.
+- [x] **General edits and bug fixes** - I fixed stuff like the comments section submit button and made some personal changes to the code - more will definitely come. I want to create stock lines, fix the table on the home.jsx, and change some things about the website to look it more visually appealing.
 
 ## 🚀 DB/Login deliverable
 

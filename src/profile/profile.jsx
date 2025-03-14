@@ -22,7 +22,8 @@ export function Profile({ userName, balance, setBalance, netWorth }) {
 
   useEffect(() => {
     async function fetchUserProfile() {
-      try {
+      try {q
+        
         const response = await fetch(`/api/user/${userName}`);
         const data = await response.json();
         const profile = data.profile || {};
