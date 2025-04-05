@@ -1,145 +1,127 @@
-const port = process.argv.length > 2 ? process.argv[2] : 4000;
-const express = require('express');
-const app = express();
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcryptjs');
+const express = require('express');
 const uuid = require('uuid');
+const app = express();
+const DB = require('./database.js');
 
 const authCookieName = 'token';
 
-app.use(express.static('public'));
+const port = process.argv.length > 2 ? process.argv[2] : 4000;
 app.use(express.json());
 app.use(cookieParser());
-
-// Create data structures here
-let users = [];
-let comments = [];
-let userData = {};
-
-// Middleware for authentication
-const verifyAuth = (req, res, next) => {
-    const user = users.find((u) => u.token === req.cookies[authCookieName]);
-    if (user) {
-        req.user = user;
-        next();
-    } else {
-        res.status(401).send({ msg: 'Unauthorized' });
-    }
-};
-
-// API Router
+app.use(express.static('public'));
 const apiRouter = express.Router();
-app.use('/api', apiRouter);
+app.use(`/api`, apiRouter);
 
-// New user
+// CreateAuth token for a new user
 apiRouter.post('/auth/create', async (req, res) => {
-    const { email, password } = req.body;
-    if (await findUser('email', email)) {
-        return res.status(409).send({ msg: 'Existing user' });
-    }
-    const user = await createUser(email, password);
+  if (await DB.getUser(req.body.email)) {
+    res.status(409).send({ msg: 'Existing user' });
+  } else {
+    const user = await createUser(req.body.email, req.body.password);
+
     setAuthCookie(res, user.token);
     res.send({ email: user.email });
+  }
 });
 
-// Login
 apiRouter.post('/auth/login', async (req, res) => {
-    const { email, password } = req.body;
-    const user = await findUser('email', email);
-    if (user && await bcrypt.compare(password, user.password)) {
-        user.token = uuid.v4();
-        setAuthCookie(res, user.token);
-        res.send({ email: user.email });
-    } else {
-        res.status(401).send({ msg: 'Password incorrect. Please try again.' });
+  const user = await DB.getUser(req.body.email);
+  if (user) {
+    if (await bcrypt.compare(req.body.password, user.password)) {
+      user.token = uuid.v4();
+      await DB.updateUser(user);
+      setAuthCookie(res, user.token);
+      res.send({ email: user.email });
+      return;
     }
+  }
+  res.status(401).send({ msg: 'Unauthorized' });
 });
 
-// Logout
-apiRouter.delete('/auth/logout', (req, res) => {
-    const user = users.find((u) => u.token === req.cookies[authCookieName]);
-    if (user) delete user.token;
-
-    res.clearCookie(authCookieName);
-    res.status(204).end();
+apiRouter.delete('/auth/logout', async (req, res) => {
+  const user = await DB.getUserByToken(req.cookies[authCookieName]);
+  if (user) {
+    delete user.token;
+    await DB.updateUser(user);
+  }
+  res.clearCookie(authCookieName);
+  res.status(204).end();
 });
 
-// Fetch user data
-apiRouter.get('/user/:userName', verifyAuth, (req, res) => {
-    const userName = req.params.userName;
-    const data = userData[userName] || {};
-    res.send(data);
+const verifyAuth = async (req, res, next) => {
+  const user = await DB.getUserByToken(req.cookies[authCookieName]);
+  if (user) {
+    next();
+  } else {
+    res.status(401).send({ msg: 'Unauthorized' });
+  }
+};
+
+// GetScores
+apiRouter.get('/scores', verifyAuth, async (req, res) => {
+  const scores = await DB.getHighScores();
+  res.send(scores);
 });
 
-// Fetch all users and their net worth
-apiRouter.get('/leaderboard', verifyAuth, (req, res) => {
-    const leaderboard = users.map(user => {
-        const data = userData[user.email] || {
-            balance: 100000,
-            netWorth: 100000,
-        };
-        return {
-            name: user.email.split('@')[0],
-            balance: data.balance,
-            netWorth: data.netWorth
-        };
-    });
-    
-    res.send(leaderboard);
-});
-
-
-// Update user data
-apiRouter.post('/user/:userName', verifyAuth, (req, res) => {
-    const userName = req.params.userName;
-    userData[userName] = req.body;
-    res.status(200).send(userData[userName]);
+// SubmitScore
+apiRouter.post('/score', verifyAuth, async (req, res) => {
+  const scores = await updateScores(req.body);
+  res.send(scores);
 });
 
 // Fetch comments
-apiRouter.get('/comments', (req, res) => {
-    res.send(comments);
+apiRouter.get('/comments', async (req, res) => {
+  const comments = await DB.getComments();
+  res.send(comments);
 });
 
 // Post a new comment
-apiRouter.post('/comments', verifyAuth, (req, res) => {
-    const comment = { user: req.user.email.split('@')[0], text: req.body.text };
-    comments.push(comment);
-    res.status(201).send(comment);
+apiRouter.post('/comments', verifyAuth, async (req, res) => {
+  const comment = {
+    user: req.user.email.split('@')[0],
+    text: req.body.text,
+  };
+  await DB.addComment(comment);
+  res.status(201).send(comment);
 });
 
+app.use(function (err, req, res, next) {
+  res.status(500).send({ type: err.name, message: err.message });
+});
+
+app.use((_req, res) => {
+  res.sendFile('index.html', { root: 'public' });
+});
+
+async function updateScores(newScore) {
+  await DB.addScore(newScore);
+  return DB.getHighScores();
+}
+
 async function createUser(email, password) {
-    const passwordHash = await bcrypt.hash(password, 10);
-    const user = { email, password: passwordHash, token: uuid.v4() };
-    users.push(user);
-    userData[email] = {
-        balance: 100000,
-        portfolio: [],
-        purchases: [],
-        netWorth: 100000,
-        profile: {
-            phoneNumber: '',
-            fullName: '',
-            yearlyIncome: '',
-            riskTolerance: '',
-            creationTime: new Date().toISOString(),
-        },
-    };
-    return user;
+  const passwordHash = await bcrypt.hash(password, 10);
+
+  const user = {
+    email: email,
+    password: passwordHash,
+    token: uuid.v4(),
+  };
+  await DB.addUser(user);
+
+  return user;
 }
 
-async function findUser(field, value) {
-    return users.find((u) => u[field] === value);
+// setAuthCookie in the HTTP response
+function setAuthCookie(res, authToken) {
+  res.cookie(authCookieName, authToken, {
+    secure: true,
+    httpOnly: true,
+    sameSite: 'strict',
+  });
 }
 
-function setAuthCookie(res, token) {
-    res.cookie(authCookieName, token, {
-        secure: true,
-        httpOnly: true,
-        sameSite: 'strict',
-    });
-}
-
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+const httpService = app.listen(port, () => {
+  console.log(`Listening on port ${port}`);
 });
