@@ -2,17 +2,13 @@ import React, { useState, useEffect } from 'react';
 import '../app.css';
 import './profile.css';
 
-export function Profile({ userName, balance, setBalance, netWorth }) {
+export function Profile({ userName, balance, netWorth, purchases }) {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [fullName, setFullName] = useState('');
   const [yearlyIncome, setYearlyIncome] = useState('');
   const [riskTolerance, setRiskTolerance] = useState('');
   const [accountAge, setAccountAge] = useState('');
-  const [transactions, setTransactions] = useState([]);
-  const [userTrades, setUserTrades] = useState([]);
   const [portfolio, setPortfolio] = useState([]);
-  const [storedBalance, setStoredBalance] = useState(0);
-  const [storedNetWorth, setStoredNetWorth] = useState(0);
   const [newPhoneNumber, setNewPhoneNumber] = useState('');
   const [newFullName, setNewFullName] = useState('');
   const [newYearlyIncome, setNewYearlyIncome] = useState('');
@@ -36,23 +32,17 @@ export function Profile({ userName, balance, setBalance, netWorth }) {
         } else {
           setAccountAge(0);
         }
-        setStoredBalance(data.balance);
         setPortfolio(data.portfolio);
-        const portfolioValue = data.portfolio.reduce((total, stock) => total + parseFloat(stock.totalValue), 0);
-        setStoredNetWorth(data.balance + portfolioValue);
-        setTransactions(data.purchases);
-        setUserTrades(data.purchases.filter(trade => trade.userName === userName_noemail));
       } catch (error) {
         console.error('Error fetching user profile:', error);
       }
     }
     fetchUserProfile();
-  }, [userName, userName_noemail]);
+  }, [userName]);
 
   const handleStimulus = async () => {
-    if (storedNetWorth < 10000) {
+    if (netWorth < 10000) {
       const newBalance = balance + 500;
-      setBalance(newBalance);
       try {
         await fetch(`/api/user/${userName}`, {
           method: 'POST',
@@ -60,7 +50,7 @@ export function Profile({ userName, balance, setBalance, netWorth }) {
           body: JSON.stringify({
             balance: newBalance,
             portfolio,
-            purchases: transactions,
+            purchases,
             profile: {
               phoneNumber,
               fullName,
@@ -99,9 +89,9 @@ export function Profile({ userName, balance, setBalance, netWorth }) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          balance: storedBalance,
+          balance,
           portfolio,
-          purchases: transactions,
+          purchases,
           profile: updatedProfile,
         }),
       });
@@ -116,8 +106,8 @@ export function Profile({ userName, balance, setBalance, netWorth }) {
       <section id="profile-info" className="profile-section">
         <h2>Profile Information</h2>
         <p>User: <span id="userName">{userName_noemail}</span></p>
-        <p>Balance: ${storedBalance.toFixed(2)}</p>
-        <p>Net Worth: ${storedNetWorth.toFixed(2)}</p>
+        <p>Balance: ${balance.toFixed(2)}</p>
+        <p>Net Worth: ${netWorth.toFixed(2)}</p>
         <p>Age of EasyTrading Account: {accountAge} days</p>
         <p>Phone Number: {phoneNumber || "None"}</p>
         <p>Full Name: {fullName || "None"}</p>
@@ -178,8 +168,8 @@ export function Profile({ userName, balance, setBalance, netWorth }) {
       <section id="transaction-history" className="profile-section">
         <h2>Personal Transaction History</h2>
         <ul>
-          {userTrades.length > 0 ? (
-            userTrades.slice(-40).reverse().map((trade, index) => (
+          {purchases.length > 0 ? (
+            purchases.slice(-40).reverse().map((trade, index) => (
               <li key={index}>
                 {trade.userName} {trade.type === "buy" ? "bought" : "sold"} {trade.quantity} shares of {trade.stockName} ({trade.ticker}) for ${trade.price}.
               </li>

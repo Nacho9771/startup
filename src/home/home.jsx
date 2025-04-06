@@ -8,7 +8,7 @@ const alphavantageAPI_Quote = 'Q9DKRPU4A073VDBG';
 const alphavantageAPI_Daily = 'LTE4ZHN2LOCLJ74W';
 
 export function Home({ userName }) {
-  const [balance, setBalance] = useState(0);
+  const [balance, setBalance] = useState(100000);
   const [portfolio, setPortfolio] = useState([]);
   const [selectedStock, setSelectedStock] = useState(null);
   const [quantity, setQuantity] = useState(1);

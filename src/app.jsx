@@ -19,6 +19,10 @@ import { AuthState } from './authState';
 export default function App() {
     const [authState, setAuthState] = useState(AuthState.None);
     const [userName, setUserName] = useState('');
+    const [balance, setBalance] = useState(100000);
+    const [portfolio, setPortfolio] = useState([]);
+    const [purchases, setPurchases] = useState([]);
+    const netWorth = balance + portfolio.reduce((total, stock) => total + parseFloat(stock.totalValue || 0), 0);
 
     useEffect(() => {
         const storedUser = sessionStorage.getItem('userName');
@@ -96,10 +100,10 @@ export default function App() {
                     />
                     {authState === AuthState.Authenticated ? (
                         <>
-                            <Route path='/home' element={<Home userName={userName}/>} />
-                            <Route path='/forum' element={<Forum userName={userName}/>} />
+                            <Route path='/home' element={<Home userName={userName} />} />
+                            <Route path='/forum' element={<Forum userName={userName} balance={balance} netWorth={netWorth} purchases={purchases} />} />
                             <Route path='/education' element={<Learn />} />
-                            <Route path='/profile' element={<Profile userName={userName} onLogout={logout_feature} />} />
+                            <Route path='/profile' element={<Profile userName={userName} balance={balance} netWorth={netWorth} purchases={purchases} />} />
                         </>
                     ) : (
                         <Route path='*' element={<RedirectToLogin />} />

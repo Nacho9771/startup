@@ -3,48 +3,13 @@ import { quickSort } from './quicksort';
 import './forum.css';
 import '../app.css';
 
-export function Forum({ userName }) {
+export function Forum({ userName, balance, netWorth, purchases }) {
   const [leaderboard, setLeaderboard] = useState([]);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
-  const [userPurchases, setUserPurchases] = useState([]);
-  const [userTrades, setUserTrades] = useState([]);
-  const [storedBalance, setStoredBalance] = useState(0);
-  const [storedNetWorth, setStoredNetWorth] = useState(0);
   const [loading, setLoading] = useState(false);
   const [notification, setNotification] = useState('');
-  const [fadeOut, setFadeOut] = useState(false); 
-
-  const userName_noemail = userName.split('@')[0];
-
-  useEffect(() => {
-    async function fetchUserData() {
-      try {
-        const response = await fetch(`/api/user/${userName}`);
-        const data = await response.json();
-        setStoredBalance(data.balance);
-        const portfolioValue = data.portfolio.reduce((total, stock) => total + parseFloat(stock.totalValue), 0);
-        setStoredNetWorth(data.balance + portfolioValue);
-        setUserTrades(data.purchases.slice(-10));
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    }
-    fetchUserData();
-  }, [userName, userName_noemail]);
-
-  useEffect(() => {
-    async function fetchComments() {
-      try {
-        const response = await fetch('/api/comments');
-        const data = await response.json();
-        setComments(data);
-      } catch (error) {
-        console.error('Error fetching comments:', error);
-      }
-    }
-    fetchComments();
-  }, []);
+  const [fadeOut, setFadeOut] = useState(false);
 
   useEffect(() => {
     async function fetchLeaderboard() {
@@ -104,14 +69,13 @@ export function Forum({ userName }) {
       <section>
         <h2>Leaderboard</h2>
         <ol id="leaderboard-list">
-          {leaderboard
-            .map((user, index) => (
-              <li key={index}>
-                {user.name}: ${typeof user.netWorth === 'number' 
-                  ? user.netWorth.toFixed(2) 
-                  : (user.netWorth || 100000).toFixed(2)}
-              </li>
-            ))}
+          {leaderboard.map((user, index) => (
+            <li key={index}>
+              {user.name}: ${typeof user.netWorth === 'number' 
+                ? user.netWorth.toFixed(2) 
+                : (user.netWorth || 100000).toFixed(2)}
+            </li>
+          ))}
         </ol>
       </section>
 
@@ -127,7 +91,7 @@ export function Forum({ userName }) {
             placeholder="Enter Comment"
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
-            onKeyPress = {handleKeyPress}
+            onKeyPress={handleKeyPress}
             disabled={loading}
           />
         </div>
@@ -144,20 +108,21 @@ export function Forum({ userName }) {
             </li>
           ))}
         </ul>
-        <section id="trade-activity">
-          <h3>Recent Trades</h3>
-          <ul>
-            {userTrades.length > 0 ? (
-              userTrades.slice(-40).reverse().map((trade, index) => (
-                <li key={index}>
-                  {trade.userName} {trade.type === "buy" ? "bought" : "sold"} {trade.quantity} shares of {trade.stockName} ({trade.ticker}) for ${trade.price}.
-                </li>
-              ))
-            ) : (
-              <li>No trades have been made yet.</li>
-            )}
-          </ul>
-        </section>
+      </section>
+
+      <section id="trade-activity">
+        <h3>Recent Trades</h3>
+        <ul>
+          {purchases.length > 0 ? (
+            purchases.slice(-40).reverse().map((trade, index) => (
+              <li key={index}>
+                {trade.userName} {trade.type === "buy" ? "bought" : "sold"} {trade.quantity} shares of {trade.stockName} ({trade.ticker}) for ${trade.price}.
+              </li>
+            ))
+          ) : (
+            <li>No trades have been made yet.</li>
+          )}
+        </ul>
       </section>
     </main>
   );
