@@ -22,8 +22,7 @@ export function Profile({ userName, balance, setBalance, netWorth }) {
 
   useEffect(() => {
     async function fetchUserProfile() {
-      try {q
-        
+      try {
         const response = await fetch(`/api/user/${userName}`);
         const data = await response.json();
         const profile = data.profile || {};
@@ -178,17 +177,17 @@ export function Profile({ userName, balance, setBalance, netWorth }) {
 
       <section id="transaction-history" className="profile-section">
         <h2>Personal Transaction History</h2>
-          <ul>
-            {userTrades.length > 0 ? (
-              userTrades.slice(-40).reverse().map((trade, index) => (
-                <li key={index}>
-                  {trade.userName} {trade.type === "buy" ? "bought" : "sold"} {trade.quantity} shares of {trade.stockName} ({trade.ticker}) for ${trade.price}.
-                </li>
-              ))
-            ) : (
-              <li>No trades have been made yet.</li>
-            )}
-          </ul>
+        <ul>
+          {userTrades.length > 0 ? (
+            userTrades.slice(-40).reverse().map((trade, index) => (
+              <li key={index}>
+                {trade.userName} {trade.type === "buy" ? "bought" : "sold"} {trade.quantity} shares of {trade.stockName} ({trade.ticker}) for ${trade.price}.
+              </li>
+            ))
+          ) : (
+            <li>No trades have been made yet.</li>
+          )}
+        </ul>
       </section>
     </main>
   );
