@@ -134,13 +134,17 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 ## 🚀 DB/Login deliverable
 
+I learned a lot about setting up a database! It was a lot harder than I thought it would be, which seems to be a running theme with all of these deliverables, but thankfully mongodb makes it a lot easier for developers ot store data. I couldn't imagine crafting a database myself right now.
+
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] **User registration** - I did not complete this part of the deliverable.
-- [ ] **User login and logout** - I did not complete this part of the deliverable.
-- [ ] **Stores data in MongoDB** - I did not complete this part of the deliverable.
-- [ ] **Stores credentials in MongoDB** - I did not complete this part of the deliverable.
-- [ ] **Restricts functionality based on authentication** - I did not complete this part of the deliverable.
+- [x] **User registration** - Users could already register and be saved in the database, now they stay! :)
+- [x] **User login and logout** - Done!
+- [x] **Stores data in MongoDB** - All of my data is now stored in mongodb, I checked by implementing a test feature to see if the database connects by printing in the terminal "Connected to database", and I checked to see if I could login the next day and see my stocks that I purchased (It worked)
+- [x] **Stores credentials in MongoDB** - All credentials are stored in MongoDB as well - I tried to use a bunch of bogus passwords and it didn't work
+- [x] **Restricts functionality based on authentication** - Well, other people cannot access their account so I suppose this step is implemented too ( I think this was implemented last deliverable)
+
+I also made some bug fixes!
 
 ## 🚀 WebSocket deliverable
 
