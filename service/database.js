@@ -49,7 +49,12 @@ async function getHighScores() {
 }
 
 async function getComments() {
-  return commentCollection.find().toArray();
+  const options = {
+    sort: { _id: -1 }, // Sort by most recent comments
+    limit: 10,         // Limit to the last 10 comments
+  };
+  const cursor = commentCollection.find({}, options);
+  return cursor.toArray();
 }
 
 async function addComment(comment) {

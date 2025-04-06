@@ -2,6 +2,7 @@ const cookieParser = require('cookie-parser');
 const bcrypt = require('bcryptjs');
 const express = require('express');
 const uuid = require('uuid');
+const { WebSocketServer } = require('ws');
 const app = express();
 const DB = require('./database.js');
 
@@ -13,6 +14,24 @@ app.use(cookieParser());
 app.use(express.static('public'));
 const apiRouter = express.Router();
 app.use(`/api`, apiRouter);
+
+const wss = new WebSocketServer({ noServer: true });
+const clients = new Set();
+
+wss.on('connection', (ws) => {
+  clients.add(ws);
+  ws.on('close', () => clients.delete(ws));
+});
+
+app.server = app.listen(port, () => {
+  console.log(`Listening on port ${port}`);
+});
+
+app.server.on('upgrade', (request, socket, head) => {
+  wss.handleUpgrade(request, socket, head, (ws) => {
+    wss.emit('connection', ws, request);
+  });
+});
 
 // CreateAuth token for a new user
 apiRouter.post('/auth/create', async (req, res) => {
@@ -84,6 +103,14 @@ apiRouter.post('/comments', verifyAuth, async (req, res) => {
     text: req.body.text,
   };
   await DB.addComment(comment);
+
+  // Broadcast the new comment to all connected WebSocket clients
+  for (const client of clients) {
+    if (client.readyState === 1) {
+      client.send(JSON.stringify(comment));
+    }
+  }
+
   res.status(201).send(comment);
 });
 

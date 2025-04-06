@@ -25,6 +25,28 @@ export function Forum({ userName, balance, netWorth, purchases }) {
     fetchLeaderboard();
   }, []);
 
+  useEffect(() => {
+    async function fetchComments() {
+      try {
+        const response = await fetch('/api/comments');
+        const data = await response.json();
+        setComments(data.slice(-10));
+      } catch (error) {
+        console.error('Error fetching comments:', error);
+      }
+    }
+
+    fetchComments();
+
+    const ws = new WebSocket('ws://localhost:4000');
+    ws.onmessage = (event) => {
+      const newComment = JSON.parse(event.data);
+      setComments((prevComments) => [...prevComments, newComment].slice(-10));
+    };
+
+    return () => ws.close();
+  }, []);
+
   const handleCommentSubmit = async () => {
     if (newComment.trim()) {
       setLoading(true);
