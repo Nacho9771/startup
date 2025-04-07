@@ -21,7 +21,7 @@ export default function App() {
     const [userName, setUserName] = useState('');
     const [balance, setBalance] = useState(100000);
     const [portfolio, setPortfolio] = useState([]);
-    const [purchases, setPurchases] = useState([]);
+    const [notifications, setNotifications] = useState([]);
     const netWorth = balance + portfolio.reduce((total, stock) => total + parseFloat(stock.totalValue || 0), 0);
 
     useEffect(() => {
@@ -100,10 +100,10 @@ export default function App() {
                     />
                     {authState === AuthState.Authenticated ? (
                         <>
-                            <Route path='/home' element={<Home userName={userName} />} />
-                            <Route path='/forum' element={<Forum userName={userName} balance={balance} netWorth={netWorth} purchases={purchases} />} />
+                            <Route path='/home' element={<Home userName={userName} balance={balance} setBalance={setBalance} portfolio={portfolio} setPortfolio={setPortfolio} notifications={notifications} setNotifications={setNotifications} />} />
+                            <Route path='/forum' element={<Forum userName={userName} balance={balance} netWorth={netWorth} portfolio={portfolio} notifications={notifications} />} />
                             <Route path='/education' element={<Learn />} />
-                            <Route path='/profile' element={<Profile userName={userName} balance={balance} netWorth={netWorth} purchases={purchases} />} />
+                            <Route path='/profile' element={<Profile userName={userName} balance={balance} netWorth={netWorth} portfolio={portfolio} notifications={notifications} />} />
                         </>
                     ) : (
                         <Route path='*' element={<RedirectToLogin />} />

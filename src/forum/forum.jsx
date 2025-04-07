@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import './forum.css';
 import '../app.css';
 
-export function Forum({ userName, purchases }) {
+export function Forum({ userName, balance, netWorth, portfolio, notifications }) {
   const [leaderboard, setLeaderboard] = useState([]);
   const [chats, setChats] = useState([]);
   const [message, setMessage] = useState('');
   const [socket, setSocket] = useState(null);
+  const [serverNotifications, setServerNotifications] = useState([]);
+  const [archivedNotifications, setArchivedNotifications] = useState([]);
 
   useEffect(() => {
     async function fetchLeaderboard() {
@@ -22,16 +24,30 @@ export function Forum({ userName, purchases }) {
   }, []);
 
   useEffect(() => {
+    async function fetchNotifications() {
+      try {
+        const response = await fetch('/api/notifications');
+        const data = await response.json();
+        setArchivedNotifications(data.map((notif) => notif.message)); // Load saved notifications
+      } catch (error) {
+        console.error('Error fetching notifications:', error);
+      }
+    }
+    fetchNotifications();
+  }, []);
+
+  useEffect(() => {
     const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
-    const ws = new WebSocket(`${protocol}://${window.location.host}/ws`);
+    const ws = new WebSocket(`${protocol}://${window.location.hostname}:4000/ws`); // Use backend server port
     setSocket(ws);
 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
       if (data.type === 'trade') {
         setChats((prevChats) => [...prevChats, data]); // Add trade to chats
-      } else {
-        setChats((prevChats) => [...prevChats, data]);
+      } else if (data.type === 'notification') {
+        setServerNotifications((prev) => [...prev, data.message]); // Add server notification
+        setArchivedNotifications((prev) => [...prev, data.message]); // Add new notifications
       }
     };
 
@@ -100,6 +116,24 @@ export function Forum({ userName, purchases }) {
             ))}
           </div>
         </div>
+      </section>
+
+      <section id="notifications">
+        <h3>Server Notifications</h3>
+        <ul>
+          {serverNotifications.map((notif, index) => (
+            <li key={index}>{notif}</li>
+          ))}
+        </ul>
+      </section>
+
+      <section id="notification-archive">
+        <h3>Notification Archive</h3>
+        <ul>
+          {archivedNotifications.map((notif, index) => (
+            <li key={index}>{notif}</li>
+          ))}
+        </ul>
       </section>
 
       <section id="trade-activity">

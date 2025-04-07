@@ -7,6 +7,7 @@ const db = client.db('service');
 const userCollection = db.collection('users');
 const scoreCollection = db.collection('scores');
 const commentCollection = db.collection('comments');
+const notificationCollection = db.collection('notifications');
 
 (async function testConnection() {
   try {
@@ -61,6 +62,19 @@ async function addComment(comment) {
   await commentCollection.insertOne(comment);
 }
 
+async function addNotification(notification) {
+  await notificationCollection.insertOne(notification);
+}
+
+async function getNotifications() {
+  const options = {
+    sort: { _id: -1 }, // Sort by most recent notifications
+    limit: 50,         // Limit to the last 50 notifications
+  };
+  const cursor = notificationCollection.find({}, options);
+  return cursor.toArray();
+}
+
 async function getUserData(email) {
   const user = await getUser(email);
   if (!user) return null;
@@ -90,6 +104,8 @@ module.exports = {
   getHighScores,
   getComments,
   addComment,
+  addNotification,
+  getNotifications,
   getUserData,
   updateUserData,
 };

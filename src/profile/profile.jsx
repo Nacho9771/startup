@@ -2,13 +2,12 @@ import React, { useState, useEffect } from 'react';
 import '../app.css';
 import './profile.css';
 
-export function Profile({ userName, balance, netWorth, purchases }) {
+export function Profile({ userName, balance, netWorth, portfolio, notifications }) {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [fullName, setFullName] = useState('');
   const [yearlyIncome, setYearlyIncome] = useState('');
   const [riskTolerance, setRiskTolerance] = useState('');
   const [accountAge, setAccountAge] = useState('');
-  const [portfolio, setPortfolio] = useState([]);
   const [newPhoneNumber, setNewPhoneNumber] = useState('');
   const [newFullName, setNewFullName] = useState('');
   const [newYearlyIncome, setNewYearlyIncome] = useState('');
@@ -32,7 +31,6 @@ export function Profile({ userName, balance, netWorth, purchases }) {
         } else {
           setAccountAge(0);
         }
-        setPortfolio(data.portfolio);
       } catch (error) {
         console.error('Error fetching user profile:', error);
       }
@@ -65,7 +63,6 @@ export function Profile({ userName, balance, netWorth, purchases }) {
           body: JSON.stringify({
             balance: newBalance,
             portfolio,
-            purchases,
             profile: {
               phoneNumber,
               fullName,
@@ -106,7 +103,6 @@ export function Profile({ userName, balance, netWorth, purchases }) {
         body: JSON.stringify({
           balance,
           portfolio,
-          purchases,
           profile: updatedProfile,
         }),
       });

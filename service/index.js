@@ -4,6 +4,7 @@ const express = require('express');
 const uuid = require('uuid');
 const { WebSocketServer } = require('ws');
 const { getUserData, updateUserData } = require('./database.js');
+const { addNotification, getNotifications } = require('./database.js');
 const app = express();
 const DB = require('./database.js');
 
@@ -63,7 +64,8 @@ function broadcastTrade(trade) {
 }
 
 function broadcastNotification(message) {
-  const notification = { type: 'notification', message };
+  const notification = { type: 'notification', message, timestamp: new Date() };
+  addNotification(notification); // Save notification to the database
   for (const client of clients) {
     if (client.readyState === 1) {
       client.send(JSON.stringify(notification));
@@ -184,6 +186,17 @@ apiRouter.post('/user/:email', verifyAuth, async (req, res) => {
   } catch (error) {
     console.error('Error updating user data:', error);
     res.status(500).send({ msg: 'Failed to update user data' });
+  }
+});
+
+// API endpoint to fetch notifications
+apiRouter.get('/notifications', async (req, res) => {
+  try {
+    const notifications = await getNotifications();
+    res.json(notifications); // Ensure the response is valid JSON
+  } catch (error) {
+    console.error('Error fetching notifications:', error);
+    res.status(500).json({ msg: 'Failed to fetch notifications' }); // Return error as JSON
   }
 });
 

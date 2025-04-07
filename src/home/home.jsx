@@ -7,16 +7,15 @@ const alphavantageAPI_Search = 'WLT5ZY6ZRCSDT7U9';
 const alphavantageAPI_Quote = 'Q9DKRPU4A073VDBG';
 const alphavantageAPI_Daily = 'LTE4ZHN2LOCLJ74W';
 
-export function Home({ userName }) {
-  const [balance, setBalance] = useState(100000);
-  const [portfolio, setPortfolio] = useState([]);
+export function Home({ userName, balance, setBalance, portfolio, setPortfolio, notifications, setNotifications }) {
+  const portfolioValue = portfolio.reduce((total, stock) => total + parseFloat(stock.totalValue), 0);
+  const netWorth = balance + portfolioValue;
   const [selectedStock, setSelectedStock] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [dailyChange, setDailyChange] = useState(null);
   const [liveTrades, setLiveTrades] = useState([]);
-  const [notifications, setNotifications] = useState([]);
   const [socket, setSocket] = useState(null);
 
   const userName_noemail = userName.split('@')[0];
@@ -33,7 +32,7 @@ export function Home({ userName }) {
       }
     }
     fetchUserData();
-  }, [userName]);
+  }, [userName, setBalance, setPortfolio]);
 
   useEffect(() => {
     async function saveUserData() {
@@ -52,7 +51,7 @@ export function Home({ userName }) {
 
   useEffect(() => {
     const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
-    const ws = new WebSocket(`${protocol}://${window.location.host}/ws`);
+    const ws = new WebSocket(`${protocol}://${window.location.hostname}:4000/ws`); // Use backend server port
     setSocket(ws);
 
     ws.onmessage = (event) => {
@@ -74,7 +73,7 @@ export function Home({ userName }) {
 
     ws.onclose = () => console.log('WebSocket disconnected');
     return () => ws.close();
-  }, []);
+  }, [setPortfolio]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -129,7 +128,7 @@ export function Home({ userName }) {
     if (!selectedStock || quantity <= 0) {
       return alert("Select a stock to sell.");
     }
-  
+
     const stockInPortfolio = portfolio.find(stock => stock.ticker === selectedStock.ticker);
     if (!stockInPortfolio) {
       return alert(`You don't own any shares of ${selectedStock.name}`);
@@ -137,9 +136,9 @@ export function Home({ userName }) {
     if (quantity > stockInPortfolio.shares) {
       return alert("You can't sell what you don't own! (You don't own that many shares)");
     }
-    
+
     const newShares = stockInPortfolio.shares - quantity;
-    const saleAmount = quantity * parseFloat(selectedStock.price); 
+    const saleAmount = quantity * parseFloat(selectedStock.price);
     const updatedBalance = balance + saleAmount;
     let updatedPortfolio;
     if (newShares === 0) {
@@ -151,7 +150,7 @@ export function Home({ userName }) {
           : stock
       );
     }
-  
+
     const newTrade = {
       userName: userName_noemail,
       type: "sell",
@@ -162,7 +161,7 @@ export function Home({ userName }) {
       total: saleAmount.toFixed(2),
       date: new Date().toLocaleString()
     };
-  
+
     try {
       await fetch(`/api/user/${userName}`, {
         method: 'POST',
@@ -182,17 +181,11 @@ export function Home({ userName }) {
     }
   };
 
-  let totalCost = 0;
-  let balanceAfterPurchase = balance;
-  if (selectedStock) {
-    totalCost = quantity * parseFloat(selectedStock.price);
-    balanceAfterPurchase = balance - totalCost;
-  }
-
   const handlePurchase = async () => {
     if (!selectedStock || quantity <= 0) {
       return alert("Select a stock and a quantity for purchase!");
     }
+    const totalCost = quantity * parseFloat(selectedStock.price);
     if (totalCost > balance) {
       return alert("Insufficient balance. Sell stock or petition for a stimulus!");
     }
@@ -237,12 +230,23 @@ export function Home({ userName }) {
     }
   };
 
-  const portfolioValue = portfolio.reduce((total, stock) => total + parseFloat(stock.totalValue), 0);
-  const netWorth = balance + portfolioValue;
-
   const addNotification = (message) => {
     const id = Date.now();
-    setNotifications((prev) => [...prev, { id, message }]);
+    const newNotification = { id, message };
+    setNotifications((prev) => [...prev, newNotification]);
+
+    // Broadcast the notification to all connected clients
+    if (socket) {
+      socket.send(JSON.stringify({ type: 'notification', message }));
+    }
+
+    // Save the notification to the backend
+    fetch('/api/notifications', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message }),
+    });
+
     setTimeout(() => {
       setNotifications((prev) => prev.filter((notif) => notif.id !== id));
     }, 5000);
@@ -343,8 +347,8 @@ export function Home({ userName }) {
                     />
                   </div>
                 <h4>Buy</h4>
-                <p>Total Cost: <strong>${totalCost.toFixed(2)}</strong></p>
-                <p>Balance After Purchase: <strong>${balanceAfterPurchase.toFixed(2)}</strong></p>
+                <p>Total Cost: <strong>${(quantity * selectedStock.price).toFixed(2)}</strong></p>
+                <p>Balance After Purchase: <strong>${(balance - quantity * selectedStock.price).toFixed(2)}</strong></p>
                 <button onClick={handlePurchase} className="btn btn-primary">
                   Buy Stock
                 </button>
