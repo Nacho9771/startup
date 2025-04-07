@@ -15,6 +15,9 @@ export function Home({ userName }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [dailyChange, setDailyChange] = useState(null);
+  const [liveTrades, setLiveTrades] = useState([]);
+  const [notifications, setNotifications] = useState([]);
+  const [socket, setSocket] = useState(null);
 
   const userName_noemail = userName.split('@')[0];
 
@@ -31,6 +34,56 @@ export function Home({ userName }) {
     }
     fetchUserData();
   }, [userName]);
+
+  useEffect(() => {
+    async function saveUserData() {
+      try {
+        await fetch(`/api/user/${userName}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ balance, portfolio }),
+        });
+      } catch (error) {
+        console.error('Error saving user data:', error);
+      }
+    }
+    saveUserData();
+  }, [balance, portfolio]);
+
+  useEffect(() => {
+    const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
+    const ws = new WebSocket(`${protocol}://${window.location.host}/ws`);
+    setSocket(ws);
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.type === 'stockUpdate') {
+        setPortfolio((prevPortfolio) =>
+          prevPortfolio.map((stock) =>
+            stock.ticker === data.ticker
+              ? { ...stock, price: data.price, totalValue: (data.price * stock.shares).toFixed(2) }
+              : stock
+          )
+        );
+      } else if (data.type === 'trade') {
+        setLiveTrades((prevTrades) => [data, ...prevTrades].slice(0, 20));
+      } else if (data.type === 'notification') {
+        addNotification(data.message);
+      }
+    };
+
+    ws.onclose = () => console.log('WebSocket disconnected');
+    return () => ws.close();
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (socket) {
+        socket.send(JSON.stringify({ type: 'requestStockUpdates' }));
+      }
+    }, 600000); // 10 minutes
+    return () => clearInterval(interval);
+  }, [socket]);
 
   const handleSearch = async () => {
     if (searchQuery.trim() === '') return;
@@ -122,7 +175,7 @@ export function Home({ userName }) {
       });
       setPortfolio(updatedPortfolio);
       setBalance(updatedBalance);
-      alert(`${quantity} shares of ${selectedStock.name} sold for $${saleAmount.toFixed(2)}!`);
+      socket.send(JSON.stringify({ type: 'notification', message: `${quantity} shares of ${selectedStock.name} sold for $${saleAmount.toFixed(2)}!` }));
       setSelectedStock(null);
     } catch (error) {
       console.error('Error updating user data:', error);
@@ -177,7 +230,7 @@ export function Home({ userName }) {
       });
       setPortfolio(newPortfolio);
       setBalance(newBalance);
-      alert(`${quantity} shares of ${selectedStock.name} purchased successfully!`);
+      socket.send(JSON.stringify({ type: 'notification', message: `${quantity} shares of ${selectedStock.name} purchased successfully!` }));
       setSelectedStock(null);
     } catch (error) {
       console.error('Error updating user data:', error);
@@ -186,6 +239,14 @@ export function Home({ userName }) {
 
   const portfolioValue = portfolio.reduce((total, stock) => total + parseFloat(stock.totalValue), 0);
   const netWorth = balance + portfolioValue;
+
+  const addNotification = (message) => {
+    const id = Date.now();
+    setNotifications((prev) => [...prev, { id, message }]);
+    setTimeout(() => {
+      setNotifications((prev) => prev.filter((notif) => notif.id !== id));
+    }, 5000);
+  };
 
   return (
     <main>
@@ -300,6 +361,14 @@ export function Home({ userName }) {
             )}
           </div>
         </section>
+      </div>
+
+      <div className="notification-container">
+        {notifications.map((notif) => (
+          <div key={notif.id} className="notification-bubble">
+            {notif.message}
+          </div>
+        ))}
       </div>
 
     </main>

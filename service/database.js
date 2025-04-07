@@ -61,6 +61,26 @@ async function addComment(comment) {
   await commentCollection.insertOne(comment);
 }
 
+async function getUserData(email) {
+  const user = await getUser(email);
+  if (!user) return null;
+
+  return {
+    balance: user.balance || 100000,
+    portfolio: user.portfolio || [],
+    purchases: user.purchases || [],
+  };
+}
+
+async function updateUserData(email, data) {
+  const updateFields = {};
+  if (data.balance !== undefined) updateFields.balance = data.balance;
+  if (data.portfolio !== undefined) updateFields.portfolio = data.portfolio;
+  if (data.purchases !== undefined) updateFields.purchases = data.purchases;
+
+  await userCollection.updateOne({ email }, { $set: updateFields });
+}
+
 module.exports = {
   getUser,
   getUserByToken,
@@ -70,4 +90,6 @@ module.exports = {
   getHighScores,
   getComments,
   addComment,
+  getUserData,
+  updateUserData,
 };

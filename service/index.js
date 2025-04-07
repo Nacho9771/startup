@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const express = require('express');
 const uuid = require('uuid');
 const { WebSocketServer } = require('ws');
+const { getUserData, updateUserData } = require('./database.js');
 const app = express();
 const DB = require('./database.js');
 
@@ -20,16 +21,52 @@ const clients = new Set();
 
 wss.on('connection', (ws) => {
   clients.add(ws);
+
   ws.on('message', (data) => {
-    const chat = JSON.parse(data);
-    for (const client of clients) {
-      if (client.readyState === 1) {
-        client.send(JSON.stringify(chat));
+    const message = JSON.parse(data);
+    if (message.type === 'requestStockUpdates') {
+      // Simulate stock updates
+      const stockUpdate = {
+        type: 'stockUpdate',
+        ticker: 'AAPL',
+        price: (Math.random() * 1000).toFixed(2),
+      };
+      for (const client of clients) {
+        if (client.readyState === 1) {
+          client.send(JSON.stringify(stockUpdate));
+        }
+      }
+    } else {
+      const chat = message;
+      for (const client of clients) {
+        if (client.readyState === 1) {
+          client.send(JSON.stringify(chat));
+        }
       }
     }
   });
+
   ws.on('close', () => clients.delete(ws));
 });
+
+// Broadcast trades and notifications
+function broadcastTrade(trade) {
+  const tradeMessage = { type: 'trade', ...trade };
+  for (const client of clients) {
+    if (client.readyState === 1) {
+      client.send(JSON.stringify(tradeMessage));
+    }
+  }
+}
+
+function broadcastNotification(message) {
+  const notification = { type: 'notification', message };
+  for (const client of clients) {
+    if (client.readyState === 1) {
+      client.send(JSON.stringify(notification));
+    }
+  }
+}
 
 app.server = app.listen(port, () => {
   console.log(`Listening on port ${port}`);
@@ -122,6 +159,31 @@ apiRouter.post('/comments', verifyAuth, async (req, res) => {
   res.status(201).send(comment);
 });
 
+// Fetch user data
+apiRouter.get('/user/:email', verifyAuth, async (req, res) => {
+  const email = req.params.email;
+  const userData = await getUserData(email);
+  if (userData) {
+    res.send(userData);
+  } else {
+    res.status(404).send({ msg: 'User not found' });
+  }
+});
+
+// Update user data
+apiRouter.post('/user/:email', verifyAuth, async (req, res) => {
+  const email = req.params.email;
+  const { balance, portfolio, purchases } = req.body;
+
+  try {
+    await updateUserData(email, { balance, portfolio, purchases });
+    res.status(200).send({ msg: 'User data updated successfully' });
+  } catch (error) {
+    console.error('Error updating user data:', error);
+    res.status(500).send({ msg: 'Failed to update user data' });
+  }
+});
+
 app.use(function (err, req, res, next) {
   res.status(500).send({ type: err.name, message: err.message });
 });
@@ -156,3 +218,5 @@ function setAuthCookie(res, authToken) {
     sameSite: 'strict',
   });
 }
+
+module.exports = { broadcastTrade, broadcastNotification };
