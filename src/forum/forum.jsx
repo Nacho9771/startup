@@ -1,23 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { quickSort } from './quicksort'; 
 import './forum.css';
 import '../app.css';
 
-export function Forum({ userName, balance, netWorth, purchases }) {
+export function Forum({ userName, purchases }) {
   const [leaderboard, setLeaderboard] = useState([]);
-  const [comments, setComments] = useState([]);
-  const [newComment, setNewComment] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [notification, setNotification] = useState('');
-  const [fadeOut, setFadeOut] = useState(false);
+  const [chats, setChats] = useState([]);
+  const [message, setMessage] = useState('');
+  const [socket, setSocket] = useState(null);
 
   useEffect(() => {
     async function fetchLeaderboard() {
       try {
-        const response = await fetch('/api/leaderboard');
+        const response = await fetch('/api/scores');
         const data = await response.json();
-        const sortedLeaderboard = quickSort(data).reverse();
-        setLeaderboard(sortedLeaderboard);
+        setLeaderboard(data);
       } catch (error) {
         console.error('Error fetching leaderboard:', error);
       }
@@ -26,63 +22,30 @@ export function Forum({ userName, balance, netWorth, purchases }) {
   }, []);
 
   useEffect(() => {
-    async function fetchComments() {
-      try {
-        const response = await fetch('/api/comments');
-        const data = await response.json();
-        setComments(data.slice(-10));
-      } catch (error) {
-        console.error('Error fetching comments:', error);
-      }
-    }
+    const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
+    const ws = new WebSocket(`${protocol}://${window.location.host}/ws`);
+    setSocket(ws);
 
-    fetchComments();
-
-    const ws = new WebSocket('ws://localhost:4000');
     ws.onmessage = (event) => {
-      const newComment = JSON.parse(event.data);
-      setComments((prevComments) => [...prevComments, newComment].slice(-10));
+      const chat = JSON.parse(event.data);
+      setChats((prevChats) => [...prevChats, chat]);
     };
 
+    ws.onclose = () => console.log('WebSocket disconnected');
     return () => ws.close();
   }, []);
 
-  const handleCommentSubmit = async () => {
-    if (newComment.trim()) {
-      setLoading(true);
-      try {
-        const response = await fetch('/api/comments', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ text: newComment }),
-        });
-        const comment = await response.json();
-        setComments(prevComments => [...prevComments, comment].slice(-10));
-        setNewComment('');
-        setLoading(false);
-        setNotification('Comment sent successfully!'); 
-        setFadeOut(false); 
-        setTimeout(() => {
-          setFadeOut(true);
-          setTimeout(() => setNotification(''), 1000);
-        }, 2500); 
-      } catch (error) {
-        setLoading(false);
-        setNotification('Failed to send comment.'); 
-        setFadeOut(false); 
-        setTimeout(() => {
-          setFadeOut(true);
-          setTimeout(() => setNotification(''), 1000);
-        }, 2500); 
-      }
+  const sendMessage = () => {
+    if (message.trim() && socket) {
+      const chat = { user: userName, text: message };
+      socket.send(JSON.stringify(chat));
+      setMessage('');
     }
   };
 
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
-      handleCommentSubmit();
+      sendMessage();
     }
   };
 
@@ -93,9 +56,7 @@ export function Forum({ userName, balance, netWorth, purchases }) {
         <ol id="leaderboard-list">
           {leaderboard.map((user, index) => (
             <li key={index}>
-              {user.name}: ${typeof user.netWorth === 'number' 
-                ? user.netWorth.toFixed(2) 
-                : (user.netWorth || 100000).toFixed(2)}
+              {user.name}: ${user.netWorth.toFixed(2)}
             </li>
           ))}
         </ol>
@@ -104,32 +65,24 @@ export function Forum({ userName, balance, netWorth, purchases }) {
       <hr />
 
       <section>
-        <h2>Community (Database placeholder)</h2>
-        <div>
-          <label htmlFor="comment-input">Comment: </label>
+        <h2>Community Chat</h2>
+        <div id="chatbox">
           <input
             type="text"
-            id="comment-input"
-            placeholder="Enter Comment"
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
+            placeholder="Type a message..."
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
             onKeyPress={handleKeyPress}
-            disabled={loading}
           />
+          <button onClick={sendMessage}>Send</button>
+          <div id="chat-messages">
+            {chats.slice(-20).reverse().map((chat, index) => (
+              <div key={index}>
+                <strong>{chat.user.split('@')[0]}</strong>: {chat.text}
+              </div>
+            ))}
+          </div>
         </div>
-        <button type="button" id="submit-comment" onClick={handleCommentSubmit} disabled={loading}>
-          {loading ? 'Sending...' : 'Send'}
-        </button>
-        {notification && <div id="notification" className={`pop-in ${fadeOut ? 'fade-out' : ''}`}>{notification}</div>}
-
-        <h3>Community Comments</h3>
-        <ul>
-          {comments.slice(-10).reverse().map((comment, index) => (
-            <li key={index}>
-              <strong>{comment.user}</strong>: "{comment.text}"
-            </li>
-          ))}
-        </ul>
       </section>
 
       <section id="trade-activity">

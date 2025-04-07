@@ -17,6 +17,12 @@ input, #submit-comment {
   box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.1);
 }
 
+section {
+  max-width: 1200px;
+  width: 90%;
+  margin: 0 auto;
+}
+
 section div {
   margin-bottom: 20px;
 }

@@ -39,12 +39,12 @@ async function addScore(score) {
 }
 
 async function getHighScores() {
-  const query = { score: { $gt: 0 } };
+  const query = { netWorth: { $gt: 0 } };
   const options = {
-    sort: { score: -1 },
+    sort: { netWorth: -1 },
     limit: 10,
   };
-  const cursor = scoreCollection.find(query, options);
+  const cursor = userCollection.find(query, options);
   return cursor.toArray();
 }
 

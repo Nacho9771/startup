@@ -20,6 +20,14 @@ const clients = new Set();
 
 wss.on('connection', (ws) => {
   clients.add(ws);
+  ws.on('message', (data) => {
+    const chat = JSON.parse(data);
+    for (const client of clients) {
+      if (client.readyState === 1) {
+        client.send(JSON.stringify(chat));
+      }
+    }
+  });
   ws.on('close', () => clients.delete(ws));
 });
 
@@ -148,7 +156,3 @@ function setAuthCookie(res, authToken) {
     sameSite: 'strict',
   });
 }
-
-const httpService = app.listen(port, () => {
-  console.log(`Listening on port ${port}`);
-});
