@@ -27,13 +27,30 @@ export function Forum({ userName, purchases }) {
     setSocket(ws);
 
     ws.onmessage = (event) => {
-      const chat = JSON.parse(event.data);
-      setChats((prevChats) => [...prevChats, chat]);
+      const data = JSON.parse(event.data);
+      if (data.type === 'trade') {
+        setChats((prevChats) => [...prevChats, data]); // Add trade to chats
+      } else {
+        setChats((prevChats) => [...prevChats, data]);
+      }
     };
 
     ws.onclose = () => console.log('WebSocket disconnected');
     return () => ws.close();
   }, []);
+
+  useEffect(() => {
+    async function fetchUserTrades() {
+      try {
+        const response = await fetch(`/api/user/${userName}`);
+        const data = await response.json();
+        setChats(data.purchases || []); // Fetch purchases as chats
+      } catch (error) {
+        console.error('Error fetching user trades:', error);
+      }
+    }
+    fetchUserTrades();
+  }, [userName]);
 
   const sendMessage = () => {
     if (message.trim() && socket) {
@@ -88,15 +105,15 @@ export function Forum({ userName, purchases }) {
       <section id="trade-activity">
         <h3>Recent Trades</h3>
         <ul>
-          {purchases.length > 0 ? (
-            purchases.slice(-40).reverse().map((trade, index) => (
+          {chats
+            .filter((chat) => chat.type === 'trade') // Filter only trade messages
+            .slice(-40)
+            .reverse()
+            .map((trade, index) => (
               <li key={index}>
                 {trade.userName} {trade.type === "buy" ? "bought" : "sold"} {trade.quantity} shares of {trade.stockName} ({trade.ticker}) for ${trade.price}.
               </li>
-            ))
-          ) : (
-            <li>No trades have been made yet.</li>
-          )}
+            ))}
         </ul>
       </section>
     </main>

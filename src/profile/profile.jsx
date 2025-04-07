@@ -40,6 +40,21 @@ export function Profile({ userName, balance, netWorth, purchases }) {
     fetchUserProfile();
   }, [userName]);
 
+  useEffect(() => {
+    const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
+    const ws = new WebSocket(`${protocol}://${window.location.host}/ws`);
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.type === 'trade' && data.userName === userName.split('@')[0]) {
+        setPortfolio((prevPortfolio) => [...prevPortfolio, data]); // Add personal trade
+      }
+    };
+
+    ws.onclose = () => console.log('WebSocket disconnected');
+    return () => ws.close();
+  }, [userName]);
+
   const handleStimulus = async () => {
     if (netWorth < 10000) {
       const newBalance = balance + 500;
@@ -168,12 +183,16 @@ export function Profile({ userName, balance, netWorth, purchases }) {
       <section id="transaction-history" className="profile-section">
         <h2>Personal Transaction History</h2>
         <ul>
-          {purchases.length > 0 ? (
-            purchases.slice(-40).reverse().map((trade, index) => (
-              <li key={index}>
-                {trade.userName} {trade.type === "buy" ? "bought" : "sold"} {trade.quantity} shares of {trade.stockName} ({trade.ticker}) for ${trade.price}.
-              </li>
-            ))
+          {portfolio.length > 0 ? (
+            portfolio
+              .filter((trade) => trade.userName === userName.split('@')[0]) // Filter personal trades
+              .slice(-40)
+              .reverse()
+              .map((trade, index) => (
+                <li key={index}>
+                  {trade.userName} {trade.type === "buy" ? "bought" : "sold"} {trade.quantity} shares of {trade.stockName} ({trade.ticker}) for ${trade.price}.
+                </li>
+              ))
           ) : (
             <li>No trades have been made yet.</li>
           )}

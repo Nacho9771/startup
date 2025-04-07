@@ -41,14 +41,14 @@ export function Home({ userName }) {
         await fetch(`/api/user/${userName}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ balance, portfolio }),
+          body: JSON.stringify({ balance, portfolio, purchases: liveTrades }),
         });
       } catch (error) {
         console.error('Error saving user data:', error);
       }
     }
     saveUserData();
-  }, [balance, portfolio]);
+  }, [balance, portfolio, liveTrades]);
 
   useEffect(() => {
     const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';

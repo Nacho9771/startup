@@ -68,7 +68,7 @@ async function getUserData(email) {
   return {
     balance: user.balance || 100000,
     portfolio: user.portfolio || [],
-    purchases: user.purchases || [],
+    purchases: user.purchases || [], // Include purchases
   };
 }
 
@@ -76,7 +76,7 @@ async function updateUserData(email, data) {
   const updateFields = {};
   if (data.balance !== undefined) updateFields.balance = data.balance;
   if (data.portfolio !== undefined) updateFields.portfolio = data.portfolio;
-  if (data.purchases !== undefined) updateFields.purchases = data.purchases;
+  if (data.purchases !== undefined) updateFields.purchases = data.purchases; // Save purchases
 
   await userCollection.updateOne({ email }, { $set: updateFields });
 }

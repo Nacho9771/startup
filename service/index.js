@@ -24,6 +24,9 @@ wss.on('connection', (ws) => {
 
   ws.on('message', (data) => {
     const message = JSON.parse(data);
+    if (message.type === 'trade') {
+      broadcastTrade(message); // Broadcast trade to all clients
+    }
     if (message.type === 'requestStockUpdates') {
       // Simulate stock updates
       const stockUpdate = {
@@ -164,7 +167,7 @@ apiRouter.get('/user/:email', verifyAuth, async (req, res) => {
   const email = req.params.email;
   const userData = await getUserData(email);
   if (userData) {
-    res.send(userData);
+    res.send(userData); // Include purchases in the response
   } else {
     res.status(404).send({ msg: 'User not found' });
   }
@@ -176,7 +179,7 @@ apiRouter.post('/user/:email', verifyAuth, async (req, res) => {
   const { balance, portfolio, purchases } = req.body;
 
   try {
-    await updateUserData(email, { balance, portfolio, purchases });
+    await updateUserData(email, { balance, portfolio, purchases }); // Save purchases to the backend
     res.status(200).send({ msg: 'User data updated successfully' });
   } catch (error) {
     console.error('Error updating user data:', error);
