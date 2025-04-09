@@ -97,16 +97,16 @@ export function Forum({ userName, balance, netWorth, portfolio, notifications })
 
   return (
     <main>
-      <section>
+      {/* <section>
         <h2>Leaderboard</h2>
         <ol id="leaderboard-list">
           {leaderboard.map((user, index) => (
             <li key={index}>
-              {user.name}: ${user.netWorth.toFixed(2)}
+              {userName}: ${user.netWorth.toFixed(2)}
             </li>
           ))}
         </ol>
-      </section>
+      </section> */}
 
       <hr />
 
@@ -131,7 +131,7 @@ export function Forum({ userName, balance, netWorth, portfolio, notifications })
         </div>
       </section>
 
-      <section id="notifications">
+      {/* <section id="notifications">
         <h3>Server Notifications</h3>
         <ul>
           {serverNotifications.map((notif, index) => (
@@ -162,7 +162,7 @@ export function Forum({ userName, balance, netWorth, portfolio, notifications })
               </li>
             ))}
         </ul>
-      </section>
+      </section> */}
     </main>
   );
 }

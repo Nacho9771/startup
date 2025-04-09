@@ -197,7 +197,7 @@ apiRouter.get('/user/:email', verifyAuth, async (req, res) => {
 // Update user data
 apiRouter.post('/user/:email', verifyAuth, async (req, res) => {
   const email = req.params.email;
-  const { balance, portfolio, purchases, profile, notifications } = req.body;
+  const { balance, portfolio, profile } = req.body;
 
   try {
     const user = await DB.getUser(email);
@@ -208,20 +208,10 @@ apiRouter.post('/user/:email', verifyAuth, async (req, res) => {
     const updatedData = {
       balance: balance !== undefined ? balance : user.balance,
       portfolio: portfolio !== undefined ? portfolio : user.portfolio,
-      purchases: purchases !== undefined ? purchases : user.purchases,
-      profile: profile !== undefined ? profile : user.profile,
-      notifications: notifications !== undefined ? notifications : user.notifications,
+      profile: profile !== undefined ? { ...user.profile, ...profile } : user.profile,
     };
 
     await updateUserData(email, updatedData); // Save updated data
-
-    // Broadcast the updated data to all connected clients
-    const updateMessage = { type: 'userUpdate', email, updatedData };
-    for (const client of clients) {
-      if (client.readyState === 1) {
-        client.send(JSON.stringify(updateMessage));
-      }
-    }
 
     res.status(200).send({ msg: 'User data updated successfully', updatedData });
   } catch (error) {

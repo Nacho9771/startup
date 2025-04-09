@@ -91,6 +91,7 @@ async function updateUserData(email, data) {
   if (data.balance !== undefined) updateFields.balance = data.balance;
   if (data.portfolio !== undefined) updateFields.portfolio = data.portfolio;
   if (data.purchases !== undefined) updateFields.purchases = data.purchases; // Save purchases
+  if (data.profile !== undefined) updateFields.profile = data.profile; // Save profile data
 
   await userCollection.updateOne({ email }, { $set: updateFields });
 }

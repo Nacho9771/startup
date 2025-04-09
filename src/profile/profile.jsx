@@ -83,21 +83,16 @@ export function Profile({ userName, balance, netWorth, portfolio, notifications 
 
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
-    setPhoneNumber(newPhoneNumber);
-    setFullName(newFullName);
-    setYearlyIncome(newYearlyIncome);
-    setRiskTolerance(newRiskTolerance);
 
     const updatedProfile = {
-      phoneNumber: newPhoneNumber,
-      fullName: newFullName,
-      yearlyIncome: newYearlyIncome,
-      riskTolerance: newRiskTolerance,
-      creationTime: new Date().toISOString(),
+      phoneNumber: newPhoneNumber || phoneNumber,
+      fullName: newFullName || fullName,
+      yearlyIncome: newYearlyIncome || yearlyIncome,
+      riskTolerance: newRiskTolerance || riskTolerance,
     };
 
     try {
-      await fetch(`/api/user/${userName}`, {
+      const response = await fetch(`/api/user/${userName}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -106,9 +101,23 @@ export function Profile({ userName, balance, netWorth, portfolio, notifications 
           profile: updatedProfile,
         }),
       });
-      alert('Profile updated successfully!');
+
+      if (response.ok) {
+        // Fetch the updated profile after saving
+        const updatedData = await response.json();
+        const profile = updatedData.updatedData.profile || {};
+        setPhoneNumber(profile.phoneNumber || '');
+        setFullName(profile.fullName || '');
+        setYearlyIncome(profile.yearlyIncome || '');
+        setRiskTolerance(profile.riskTolerance || '');
+        alert('Profile updated successfully!');
+      } else {
+        const errorData = await response.json();
+        alert(`Failed to update profile: ${errorData.msg}`);
+      }
     } catch (error) {
       console.error('Error updating user profile:', error);
+      alert('An error occurred while updating your profile.');
     }
   };
 
@@ -176,7 +185,7 @@ export function Profile({ userName, balance, netWorth, portfolio, notifications 
         </form>
       </section>
 
-      <section id="transaction-history" className="profile-section">
+      {/* <section id="transaction-history" className="profile-section">
         <h2>Personal Transaction History</h2>
         <ul>
           {portfolio.length > 0 ? (
@@ -193,7 +202,7 @@ export function Profile({ userName, balance, netWorth, portfolio, notifications 
             <li>No trades have been made yet.</li>
           )}
         </ul>
-      </section>
+      </section> */}
     </main>
   );
 }
