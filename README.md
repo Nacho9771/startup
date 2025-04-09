@@ -148,10 +148,12 @@ I also made some bug fixes!
 
 ## 🚀 WebSocket deliverable
 
+I do plan to work on this website later in my freetime! But for now I completed the websocket deliverable, and at this moment as I am submitting this project, the website is fully functional.
+
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] **Backend listens for WebSocket connection** - I did not complete this part of the deliverable.
-- [ ] **Frontend makes WebSocket connection** - I did not complete this part of the deliverable.
-- [ ] **Data sent over WebSocket connection** - I did not complete this part of the deliverable.
-- [ ] **WebSocket data displayed** - I did not complete this part of the deliverable.
-- [ ] **Application is fully functional** - I did not complete this part of the deliverable.
+- [x] **Backend listens for WebSocket connection** - Yes! The backend listend for websocket connecting, although this one can be a bit buggy as websocket sometimes likes to diconnect and reconnect
+- [x] **Frontend makes WebSocket connection** - The frontend properly makes websocket connections, specifically when you make a stock purchase and when you use the community chat in the forum tab
+- [x] **Data sent over WebSocket connection** - Data is properly sent over websocket connection, although due to the backend sometimes it can be a little buggy - I plan to fix this later in my spare time, but it still does it!
+- [x] **WebSocket data displayed** - The chatbox and the notifications in the home.jsx file are displayed onto the screen
+- [x] **Application is fully functional** - While I had to remove some features, like a list of all of the trades that have happened on the website (I was really crunched for time), the website is fully functional :)
