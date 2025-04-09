@@ -43,8 +43,8 @@ export function Forum({ userName, balance, netWorth, portfolio, notifications })
 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      if (data.type === 'trade') {
-        setChats((prevChats) => [...prevChats, data]); // Add trade to chats
+      if (data.type === 'chat') {
+        setChats((prevChats) => [...prevChats, data]); // Add chat message to chats
       } else if (data.type === 'notification') {
         setServerNotifications((prev) => [...prev, data.message]); // Add server notification
         setArchivedNotifications((prev) => [...prev, data.message]); // Add new notifications
@@ -68,10 +68,23 @@ export function Forum({ userName, balance, netWorth, portfolio, notifications })
     fetchUserTrades();
   }, [userName]);
 
+  useEffect(() => {
+    async function fetchChats() {
+      try {
+        const response = await fetch('/api/chats'); // Fetch chats from the backend
+        const data = await response.json();
+        setChats(data); // Initialize chats with fetched data
+      } catch (error) {
+        console.error('Error fetching chats:', error);
+      }
+    }
+    fetchChats();
+  }, []);
+
   const sendMessage = () => {
     if (message.trim() && socket) {
-      const chat = { user: userName, text: message };
-      socket.send(JSON.stringify(chat));
+      const chat = { type: 'chat', user: userName, text: message }; // Include 'type' for backend processing
+      socket.send(JSON.stringify(chat)); // Send chat message via WebSocket
       setMessage('');
     }
   };
