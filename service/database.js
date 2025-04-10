@@ -51,8 +51,8 @@ async function getHighScores() {
 
 async function getComments() {
   const options = {
-    sort: { _id: -1 }, // Sort by most recent comments
-    limit: 10,         // Limit to the last 10 comments
+    sort: { _id: -1 }, 
+    limit: 10,       
   };
   const cursor = commentCollection.find({}, options);
   return cursor.toArray();
@@ -68,8 +68,8 @@ async function addNotification(notification) {
 
 async function getNotifications() {
   const options = {
-    sort: { _id: -1 }, // Sort by most recent notifications
-    limit: 50,         // Limit to the last 50 notifications
+    sort: { _id: -1 },
+    limit: 50,         
   };
   const cursor = notificationCollection.find({}, options);
   return cursor.toArray();
@@ -82,7 +82,7 @@ async function getUserData(email) {
   return {
     balance: user.balance || 100000,
     portfolio: user.portfolio || [],
-    purchases: user.purchases || [], // Include purchases
+    purchases: user.purchases || [], 
   };
 }
 
@@ -90,8 +90,8 @@ async function updateUserData(email, data) {
   const updateFields = {};
   if (data.balance !== undefined) updateFields.balance = data.balance;
   if (data.portfolio !== undefined) updateFields.portfolio = data.portfolio;
-  if (data.purchases !== undefined) updateFields.purchases = data.purchases; // Save purchases
-  if (data.profile !== undefined) updateFields.profile = data.profile; // Save profile data
+  if (data.purchases !== undefined) updateFields.purchases = data.purchases; 
+  if (data.profile !== undefined) updateFields.profile = data.profile; 
 
   await userCollection.updateOne({ email }, { $set: updateFields });
 }

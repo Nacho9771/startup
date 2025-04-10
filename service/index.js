@@ -6,6 +6,8 @@ const { WebSocketServer } = require('ws');
 const { getUserData, updateUserData } = require('./database.js');
 const { addNotification, getNotifications } = require('./database.js');
 const { addComment, getComments } = require('./database.js'); // Import comment functions
+const fs = require('fs');
+const https = require('https');
 const app = express();
 const DB = require('./database.js');
 
@@ -20,7 +22,12 @@ app.use(express.static('public'));
 const apiRouter = express.Router();
 app.use(`/api`, apiRouter);
 
-const wss = new WebSocketServer({ noServer: true });
+const server = https.createServer({
+  key: fs.readFileSync('path/to/your/ssl/key.pem'),
+  cert: fs.readFileSync('path/to/your/ssl/cert.pem'),
+}, app);
+
+const wss = new WebSocketServer({ server });
 const clients = new Set();
 
 wss.on('connection', (ws) => {
@@ -34,17 +41,17 @@ wss.on('connection', (ws) => {
         broadcastTrade(message);
       } else if (message.type === 'chat') {
         const chat = {
-          type: 'chat', // Ensure type is included
+          type: 'chat', 
           user: message.user,
           text: message.text,
           timestamp: new Date(),
         };
 
-        await addComment(chat); // Save chat to MongoDB
+        await addComment(chat);
 
         for (const client of clients) {
           if (client.readyState === WebSocket.OPEN) {
-            client.send(JSON.stringify(chat)); // Broadcast chat message
+            client.send(JSON.stringify(chat)); 
           }
         }
       }
@@ -77,7 +84,7 @@ function broadcastTrade(trade) {
 function broadcastNotification(message) {
   const notification = { type: 'notification', message, timestamp: new Date() };
 
-  addNotification(notification); // Save notification to the database
+  addNotification(notification);
 
   for (const client of clients) {
     if (client.readyState === 1) {
@@ -86,9 +93,11 @@ function broadcastNotification(message) {
   }
 }
 
-app.server = app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
+
+app.server = server;
 
 app.server.on('upgrade', (request, socket, head) => {
   wss.handleUpgrade(request, socket, head, (ws) => {
@@ -170,7 +179,7 @@ apiRouter.post('/comments', verifyAuth, async (req, res) => {
     text: req.body.text,
   };
 
-  await DB.addComment(comment); // Save the comment to the database
+  await DB.addComment(comment); 
 
   // Broadcast the new comment to all connected WebSocket clients
   for (const client of clients) {
@@ -188,7 +197,7 @@ apiRouter.get('/user/:email', verifyAuth, async (req, res) => {
   const userData = await getUserData(email);
 
   if (userData) {
-    res.send(userData); // Include purchases in the response
+    res.send(userData); 
   } else {
     res.status(404).send({ msg: 'User not found' });
   }
@@ -211,7 +220,7 @@ apiRouter.post('/user/:email', verifyAuth, async (req, res) => {
       profile: profile !== undefined ? { ...user.profile, ...profile } : user.profile,
     };
 
-    await updateUserData(email, updatedData); // Save updated data
+    await updateUserData(email, updatedData); 
 
     res.status(200).send({ msg: 'User data updated successfully', updatedData });
   } catch (error) {
@@ -224,7 +233,7 @@ apiRouter.post('/user/:email', verifyAuth, async (req, res) => {
 apiRouter.get('/notifications', verifyAuth, async (req, res) => {
   try {
     const notifications = await getNotifications();
-    res.json(notifications); // Ensure the response is valid JSON
+    res.json(notifications);
   } catch (error) {
     console.error('Error fetching notifications:', error);
     res.status(500).json({ msg: 'Failed to fetch notifications' });
@@ -234,7 +243,7 @@ apiRouter.get('/notifications', verifyAuth, async (req, res) => {
 // API endpoint to fetch chat messages
 apiRouter.get('/chats', verifyAuth, async (req, res) => {
   try {
-    const chats = await getComments(); // Fetch chats from MongoDB
+    const chats = await getComments();
     res.json(chats);
   } catch (error) {
     console.error('Error fetching chats:', error);
@@ -245,8 +254,8 @@ apiRouter.get('/chats', verifyAuth, async (req, res) => {
 // API endpoint to fetch all users
 apiRouter.get('/users', verifyAuth, async (req, res) => {
   try {
-    const users = await DB.getAllUsers(); // Fetch all users from the database
-    res.json(users.map((user) => ({ email: user.email }))); // Return only the email field
+    const users = await DB.getAllUsers(); 
+    res.json(users.map((user) => ({ email: user.email }))); 
   } catch (error) {
     console.error('Error fetching users:', error);
     res.status(500).json({ msg: 'Failed to fetch users' });
@@ -254,12 +263,12 @@ apiRouter.get('/users', verifyAuth, async (req, res) => {
 });
 
 app.use(function (err, req, res, next) {
-  console.error('Unhandled error:', err); // Log the error for debugging
+  console.error('Unhandled error:', err); 
   res.status(500).send({ type: err.name, message: err.message });
 });
 
 app.use((_req, res) => {
-  res.sendFile('index.html', { root: './public' }); // Ensure the path points to the correct directory
+  res.sendFile('index.html', { root: './public' }); 
 });
 
 async function updateScores(newScore) {

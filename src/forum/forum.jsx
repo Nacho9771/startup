@@ -38,7 +38,7 @@ export function Forum({ userName, balance, netWorth, portfolio, notifications })
 
   useEffect(() => {
     const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
-    const ws = new WebSocket(`${protocol}://${window.location.hostname}:4000/ws`); // Use backend server port
+    const ws = new WebSocket(`${protocol}://${window.location.hostname}:4000/ws`);
     setSocket(ws);
 
     ws.onmessage = (event) => {
@@ -51,7 +51,17 @@ export function Forum({ userName, balance, netWorth, portfolio, notifications })
       }
     };
 
-    ws.onclose = () => console.log('WebSocket disconnected');
+    ws.onclose = () => {
+      console.log('WebSocket disconnected. Attempting to reconnect...');
+      setTimeout(() => {
+        window.location.reload(); // Reload the page to re-establish the connection
+      }, 5000);
+    };
+
+    ws.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+
     return () => ws.close();
   }, []);
 
