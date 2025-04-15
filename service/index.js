@@ -27,36 +27,21 @@ const server = http.createServer(app); // Use HTTP server instead of HTTPS
 
 const clients = new Set();
 
-// Create a WebSocket server using the existing HTTP server
-const wss = new WebSocketServer({ server });
+// --- WebSocket server setup for /ws endpoint ---
+const wss = new WebSocketServer({ noServer: true });
 
-wss.on('connection', (socket) => {
-  socket.isAlive = true;
-
-  socket.on('message', (data) => {
-    wss.clients.forEach((client) => {
-      if (client !== socket && client.readyState === WebSocket.OPEN) {
-        client.send(data);
-      }
+// Handle upgrade requests for /ws only
+server.on('upgrade', (request, socket, head) => {
+  if (request.url === '/ws') {
+    wss.handleUpgrade(request, socket, head, (ws) => {
+      wss.emit('connection', ws, request);
     });
-  });
-
-  socket.on('pong', () => {
-    socket.isAlive = true;
-  });
+  } else {
+    socket.destroy();
+  }
 });
 
-setInterval(() => {
-  wss.clients.forEach((client) => {
-    if (!client.isAlive) {
-      return client.terminate();
-    }
-
-    client.isAlive = false;
-    client.ping();
-  });
-}, 10000);
-
+// --- Consolidated WebSocket logic ---
 wss.on('connection', (ws) => {
   clients.add(ws);
 
@@ -64,24 +49,36 @@ wss.on('connection', (ws) => {
     try {
       const message = JSON.parse(data);
 
-      if (message.type === 'trade') {
-        broadcastTrade(message);
-      } else if (message.type === 'chat') {
+      // Handle chat messages
+      if (message.type === 'chat') {
         const chat = {
-          type: 'chat', 
+          type: 'chat',
           user: message.user,
           text: message.text,
           timestamp: new Date(),
         };
-
         await addComment(chat);
-
-        for (const client of clients) {
-          if (client.readyState === WebSocket.OPEN) {
-            client.send(JSON.stringify(chat)); 
-          }
-        }
+        broadcastToAll(chat);
       }
+
+      // Handle notification messages (e.g., stock purchase/sale)
+      else if (message.type === 'notification') {
+        const notification = {
+          type: 'notification',
+          message: message.message,
+          timestamp: new Date(),
+        };
+        await addNotification(notification);
+        broadcastToAll(notification);
+      }
+
+      // Handle trade messages (if needed)
+      else if (message.type === 'trade') {
+        broadcastToAll({ type: 'trade', ...message });
+      }
+
+      // Add more message types as needed
+
     } catch (error) {
       console.error('Error handling WebSocket message:', error);
     }
@@ -93,29 +90,17 @@ wss.on('connection', (ws) => {
   });
 
   ws.on('error', (error) => {
+    clients.delete(ws);
     console.error('WebSocket error:', error);
   });
 });
 
-// Broadcast trades and notifications
-function broadcastTrade(trade) {
-  const tradeMessage = { type: 'trade', ...trade };
-
+// Helper to broadcast to all connected clients
+function broadcastToAll(obj) {
+  const msg = JSON.stringify(obj);
   for (const client of clients) {
     if (client.readyState === 1) {
-      client.send(JSON.stringify(tradeMessage));
-    }
-  }
-}
-
-function broadcastNotification(message) {
-  const notification = { type: 'notification', message, timestamp: new Date() };
-
-  addNotification(notification);
-
-  for (const client of clients) {
-    if (client.readyState === 1) {
-      client.send(JSON.stringify(notification));
+      client.send(msg);
     }
   }
 }
@@ -201,11 +186,7 @@ apiRouter.post('/comments', verifyAuth, async (req, res) => {
   await DB.addComment(comment); 
 
   // Broadcast the new comment to all connected WebSocket clients
-  for (const client of clients) {
-    if (client.readyState === 1) {
-      client.send(JSON.stringify(comment));
-    }
-  }
+  broadcastToAll(comment);
 
   res.status(201).send(comment);
 });
@@ -216,12 +197,21 @@ apiRouter.get('/user', verifyAuth, async (req, res) => {
   if (!email) {
     return res.status(400).send({ msg: 'Missing email parameter' });
   }
-  const userData = await getUserData(email);
+  let userData = await getUserData(email);
+
+  // If userData exists but balance is 0 or missing, and portfolio is empty, set balance to 100000
+  if (userData && (!userData.balance || userData.balance === 0) && (!userData.portfolio || userData.portfolio.length === 0)) {
+    await updateUserData(email, { balance: 100000 });
+    userData = await getUserData(email);
+  }
 
   if (userData) {
     res.send(userData); 
   } else {
-    res.status(404).send({ msg: 'User not found' });
+    // If userData does not exist, create a new userData with 100000 balance
+    await updateUserData(email, { balance: 100000, portfolio: [], purchases: [], profile: {}, email });
+    const newUserData = await getUserData(email);
+    res.send(newUserData);
   }
 });
 
@@ -281,9 +271,27 @@ apiRouter.post('/user/:email', verifyAuth, async (req, res) => {
     const updateFields = {};
     if (balance !== undefined) updateFields.balance = balance;
     if (portfolio !== undefined) updateFields.portfolio = portfolio;
-    if (profile !== undefined) updateFields.profile = profile;
     if (purchases !== undefined) updateFields.purchases = purchases;
     updateFields.email = email;
+
+    // Merge profile fields carefully: only update fields that are not empty string or null
+    if (profile !== undefined) {
+      // Fetch the current user data to merge profile fields
+      const currentUserData = await getUserData(email);
+      const currentProfile = (currentUserData && currentUserData.profile) || {};
+      const mergedProfile = { ...currentProfile };
+
+      for (const key in profile) {
+        if (
+          profile[key] !== undefined &&
+          profile[key] !== '' &&
+          profile[key] !== null
+        ) {
+          mergedProfile[key] = profile[key];
+        }
+      }
+      updateFields.profile = mergedProfile;
+    }
 
     await updateUserData(email, updateFields);
 
@@ -364,4 +372,4 @@ function setAuthCookie(res, authToken) {
   });
 }
 
-module.exports = { broadcastTrade, broadcastNotification };
+module.exports = { broadcastToAll };
