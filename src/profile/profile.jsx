@@ -12,6 +12,7 @@ export function Profile({ userName, balance, netWorth, portfolio, notifications 
   const [newFullName, setNewFullName] = useState('');
   const [newYearlyIncome, setNewYearlyIncome] = useState('');
   const [newRiskTolerance, setNewRiskTolerance] = useState('');
+  const [purchases, setPurchases] = useState([]);
 
   const userName_noemail = userName.split('@')[0];
 
@@ -25,6 +26,7 @@ export function Profile({ userName, balance, netWorth, portfolio, notifications 
         setFullName(profile.fullName || '');
         setYearlyIncome(profile.yearlyIncome || '');
         setRiskTolerance(profile.riskTolerance || '');
+        setPurchases(data.purchases || []);
         if (profile.creationTime) {
           const timeSinceCreation = new Date() - new Date(profile.creationTime);
           setAccountAge(Math.floor(timeSinceCreation / (1000 * 60 * 60 * 24)));
@@ -185,12 +187,12 @@ export function Profile({ userName, balance, netWorth, portfolio, notifications 
         </form>
       </section>
 
-      {/* <section id="transaction-history" className="profile-section">
+      <section id="transaction-history" className="profile-section">
         <h2>Personal Transaction History</h2>
         <ul>
-          {portfolio.length > 0 ? (
-            portfolio
-              .filter((trade) => trade.userName === userName.split('@')[0]) // Filter personal trades
+          {purchases.length > 0 ? (
+            purchases
+              .filter((trade) => trade.userName === userName.split('@')[0])
               .slice(-40)
               .reverse()
               .map((trade, index) => (
@@ -202,7 +204,7 @@ export function Profile({ userName, balance, netWorth, portfolio, notifications 
             <li>No trades have been made yet.</li>
           )}
         </ul>
-      </section> */}
+      </section>
     </main>
   );
 }

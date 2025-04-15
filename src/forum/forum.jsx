@@ -9,6 +9,7 @@ export function Forum({ userName, balance, netWorth, portfolio, notifications })
   const [socket, setSocket] = useState(null);
   const [serverNotifications, setServerNotifications] = useState([]);
   const [archivedNotifications, setArchivedNotifications] = useState([]);
+  const [purchases, setPurchases] = useState([]);
 
   useEffect(() => {
     async function fetchLeaderboard() {
@@ -70,7 +71,7 @@ export function Forum({ userName, balance, netWorth, portfolio, notifications })
       try {
         const response = await fetch(`/api/user/${userName}`);
         const data = await response.json();
-        setChats(data.purchases || []); // Fetch purchases as chats
+        setPurchases(data.purchases || []);
       } catch (error) {
         console.error('Error fetching user trades:', error);
       }
@@ -87,6 +88,7 @@ export function Forum({ userName, balance, netWorth, portfolio, notifications })
       } catch (error) {
         console.error('Error fetching chats:', error);
       }
+      
     }
     fetchChats();
   }, []);
@@ -157,13 +159,13 @@ export function Forum({ userName, balance, netWorth, portfolio, notifications })
             <li key={index}>{notif}</li>
           ))}
         </ul>
-      </section>
+      </section> */}
 
       <section id="trade-activity">
         <h3>Recent Trades</h3>
         <ul>
-          {chats
-            .filter((chat) => chat.type === 'trade') // Filter only trade messages
+          {purchases
+            .filter((trade) => trade.type === 'trade')
             .slice(-40)
             .reverse()
             .map((trade, index) => (
@@ -172,7 +174,7 @@ export function Forum({ userName, balance, netWorth, portfolio, notifications })
               </li>
             ))}
         </ul>
-      </section> */}
+      </section>
     </main>
   );
 }

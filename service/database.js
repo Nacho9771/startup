@@ -4,10 +4,6 @@ const config = require('./dbConfig.json');
 const url = `mongodb+srv://${config.userName}:${config.password}@${config.hostname}`;
 const client = new MongoClient(url);
 const db = client.db('service');
-const userCollection = db.collection('users');
-const scoreCollection = db.collection('scores');
-const commentCollection = db.collection('comments');
-const notificationCollection = db.collection('notifications');
 
 (async function testConnection() {
   try {
@@ -19,81 +15,96 @@ const notificationCollection = db.collection('notifications');
   }
 })();
 
+// --- User authentication and management ---
 async function getUser(email) {
-  return userCollection.findOne({ email });
+  return db.collection('users').findOne({ email });
 }
 
 async function getUserByToken(token) {
-  return userCollection.findOne({ token });
+  return db.collection('users').findOne({ token });
 }
 
 async function addUser(user) {
-  await userCollection.insertOne(user);
+  return db.collection('users').insertOne(user);
 }
 
 async function updateUser(user) {
-  await userCollection.updateOne({ email: user.email }, { $set: user });
+  return db.collection('users').updateOne({ email: user.email }, { $set: user });
 }
 
-async function addScore(score) {
-  return scoreCollection.insertOne(score);
+async function getAllUsers() {
+  return db.collection('users').find().toArray();
 }
 
-async function getHighScores() {
-  const query = { netWorth: { $gt: 0 } };
-  const options = {
-    sort: { netWorth: -1 },
-    limit: 10,
-  };
-  const cursor = userCollection.find(query, options);
-  return cursor.toArray();
-}
-
-async function getComments() {
-  const options = {
-    sort: { _id: -1 }, 
-    limit: 10,       
-  };
-  const cursor = commentCollection.find({}, options);
-  return cursor.toArray();
-}
-
-async function addComment(comment) {
-  await commentCollection.insertOne(comment);
-}
-
-async function addNotification(notification) {
-  await notificationCollection.insertOne(notification);
-}
-
-async function getNotifications() {
-  const options = {
-    sort: { _id: -1 },
-    limit: 50,         
-  };
-  const cursor = notificationCollection.find({}, options);
-  return cursor.toArray();
-}
-
+// --- User data (portfolio, balance, profile, etc) ---
 async function getUserData(email) {
-  const user = await getUser(email);
-  if (!user) return null;
+  // Retrieve user data document for the given email
+  const userData = await db.collection('userData').findOne({ email });
+  if (!userData) return null;
 
+  // Compute net worth if portfolio exists
+  let netWorth = userData.balance || 0;
+  if (Array.isArray(userData.portfolio)) {
+    netWorth += userData.portfolio.reduce(
+      (sum, stock) => sum + (parseFloat(stock.totalValue) || 0),
+      0
+    );
+  }
+
+  // Return username (email), balance, netWorth, portfolio, profile, and purchases
   return {
-    balance: user.balance || 100000,
-    portfolio: user.portfolio || [],
-    purchases: user.purchases || [], 
+    userName: email,
+    balance: userData.balance || 0,
+    netWorth,
+    portfolio: userData.portfolio || [],
+    profile: userData.profile || {},
+    purchases: userData.purchases || [],
   };
 }
 
 async function updateUserData(email, data) {
-  const updateFields = {};
-  if (data.balance !== undefined) updateFields.balance = data.balance;
-  if (data.portfolio !== undefined) updateFields.portfolio = data.portfolio;
-  if (data.purchases !== undefined) updateFields.purchases = data.purchases; 
-  if (data.profile !== undefined) updateFields.profile = data.profile; 
+  // Only update the provided fields (balance, portfolio, profile, purchases)
+  return db.collection('userData').updateOne(
+    { email },
+    { $set: { ...data, email } },
+    { upsert: true }
+  );
+}
 
-  await userCollection.updateOne({ email }, { $set: updateFields });
+// --- Notifications ---
+async function addNotification(notification) {
+  return db.collection('notifications').insertOne(notification);
+}
+
+async function getNotifications() {
+  return db.collection('notifications').find().sort({ timestamp: 1 }).toArray();
+}
+
+// --- Comments / Chat ---
+async function addComment(comment) {
+  return db.collection('comments').insertOne(comment);
+}
+
+async function getComments() {
+  return db.collection('comments').find().toArray();
+}
+
+// --- Scores (if used) ---
+async function addScore(score) {
+  return db.collection('scores').insertOne(score);
+}
+
+async function getHighScores() {
+  return db.collection('scores').find().sort({ netWorth: -1 }).limit(10).toArray();
+}
+
+// --- Chats (Community Chat / Comments) ---
+async function addChat(chat) {
+  return db.collection('chats').insertOne(chat);
+}
+
+async function getChats() {
+  return db.collection('chats').find().sort({ timestamp: 1 }).toArray();
 }
 
 module.exports = {
@@ -101,12 +112,15 @@ module.exports = {
   getUserByToken,
   addUser,
   updateUser,
-  addScore,
-  getHighScores,
-  getComments,
-  addComment,
-  addNotification,
-  getNotifications,
+  getAllUsers,
   getUserData,
   updateUserData,
+  addNotification,
+  getNotifications,
+  addComment,
+  getComments,
+  addScore,
+  getHighScores,
+  addChat,
+  getChats,
 };

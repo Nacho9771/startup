@@ -7,7 +7,7 @@ const { getUserData, updateUserData } = require('./database.js');
 const { addNotification, getNotifications } = require('./database.js');
 const { addComment, getComments } = require('./database.js'); // Import comment functions
 const fs = require('fs');
-const https = require('https');
+const http = require('http'); // Replace https with http
 const app = express();
 const DB = require('./database.js');
 
@@ -22,13 +22,40 @@ app.use(express.static('public'));
 const apiRouter = express.Router();
 app.use(`/api`, apiRouter);
 
-const server = https.createServer({
-  key: fs.readFileSync('path/to/your/ssl/key.pem'),
-  cert: fs.readFileSync('path/to/your/ssl/cert.pem'),
-}, app);
+// Replace HTTPS server with HTTP server
+const server = http.createServer(app); // Use HTTP server instead of HTTPS
 
-const wss = new WebSocketServer({ server });
 const clients = new Set();
+
+// Create a WebSocket server using the existing HTTP server
+const wss = new WebSocketServer({ server });
+
+wss.on('connection', (socket) => {
+  socket.isAlive = true;
+
+  socket.on('message', (data) => {
+    wss.clients.forEach((client) => {
+      if (client !== socket && client.readyState === WebSocket.OPEN) {
+        client.send(data);
+      }
+    });
+  });
+
+  socket.on('pong', () => {
+    socket.isAlive = true;
+  });
+});
+
+setInterval(() => {
+  wss.clients.forEach((client) => {
+    if (!client.isAlive) {
+      return client.terminate();
+    }
+
+    client.isAlive = false;
+    client.ping();
+  });
+}, 10000);
 
 wss.on('connection', (ws) => {
   clients.add(ws);
@@ -95,14 +122,6 @@ function broadcastNotification(message) {
 
 server.listen(port, () => {
   console.log(`Listening on port ${port}`);
-});
-
-app.server = server;
-
-app.server.on('upgrade', (request, socket, head) => {
-  wss.handleUpgrade(request, socket, head, (ws) => {
-    wss.emit('connection', ws, request);
-  });
 });
 
 // CreateAuth token for a new user
@@ -191,9 +210,12 @@ apiRouter.post('/comments', verifyAuth, async (req, res) => {
   res.status(201).send(comment);
 });
 
-// Fetch user data
-apiRouter.get('/user/:email', verifyAuth, async (req, res) => {
-  const email = req.params.email;
+// Fetch user data (GET /api/user?email=...)
+apiRouter.get('/user', verifyAuth, async (req, res) => {
+  const email = req.query.email;
+  if (!email) {
+    return res.status(400).send({ msg: 'Missing email parameter' });
+  }
   const userData = await getUserData(email);
 
   if (userData) {
@@ -203,26 +225,29 @@ apiRouter.get('/user/:email', verifyAuth, async (req, res) => {
   }
 });
 
-// Update user data
-apiRouter.post('/user/:email', verifyAuth, async (req, res) => {
-  const email = req.params.email;
-  const { balance, portfolio, profile } = req.body;
+// Update user data (POST /api/user)
+apiRouter.post('/user', verifyAuth, async (req, res) => {
+  const { balance, portfolio, profile, purchases, email } = req.body;
+
+  if (!email) {
+    return res.status(400).send({ msg: 'Missing email in request body' });
+  }
 
   try {
-    const user = await DB.getUser(email);
-    if (!user) {
-      return res.status(404).send({ msg: 'User not found' });
-    }
-
+    // Always update all fields provided, including purchases and email
     const updatedData = {
-      balance: balance !== undefined ? balance : user.balance,
-      portfolio: portfolio !== undefined ? portfolio : user.portfolio,
-      profile: profile !== undefined ? { ...user.profile, ...profile } : user.profile,
+      balance,
+      portfolio,
+      profile,
+      purchases,
+      email, // Ensure email is included in the update data
     };
 
     await updateUserData(email, updatedData); 
 
-    res.status(200).send({ msg: 'User data updated successfully', updatedData });
+    // Return the updated user data
+    const userData = await getUserData(email);
+    res.status(200).send({ msg: 'User data updated successfully', updatedData: userData });
   } catch (error) {
     console.error('Error updating user data:', error);
     res.status(500).send({ msg: 'Failed to update user data' });
