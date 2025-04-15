@@ -254,6 +254,48 @@ apiRouter.post('/user', verifyAuth, async (req, res) => {
   }
 });
 
+// --- Add endpoints for profile-specific GET/POST ---
+// GET user profile (GET /api/user/:email)
+apiRouter.get('/user/:email', verifyAuth, async (req, res) => {
+  const email = req.params.email;
+  if (!email) {
+    return res.status(400).send({ msg: 'Missing email parameter' });
+  }
+  const userData = await getUserData(email);
+  if (userData) {
+    res.send(userData);
+  } else {
+    res.status(404).send({ msg: 'User not found' });
+  }
+});
+
+// POST update user profile (POST /api/user/:email)
+apiRouter.post('/user/:email', verifyAuth, async (req, res) => {
+  const email = req.params.email;
+  if (!email) {
+    return res.status(400).send({ msg: 'Missing email parameter' });
+  }
+  // Only update provided fields
+  const { balance, portfolio, profile, purchases } = req.body;
+  try {
+    const updateFields = {};
+    if (balance !== undefined) updateFields.balance = balance;
+    if (portfolio !== undefined) updateFields.portfolio = portfolio;
+    if (profile !== undefined) updateFields.profile = profile;
+    if (purchases !== undefined) updateFields.purchases = purchases;
+    updateFields.email = email;
+
+    await updateUserData(email, updateFields);
+
+    // Return the updated user data
+    const userData = await getUserData(email);
+    res.status(200).send({ msg: 'User data updated successfully', updatedData: userData });
+  } catch (error) {
+    console.error('Error updating user profile:', error);
+    res.status(500).send({ msg: 'Failed to update user profile' });
+  }
+});
+
 // API endpoint to fetch notifications
 apiRouter.get('/notifications', verifyAuth, async (req, res) => {
   try {

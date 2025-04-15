@@ -55,10 +55,23 @@ export function Profile({ userName, balance, netWorth, portfolio, notifications 
     return () => ws.close();
   }, [userName]);
 
+  // Helper to fetch the latest profile from the backend
+  async function getLatestProfile() {
+    try {
+      const response = await fetch(`/api/user/${userName}`);
+      const data = await response.json();
+      return data.profile || {};
+    } catch (error) {
+      return {};
+    }
+  }
+
   const handleStimulus = async () => {
     if (netWorth < 10000) {
       const newBalance = balance + 500;
       try {
+        // Always fetch the latest profile before updating
+        const latestProfile = await getLatestProfile();
         await fetch(`/api/user/${userName}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -66,11 +79,8 @@ export function Profile({ userName, balance, netWorth, portfolio, notifications 
             balance: newBalance,
             portfolio,
             profile: {
-              phoneNumber,
-              fullName,
-              yearlyIncome,
-              riskTolerance,
-              creationTime: new Date().toISOString(),
+              ...latestProfile,
+              creationTime: latestProfile.creationTime || new Date().toISOString(),
             },
           }),
         });
@@ -86,11 +96,15 @@ export function Profile({ userName, balance, netWorth, portfolio, notifications 
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
 
+    // Always fetch the latest profile before updating
+    const latestProfile = await getLatestProfile();
+
     const updatedProfile = {
-      phoneNumber: newPhoneNumber || phoneNumber,
-      fullName: newFullName || fullName,
-      yearlyIncome: newYearlyIncome || yearlyIncome,
-      riskTolerance: newRiskTolerance || riskTolerance,
+      ...latestProfile,
+      phoneNumber: newPhoneNumber || latestProfile.phoneNumber || phoneNumber,
+      fullName: newFullName || latestProfile.fullName || fullName,
+      yearlyIncome: newYearlyIncome || latestProfile.yearlyIncome || yearlyIncome,
+      riskTolerance: newRiskTolerance || latestProfile.riskTolerance || riskTolerance,
     };
 
     try {

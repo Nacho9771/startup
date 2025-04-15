@@ -57,7 +57,7 @@ async function getUserData(email) {
     balance: userData.balance || 0,
     netWorth,
     portfolio: userData.portfolio || [],
-    profile: userData.profile || {},
+    profile: userData.profile || {}, // <-- profile always included
     purchases: userData.purchases || [],
   };
 }
