@@ -16,7 +16,7 @@ export function Home({ userName, balance, setBalance, portfolio, setPortfolio, n
   const [searchResults, setSearchResults] = useState([]);
   const [dailyChange, setDailyChange] = useState(null);
   const [purchases, setPurchases] = useState([]);
-  const [socket, setSocket] = useState(null);
+  const [socket, setSocket] = useState(null); // --- WEBSOCKET ---
 
   // Tesla-only trade section state
   const [teslaPrice, setTeslaPrice] = useState(() => (Math.random() * 100 + 200).toFixed(2));
@@ -41,6 +41,7 @@ export function Home({ userName, balance, setBalance, portfolio, setPortfolio, n
   }, [userName, setBalance, setPortfolio]);
 
   useEffect(() => {
+    // --- WEBSOCKET ---
     const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
     const ws = new WebSocket(`${protocol}://${window.location.hostname}:4000/ws`); // Use backend server port
     setSocket(ws);
@@ -61,18 +62,20 @@ export function Home({ userName, balance, setBalance, portfolio, setPortfolio, n
         addNotification(data.message);
       }
     };
-
-    ws.onclose = () => console.log('WebSocket disconnected');
     return () => ws.close();
+    // --- END WEBSOCKET ---
+    
   }, [setPortfolio]);
 
   useEffect(() => {
+    // --- WEBSOCKET ---
     const interval = setInterval(() => {
       if (socket) {
         socket.send(JSON.stringify({ type: 'requestStockUpdates' }));
       }
     }, 600000); // 10 minutes
     return () => clearInterval(interval);
+    // --- END WEBSOCKET ---
   }, [socket]);
 
   const handleSearch = async () => {
@@ -173,7 +176,7 @@ export function Home({ userName, balance, setBalance, portfolio, setPortfolio, n
       setBalance(data.balance || 0);
       setPurchases(data.purchases || []);
 
-      socket.send(JSON.stringify({ type: 'notification', message: `${quantity} shares of ${selectedStock.name} sold for $${saleAmount.toFixed(2)}!` }));
+      socket.send(JSON.stringify({ type: 'notification', message: `${quantity} shares of ${selectedStock.name} sold for $${saleAmount.toFixed(2)}!` })); // --- WEBSOCKET ---
       setSelectedStock(null);
     } catch (error) {
       console.error('Error updating user data:', error);
@@ -230,7 +233,7 @@ export function Home({ userName, balance, setBalance, portfolio, setPortfolio, n
       setBalance(data.balance || 0);
       setPurchases(data.purchases || []);
 
-      socket.send(JSON.stringify({ type: 'notification', message: `${quantity} shares of ${selectedStock.name} purchased successfully!` }));
+      socket.send(JSON.stringify({ type: 'notification', message: `${quantity} shares of ${selectedStock.name} purchased successfully!` })); // --- WEBSOCKET ---
       setSelectedStock(null);
     } catch (error) {
       console.error('Error updating user data:', error);
@@ -297,7 +300,7 @@ export function Home({ userName, balance, setBalance, portfolio, setPortfolio, n
       setPortfolio(data.portfolio || []);
       setBalance(data.balance || 0);
       setPurchases(data.purchases || []);
-      if (socket) socket.send(JSON.stringify({ type: 'notification', message: `${teslaQuantity} shares of Tesla purchased successfully!` }));
+      if (socket) socket.send(JSON.stringify({ type: 'notification', message: `${teslaQuantity} shares of Tesla purchased successfully!` })); // --- WEBSOCKET ---
       setTeslaSelected(false);
     } catch (error) {
       console.error('Error updating user data:', error);
@@ -360,7 +363,7 @@ export function Home({ userName, balance, setBalance, portfolio, setPortfolio, n
       setPortfolio(data.portfolio || []);
       setBalance(data.balance || 0);
       setPurchases(data.purchases || []);
-      if (socket) socket.send(JSON.stringify({ type: 'notification', message: `${teslaQuantity} shares of Tesla sold for $${saleAmount.toFixed(2)}!` }));
+      if (socket) socket.send(JSON.stringify({ type: 'notification', message: `${teslaQuantity} shares of Tesla sold for $${saleAmount.toFixed(2)}!` })); // --- WEBSOCKET ---
       setTeslaSelected(false);
     } catch (error) {
       console.error('Error updating user data:', error);
@@ -375,7 +378,7 @@ export function Home({ userName, balance, setBalance, portfolio, setPortfolio, n
 
     // Broadcast the notification to all connected clients
     if (socket) {
-      socket.send(JSON.stringify({ type: 'notification', message }));
+      socket.send(JSON.stringify({ type: 'notification', message })); // --- WEBSOCKET ---
     }
 
     // Save the notification to the backend

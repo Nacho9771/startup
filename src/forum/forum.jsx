@@ -6,7 +6,7 @@ export function Forum({ userName, balance, netWorth, portfolio, notifications })
   const [leaderboard, setLeaderboard] = useState([]);
   const [chats, setChats] = useState([]);
   const [message, setMessage] = useState('');
-  const [socket, setSocket] = useState(null);
+  const [socket, setSocket] = useState(null); // --- WEBSOCKET ---
   const [serverNotifications, setServerNotifications] = useState([]);
   const [archivedNotifications, setArchivedNotifications] = useState([]);
   const [purchases, setPurchases] = useState([]);
@@ -37,6 +37,7 @@ export function Forum({ userName, balance, netWorth, portfolio, notifications })
     fetchNotifications();
   }, []);
 
+  // --- WEBSOCKET ---
   useEffect(() => {
     const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
     const ws = new WebSocket(`${protocol}://${window.location.hostname}:4000/ws`);
@@ -65,6 +66,7 @@ export function Forum({ userName, balance, netWorth, portfolio, notifications })
 
     return () => ws.close();
   }, []);
+  // --- END WEBSOCKET ---
 
   useEffect(() => {
     async function fetchUserTrades() {
@@ -94,11 +96,13 @@ export function Forum({ userName, balance, netWorth, portfolio, notifications })
   }, []);
 
   const sendMessage = () => {
+    // --- WEBSOCKET ---
     if (message.trim() && socket) {
       const chat = { type: 'chat', user: userName, text: message }; // Include 'type' for backend processing
       socket.send(JSON.stringify(chat)); // Send chat message via WebSocket
       setMessage('');
     }
+    // --- END WEBSOCKET ---
   };
 
   const handleKeyPress = (event) => {

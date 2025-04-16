@@ -2,7 +2,7 @@ const cookieParser = require('cookie-parser');
 const bcrypt = require('bcryptjs');
 const express = require('express');
 const uuid = require('uuid');
-const { WebSocketServer } = require('ws');
+const { WebSocketServer } = require('ws'); // --- WEBSOCKET ---
 const { getUserData, updateUserData } = require('./database.js');
 const { addNotification, getNotifications } = require('./database.js');
 const { addComment, getComments } = require('./database.js'); // Import comment functions
@@ -25,12 +25,17 @@ app.use(`/api`, apiRouter);
 // Replace HTTPS server with HTTP server
 const server = http.createServer(app); // Use HTTP server instead of HTTPS
 
-const clients = new Set();
+const clients = new Set(); // --- WEBSOCKET ---
 
-// --- WebSocket server setup for /ws endpoint ---
-const wss = new WebSocketServer({ noServer: true });
+// --- WebSocket server setup for /ws endpoint --- // --- WEBSOCKET ---
+const wss = new WebSocketServer({ noServer: true }); // --- WEBSOCKET ---
 
-// Handle upgrade requests for /ws only
+// Heartbeat function for each ws connection
+function heartbeat() {
+  this.isAlive = true;
+}
+
+// Handle upgrade requests for /ws only // --- WEBSOCKET ---
 server.on('upgrade', (request, socket, head) => {
   if (request.url === '/ws') {
     wss.handleUpgrade(request, socket, head, (ws) => {
@@ -40,10 +45,21 @@ server.on('upgrade', (request, socket, head) => {
     socket.destroy();
   }
 });
+// --- END WEBSOCKET ---
 
-// --- Consolidated WebSocket logic ---
+// --- Consolidated WebSocket logic --- // --- WEBSOCKET ---
 wss.on('connection', (ws) => {
+  ws.isAlive = true;
+  ws.on('pong', heartbeat);
+
   clients.add(ws);
+
+  // Broadcast connection announcement
+  broadcastToAll({
+    type: 'notification',
+    message: 'A user has connected to the server.',
+    timestamp: new Date(),
+  });
 
   ws.on('message', async (data) => {
     try {
@@ -86,7 +102,6 @@ wss.on('connection', (ws) => {
 
   ws.on('close', () => {
     clients.delete(ws);
-    console.log('WebSocket client disconnected');
   });
 
   ws.on('error', (error) => {
@@ -95,7 +110,24 @@ wss.on('connection', (ws) => {
   });
 });
 
-// Helper to broadcast to all connected clients
+// Ping all clients every 30 seconds to keep connections alive
+const interval = setInterval(() => {
+  wss.clients.forEach((ws) => {
+    if (ws.isAlive === false) {
+      ws.terminate();
+      return;
+    }
+    ws.isAlive = false;
+    ws.ping();
+  });
+}, 30000);
+
+wss.on('close', function close() {
+  clearInterval(interval);
+});
+// --- END WEBSOCKET ---
+
+// Helper to broadcast to all connected clients // --- WEBSOCKET ---
 function broadcastToAll(obj) {
   const msg = JSON.stringify(obj);
   for (const client of clients) {
@@ -104,6 +136,7 @@ function broadcastToAll(obj) {
     }
   }
 }
+// --- END WEBSOCKET ---
 
 server.listen(port, () => {
   console.log(`Listening on port ${port}`);
@@ -186,7 +219,7 @@ apiRouter.post('/comments', verifyAuth, async (req, res) => {
   await DB.addComment(comment); 
 
   // Broadcast the new comment to all connected WebSocket clients
-  broadcastToAll(comment);
+  broadcastToAll(comment); // --- WEBSOCKET ---
 
   res.status(201).send(comment);
 });
@@ -372,4 +405,4 @@ function setAuthCookie(res, authToken) {
   });
 }
 
-module.exports = { broadcastToAll };
+module.exports = { broadcastToAll }; // --- WEBSOCKET ---
