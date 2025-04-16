@@ -42,8 +42,8 @@ export function Home({ userName, balance, setBalance, portfolio, setPortfolio, n
 
   useEffect(() => {
     // --- WEBSOCKET ---
-    const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
-    const ws = new WebSocket(`${protocol}://${window.location.hostname}:4000/ws`); // Use backend server port
+    const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+    const ws = new WebSocket(`${protocol}://${window.location.host}/ws`);
     setSocket(ws);
 
     ws.onmessage = (event) => {

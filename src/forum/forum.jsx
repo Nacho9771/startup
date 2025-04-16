@@ -39,8 +39,8 @@ export function Forum({ userName, balance, netWorth, portfolio, notifications })
 
   // --- WEBSOCKET ---
   useEffect(() => {
-    const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
-    const ws = new WebSocket(`${protocol}://${window.location.hostname}:4000/ws`);
+    const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+    const ws = new WebSocket(`${protocol}://${window.location.host}/ws`);
     setSocket(ws);
 
     ws.onmessage = (event) => {

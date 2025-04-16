@@ -41,7 +41,7 @@ export function Profile({ userName, balance, netWorth, portfolio, notifications 
   }, [userName]);
 
   useEffect(() => {
-    const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
+    const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
     const ws = new WebSocket(`${protocol}://${window.location.host}/ws`);
 
     ws.onmessage = (event) => {
