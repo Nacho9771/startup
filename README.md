@@ -134,13 +134,13 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 ## 🚀 DB/Login deliverable
 
-I learned a lot about setting up a database! It was a lot harder than I thought it would be, which seems to be a running theme with all of these deliverables, but thankfully mongodb makes it a lot easier for developers ot store data. I couldn't imagine crafting a database myself right now.
+After finding and solving the issues with my backend, it is ready to be graded. Before, the backend was buggy due to dynamic api fetches (I had the individual userName variable in the api/user fetch request) and the user's information was rewritten every time they accessed the website. It works now, so the following checkmarks are correct.
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
 - [x] **User registration** - Users could already register and be saved in the database, now they stay! :)
 - [x] **User login and logout** - Done!
-- [x] **Stores data in MongoDB** - All of my data is now stored in mongodb, I checked by implementing a test feature to see if the database connects by printing in the terminal "Connected to database", and I checked to see if I could login the next day and see my stocks that I purchased (It worked)
+- [x] **Stores data in MongoDB** - All of my data is now stored in mongodb, I checked by implementing a test feature to see if the database connects by printing in the terminal "Connected to database", and I checked to see if I could login the next day and see my stocks that I purchased (It worked). I also now have a ton of user information in my database, along with community chat logs and previous notifications. 
 - [x] **Stores credentials in MongoDB** - All credentials are stored in MongoDB as well - I tried to use a bunch of bogus passwords and it didn't work
 - [x] **Restricts functionality based on authentication** - Well, other people cannot access their account so I suppose this step is implemented too ( I think this was implemented last deliverable)
 
@@ -148,12 +148,12 @@ I also made some bug fixes!
 
 ## 🚀 WebSocket deliverable
 
-I do plan to work on this website later in my freetime! But for now I completed the websocket deliverable, and at this moment as I am submitting this project, the website is fully functional.
+After debugging the websocket, the following connections and functionality works with my website. There are three instances that use websocket in my website - notifications that notify other users when others have entered the trade terminal, notifications for when you purchase or sell stocks, and a chat box located in forum.jsx.
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [x] **Backend listens for WebSocket connection** - Yes! The backend listend for websocket connecting, although this one can be a bit buggy as websocket sometimes likes to diconnect and reconnect
-- [x] **Frontend makes WebSocket connection** - The frontend properly makes websocket connections, specifically when you make a stock purchase and when you use the community chat in the forum tab
-- [x] **Data sent over WebSocket connection** - Data is properly sent over websocket connection, although due to the backend sometimes it can be a little buggy - I plan to fix this later in my spare time, but it still does it!
-- [x] **WebSocket data displayed** - The chatbox and the notifications in the home.jsx file are displayed onto the screen
-- [x] **Application is fully functional** - While I had to remove some features, like a list of all of the trades that have happened on the website (I was really crunched for time), the website is fully functional :)
+- [x] **Backend listens for WebSocket connection** - Yes! The backend listend for websocket connecting.
+- [x] **Frontend makes WebSocket connection** - The frontend properly makes websocket connections, specifically when you make a stock purchase and when you use the community chat in the forum tab.
+- [x] **Data sent over WebSocket connection** - Data is properly sent over websocket connection with the community chat and the notifications in home.jsx. 
+- [x] **WebSocket data displayed** - The chatbox and the notifications in the home.jsx file are displayed onto the screen properly.
+- [x] **Application is fully functional** - While I had to remove some very small features, the website is fully functional and ready to be graded :)
