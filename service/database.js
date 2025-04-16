@@ -57,13 +57,12 @@ async function getUserData(email) {
     balance: userData.balance || 0,
     netWorth,
     portfolio: userData.portfolio || [],
-    profile: userData.profile || {}, // <-- profile always included
+    profile: userData.profile || {}, 
     purchases: userData.purchases || [],
   };
 }
 
 async function updateUserData(email, data) {
-  // Only update the provided fields (balance, portfolio, profile, purchases)
   return db.collection('userData').updateOne(
     { email },
     { $set: { ...data, email } },

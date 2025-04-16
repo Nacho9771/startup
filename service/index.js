@@ -5,9 +5,9 @@ const uuid = require('uuid');
 const { WebSocketServer } = require('ws'); // --- WEBSOCKET ---
 const { getUserData, updateUserData } = require('./database.js');
 const { addNotification, getNotifications } = require('./database.js');
-const { addComment, getComments } = require('./database.js'); // Import comment functions
+const { addComment, getComments } = require('./database.js'); 
 const fs = require('fs');
-const http = require('http'); // Replace https with http
+const http = require('http'); 
 const app = express();
 const DB = require('./database.js');
 
@@ -22,20 +22,18 @@ app.use(express.static('public'));
 const apiRouter = express.Router();
 app.use(`/api`, apiRouter);
 
-// Replace HTTPS server with HTTP server
-const server = http.createServer(app); // Use HTTP server instead of HTTPS
+const server = http.createServer(app); 
 
 const clients = new Set(); // --- WEBSOCKET ---
 
 // --- WebSocket server setup for /ws endpoint --- // --- WEBSOCKET ---
 const wss = new WebSocketServer({ noServer: true }); // --- WEBSOCKET ---
 
-// Heartbeat function for each ws connection
 function heartbeat() {
   this.isAlive = true;
 }
 
-// Handle upgrade requests for /ws only // --- WEBSOCKET ---
+//  --- WEBSOCKET ---
 server.on('upgrade', (request, socket, head) => {
   if (request.url === '/ws') {
     wss.handleUpgrade(request, socket, head, (ws) => {
@@ -54,7 +52,6 @@ wss.on('connection', (ws) => {
 
   clients.add(ws);
 
-  // Broadcast connection announcement
   broadcastToAll({
     type: 'notification',
     message: 'A user has connected to the server.',
@@ -65,7 +62,6 @@ wss.on('connection', (ws) => {
     try {
       const message = JSON.parse(data);
 
-      // Handle chat messages
       if (message.type === 'chat') {
         const chat = {
           type: 'chat',
@@ -77,7 +73,6 @@ wss.on('connection', (ws) => {
         broadcastToAll(chat);
       }
 
-      // Handle notification messages (e.g., stock purchase/sale)
       else if (message.type === 'notification') {
         const notification = {
           type: 'notification',
@@ -88,12 +83,9 @@ wss.on('connection', (ws) => {
         broadcastToAll(notification);
       }
 
-      // Handle trade messages (if needed)
       else if (message.type === 'trade') {
         broadcastToAll({ type: 'trade', ...message });
       }
-
-      // Add more message types as needed
 
     } catch (error) {
       console.error('Error handling WebSocket message:', error);
@@ -110,7 +102,7 @@ wss.on('connection', (ws) => {
   });
 });
 
-// Ping all clients every 30 seconds to keep connections alive
+// Pings all clients every 30 seconds to keep connections alive
 const interval = setInterval(() => {
   wss.clients.forEach((ws) => {
     if (ws.isAlive === false) {
@@ -127,7 +119,7 @@ wss.on('close', function close() {
 });
 // --- END WEBSOCKET ---
 
-// Helper to broadcast to all connected clients // --- WEBSOCKET ---
+//  --- WEBSOCKET ---
 function broadcastToAll(obj) {
   const msg = JSON.stringify(obj);
   for (const client of clients) {
@@ -142,7 +134,6 @@ server.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
 
-// CreateAuth token for a new user
 apiRouter.post('/auth/create', async (req, res) => {
   if (await DB.getUser(req.body.email)) {
     res.status(409).send({ msg: 'Existing user' });
@@ -224,7 +215,6 @@ apiRouter.post('/comments', verifyAuth, async (req, res) => {
   res.status(201).send(comment);
 });
 
-// Fetch user data (GET /api/user?email=...)
 apiRouter.get('/user', verifyAuth, async (req, res) => {
   const email = req.query.email;
   if (!email) {
@@ -232,7 +222,6 @@ apiRouter.get('/user', verifyAuth, async (req, res) => {
   }
   let userData = await getUserData(email);
 
-  // If userData exists but balance is 0 or missing, and portfolio is empty, set balance to 100000
   if (userData && (!userData.balance || userData.balance === 0) && (!userData.portfolio || userData.portfolio.length === 0)) {
     await updateUserData(email, { balance: 100000 });
     userData = await getUserData(email);
@@ -241,14 +230,12 @@ apiRouter.get('/user', verifyAuth, async (req, res) => {
   if (userData) {
     res.send(userData); 
   } else {
-    // If userData does not exist, create a new userData with 100000 balance
     await updateUserData(email, { balance: 100000, portfolio: [], purchases: [], profile: {}, email });
     const newUserData = await getUserData(email);
     res.send(newUserData);
   }
 });
 
-// Update user data (POST /api/user)
 apiRouter.post('/user', verifyAuth, async (req, res) => {
   const { balance, portfolio, profile, purchases, email } = req.body;
 
@@ -257,18 +244,16 @@ apiRouter.post('/user', verifyAuth, async (req, res) => {
   }
 
   try {
-    // Always update all fields provided, including purchases and email
     const updatedData = {
       balance,
       portfolio,
       profile,
       purchases,
-      email, // Ensure email is included in the update data
+      email, 
     };
 
     await updateUserData(email, updatedData); 
 
-    // Return the updated user data
     const userData = await getUserData(email);
     res.status(200).send({ msg: 'User data updated successfully', updatedData: userData });
   } catch (error) {
@@ -298,7 +283,6 @@ apiRouter.post('/user/:email', verifyAuth, async (req, res) => {
   if (!email) {
     return res.status(400).send({ msg: 'Missing email parameter' });
   }
-  // Only update provided fields
   const { balance, portfolio, profile, purchases } = req.body;
   try {
     const updateFields = {};
@@ -307,9 +291,7 @@ apiRouter.post('/user/:email', verifyAuth, async (req, res) => {
     if (purchases !== undefined) updateFields.purchases = purchases;
     updateFields.email = email;
 
-    // Merge profile fields carefully: only update fields that are not empty string or null
     if (profile !== undefined) {
-      // Fetch the current user data to merge profile fields
       const currentUserData = await getUserData(email);
       const currentProfile = (currentUserData && currentUserData.profile) || {};
       const mergedProfile = { ...currentProfile };
@@ -396,7 +378,6 @@ async function createUser(email, password) {
   return user;
 }
 
-// setAuthCookie in the HTTP response
 function setAuthCookie(res, authToken) {
   res.cookie(authCookieName, authToken, {
     secure: true,

@@ -18,7 +18,7 @@ export function Home({ userName, balance, setBalance, portfolio, setPortfolio, n
   const [purchases, setPurchases] = useState([]);
   const [socket, setSocket] = useState(null); // --- WEBSOCKET ---
 
-  // Tesla-only trade section state
+  // Tesla-only trade section state, meant for grading purposes
   const [teslaPrice, setTeslaPrice] = useState(() => (Math.random() * 100 + 200).toFixed(2));
   const [teslaQuantity, setTeslaQuantity] = useState(1);
   const [teslaSelected, setTeslaSelected] = useState(false);
@@ -240,7 +240,7 @@ export function Home({ userName, balance, setBalance, portfolio, setPortfolio, n
     }
   };
 
-  {/* --- Tesla-only Trade Section --- */}
+  {/* Tesla-only Trade Section */}
 
   const handleSelectTesla = () => {
     setTeslaPrice((Math.random() * 100 + 200).toFixed(2));
@@ -369,7 +369,7 @@ export function Home({ userName, balance, setBalance, portfolio, setPortfolio, n
       console.error('Error updating user data:', error);
     }
   };
-{/* --- Tesla-only Trade Section --- */}
+{/* Tesla-only Trade Section */}
 
   const addNotification = (message) => {
     const id = Date.now();
@@ -381,7 +381,7 @@ export function Home({ userName, balance, setBalance, portfolio, setPortfolio, n
       socket.send(JSON.stringify({ type: 'notification', message })); // --- WEBSOCKET ---
     }
 
-    // Save the notification to the backend
+    // Saves the notification to the backend
     fetch('/api/notifications', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -507,10 +507,10 @@ export function Home({ userName, balance, setBalance, portfolio, setPortfolio, n
         </section>
       </div>
 
-      {/* --- Tesla-only Trade Section --- */}
+      {/* Tesla-only Trade Section */}
       <div className="containers">
         <section>
-          <h3>Trade Tesla (Testing Only)</h3>
+          <h3>Trade Tesla (Testing and Grading Purposes Only)</h3>
           <table>
             <thead>
               <tr>
@@ -570,7 +570,7 @@ export function Home({ userName, balance, setBalance, portfolio, setPortfolio, n
           </div>
         </section>
       </div>
-      {/* --- End Tesla-only Trade Section --- */}
+      {/* End Tesla-only Trade Section */}
 
       <div className="notification-container">
         {notifications.map((notif) => (

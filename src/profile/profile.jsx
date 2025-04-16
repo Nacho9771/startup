@@ -55,7 +55,6 @@ export function Profile({ userName, balance, netWorth, portfolio, notifications 
     return () => ws.close();
   }, [userName]);
 
-  // Helper to fetch the latest profile from the backend
   async function getLatestProfile() {
     try {
       const response = await fetch(`/api/user/${userName}`);
@@ -70,7 +69,6 @@ export function Profile({ userName, balance, netWorth, portfolio, notifications 
     if (netWorth < 10000) {
       const newBalance = balance + 500;
       try {
-        // Always fetch the latest profile before updating
         const latestProfile = await getLatestProfile();
         await fetch(`/api/user/${userName}`, {
           method: 'POST',

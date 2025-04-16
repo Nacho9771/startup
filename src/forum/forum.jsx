@@ -29,7 +29,7 @@ export function Forum({ userName, balance, netWorth, portfolio, notifications })
       try {
         const response = await fetch('/api/notifications');
         const data = await response.json();
-        setArchivedNotifications(data.map((notif) => notif.message)); // Load saved notifications
+        setArchivedNotifications(data.map((notif) => notif.message)); 
       } catch (error) {
         console.error('Error fetching notifications:', error);
       }
@@ -46,17 +46,17 @@ export function Forum({ userName, balance, netWorth, portfolio, notifications })
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
       if (data.type === 'chat') {
-        setChats((prevChats) => [...prevChats, data]); // Add chat message to chats
+        setChats((prevChats) => [...prevChats, data]); 
       } else if (data.type === 'notification') {
-        setServerNotifications((prev) => [...prev, data.message]); // Add server notification
-        setArchivedNotifications((prev) => [...prev, data.message]); // Add new notifications
+        setServerNotifications((prev) => [...prev, data.message]); 
+        setArchivedNotifications((prev) => [...prev, data.message]);
       }
     };
 
     ws.onclose = () => {
       console.log('WebSocket disconnected. Attempting to reconnect...');
       setTimeout(() => {
-        window.location.reload(); // Reload the page to re-establish the connection
+        window.location.reload();
       }, 5000);
     };
 
@@ -84,9 +84,9 @@ export function Forum({ userName, balance, netWorth, portfolio, notifications })
   useEffect(() => {
     async function fetchChats() {
       try {
-        const response = await fetch('/api/chats'); // Fetch chats from the backend
+        const response = await fetch('/api/chats'); 
         const data = await response.json();
-        setChats(data); // Initialize chats with fetched data
+        setChats(data); 
       } catch (error) {
         console.error('Error fetching chats:', error);
       }
@@ -98,8 +98,8 @@ export function Forum({ userName, balance, netWorth, portfolio, notifications })
   const sendMessage = () => {
     // --- WEBSOCKET ---
     if (message.trim() && socket) {
-      const chat = { type: 'chat', user: userName, text: message }; // Include 'type' for backend processing
-      socket.send(JSON.stringify(chat)); // Send chat message via WebSocket
+      const chat = { type: 'chat', user: userName, text: message }; 
+      socket.send(JSON.stringify(chat));
       setMessage('');
     }
     // --- END WEBSOCKET ---
@@ -165,6 +165,7 @@ export function Forum({ userName, balance, netWorth, portfolio, notifications })
         </ul>
       </section> */}
 
+      {/*
       <section id="trade-activity">
         <h3>Recent Trades</h3>
         <ul>
@@ -178,7 +179,8 @@ export function Forum({ userName, balance, netWorth, portfolio, notifications })
               </li>
             ))}
         </ul>
-      </section>
+      </section> */}
+
     </main>
   );
 }
